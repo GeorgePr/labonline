@@ -1,5 +1,6 @@
 import os
 import re
+import sys
 import libvirt
 
 # Script to remove and cleanup all created domains

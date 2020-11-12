@@ -98,4 +98,4 @@ if user_input == 'd':
 # Close connection
 
 conn.close()
-exit(0)
+sys.exit(0)
