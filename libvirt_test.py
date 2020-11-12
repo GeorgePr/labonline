@@ -1,9 +1,16 @@
 import libvirt
 import sys
+import subprocess
+
 
 # Initialize connection
 
-conn = libvirt.open("qemu:///system")
+try:
+	conn = libvirt.open("qemu:///system")
+except libvirt.libvirtError:
+	print('Failed to connect to the hypervisor')
+	sys.exit(1)
+
 
 # Create and start domain based on sample_domain.xml
 
@@ -11,6 +18,7 @@ xml_file = 'sample_domain.xml'
 xml_open = open(xml_file)
 xmlconfig = xml_open.read()
 dom = conn.defineXML(xmlconfig)
+
 
 """
 if dom == None:
@@ -26,16 +34,19 @@ if dom.create() < 0:
 names = conn.listDefinedDomains()
 print(names)
 
+
 # Start domain
 
 dom.create()
 print('Guest ' + dom.name() + ' has booted', file = sys.stderr)
+
 
 # Wait for keypress to remove domain
 
 input('Press Enter to remove domain...')
 dom.destroy()
 dom.undefine()
+
 
 # Close connection
 
