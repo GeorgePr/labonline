@@ -6,8 +6,7 @@ or other application using the libvirt API.
 -->
 
 <domain type='kvm'>
-  <name>R1</name>
-  <uuid>28aebd0d-63eb-4af2-90bb-7525f5909b8d</uuid>
+  <name>BSDRP</name>
   <metadata>
     <libosinfo:libosinfo xmlns:libosinfo="http://libosinfo.org/xmlns/libvirt/domain/1.0">
       <libosinfo:os id="http://freebsd.org/freebsd/12.0"/>
@@ -42,7 +41,7 @@ or other application using the libvirt API.
     <emulator>/usr/bin/qemu-system-x86_64</emulator>
     <disk type='file' device='disk'>
       <driver name='qemu' type='raw'/>
-      <source file='/var/lib/libvirt/images/BSDRP.qcow2'/>
+      <source file='~/images/BSDRP.qcow2'/>
       <target dev='vda' bus='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x07' function='0x0'/>
     </disk>
@@ -66,7 +65,6 @@ or other application using the libvirt API.
       <address type='pci' domain='0x0000' bus='0x00' slot='0x06' function='0x0'/>
     </controller>
     <interface type='network'>
-      <mac address='52:54:00:91:25:19'/>
       <source network='default'/>
       <model type='virtio'/>
       <address type='pci' domain='0x0000' bus='0x00' slot='0x03' function='0x0'/>
