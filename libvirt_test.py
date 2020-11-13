@@ -84,15 +84,27 @@ print('Defined instances: {}'.format(definedDomains))
 dom.create()
 print('Guest ' + dom.name() + ' has booted', file = sys.stderr)
 
+# Domain management interface
+# Wait for user to input domain index
+
+dom_number_selected = input('Select domain index or Enter to continue...\n')
 
 # Wait for keypress to remove domain
 
-user_input = input('Press d to remove or x to exit.\n')
+user_input = input('Press d to remove selected domain or x to exit.\n')
 
 if user_input == 'd':
-	dom.destroy()
-	dom.undefine()
+	print('Removing R' + str(dom_number_selected) + '...')
+	try:
+		dom = conn.lookupByName('R' + str(dom_number_selected))
+		dom.destroy()
+		dom.undefine()
+	except:
+		pass
+	xml_dest = 'domains_xml/R' + str(dom_number_selected) +'.xml'
 	os.remove(xml_dest)
+	img_dest = '~/images/R' + str(dom_number_selected) + '.qcow2'
+	img_dest = os.path.expanduser(img_dest)
 	os.remove(img_dest)
 
 # Close connection
