@@ -16,7 +16,7 @@ sudo -H pip3 install -r requirements_dev.txt
 
 ## Usage
 
-python3 libvirt_python.py
+**python3 libvirt_python.py**
 
 If no domains exist, the script will create R1.
 
@@ -27,7 +27,7 @@ After domain is created, the user can input domain index.
 Selected domain can be removed by pressing d.
 
 
-python3 cleanup.py
+**python3 cleanup.py**
 
 Reads files in the domains_xml directory to find existing domains.
 Then it removes all existing domains.
@@ -36,6 +36,9 @@ Then it removes all existing domains.
 ## Directories
 
 Template image: ~/images/BSDRP.qcow2
+
 Created images: ~/images/R#.qcow2   (# is the domain index)
+
 XML sample: sample_domain.xml
+
 Domain XML files: domains_xml/
