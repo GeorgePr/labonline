@@ -5,9 +5,12 @@ Project Description
 ### Todo
 
 - [ ] Set domain hostname from script  
+- [ ] Add domain management webpage  
+- [ ] Update requirements_dev.txt  
 
 ### In Progress
 
+- [ ] Edit script to create specified number of domains  
 
 ### Done ✓
 
