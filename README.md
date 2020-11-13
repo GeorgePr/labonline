@@ -22,15 +22,13 @@ If no domains exist, the script will create R1.
 
 If n other domains exist, the script will create R(n+1).
 
-After domain is created, the user can input domain index.
-
-Selected domain can be removed by pressing d.
+After domain is created, the user can select a domain to remove by inserting the domain index and then pressing d.
 
 
 **python3 cleanup.py**
 
-Reads files in the domains_xml directory to find existing domains.
-Then it removes all existing domains.
+Reads defined domain indices in domains.txt file to find existing domains.
+Then it removes all existing domains and removes the contents of domains.txt file.
 
 
 ## Directories
