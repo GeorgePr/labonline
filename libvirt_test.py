@@ -16,19 +16,34 @@ except libvirt.libvirtError:
 	print('Failed to connect to the hypervisor')
 	sys.exit(1)
 
+# Find and print existing domains
+
 dom_number = 0
 
+domain_file = open('domains_xml/domains.txt', 'r')
+
+print('Defined domains:')
+lines = domain_file.read().splitlines()
+for dom_number in lines:
+	print('R' + dom_number)
+
+domain_file.close()
+
+'''
 for file in sorted(os.listdir('domains_xml/')):
 	if file.endswith('.xml'):
 		filename = os.path.join('', file)
 		number = re.findall('[0-9]', filename)
 		dom_number = int("".join(number))
 		print('Domain R' + str(dom_number) + ' already exists')
+		domain_file.write(str(dom_number)+'\n')
+'''
 
+dom_number = int(dom_number)
 dom_number = dom_number + 1
 
 dom_name = 'R' + str(dom_number)
-print('Domain', dom_name, 'will be created')
+print('\nDomain', dom_name, 'will be created')
 
 # Print domain disk location
 
@@ -53,7 +68,7 @@ root = tree.getroot()
 # Set name in new XML file
 
 attr_name = root.find('name')
-attr_name.text = str(dom_name)
+attr_name.text = dom_name
 
 # Set image file in new XML file
 
@@ -82,30 +97,63 @@ print('Defined instances: {}'.format(definedDomains))
 # Start domain
 
 dom.create()
-print('Guest ' + dom.name() + ' has booted', file = sys.stderr)
+print('Guest ' + dom.name() + ' has booted\n', file = sys.stderr)
+
+# Append domains.txt and add new domain index
+
+domain_file = open('domains_xml/domains.txt', 'a')
+
+domain_file.write(str(dom_number) + '\n')
+
+domain_file.close()
+
+# Find and print existing domains (again)
+
+domain_file = open('domains_xml/domains.txt', 'r')
+
+print('Defined domains:')
+
+lines = domain_file.read().splitlines()
+for i in lines:
+    print('R' + i)
+
+domain_file.close()
 
 # Domain management interface
 # Wait for user to input domain index
 
-dom_number_selected = input('Select domain index or Enter to continue...\n')
+dom_number_selected = input('\nSelect domain index or press Enter to exit...\n')
+
+if dom_number_selected == '':
+	conn.close()
+	sys.exit(0)
 
 # Wait for keypress to remove domain
 
-user_input = input('Press d to remove selected domain or x to exit.\n')
+user_input = input('Press d to remove selected domain or Enter to exit.\n')
 
 if user_input == 'd':
-	print('Removing R' + str(dom_number_selected) + '...')
+	print('Removing R' + dom_number_selected + '...')
 	try:
-		dom = conn.lookupByName('R' + str(dom_number_selected))
+		dom = conn.lookupByName('R' + dom_number_selected)
 		dom.destroy()
 		dom.undefine()
 	except:
 		pass
-	xml_dest = 'domains_xml/R' + str(dom_number_selected) +'.xml'
+	xml_dest = 'domains_xml/R' + dom_number_selected +'.xml'
 	os.remove(xml_dest)
-	img_dest = '~/images/R' + str(dom_number_selected) + '.qcow2'
+	img_dest = '~/images/R' + dom_number_selected + '.qcow2'
 	img_dest = os.path.expanduser(img_dest)
 	os.remove(img_dest)
+	
+	with open('domains_xml/domains.txt', 'r') as fin:
+		lines = fin.readlines()
+	with open('domains_xml/domains.txt', 'w') as fout:
+		for line in lines:
+			if dom_number_selected not in line:
+				fout.write(line)
+
+domain_file.close()
 
 # Close connection
 

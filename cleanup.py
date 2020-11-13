@@ -5,19 +5,25 @@ import libvirt
 
 # Script to remove and cleanup all created domains
 
+# Initialize connection
+
 try:
 	conn = libvirt.open("qemu:///system")
 except libvirt.libvirtError:
 	print('Failed to connect to the hypervisor')
 	sys.exit(1)
 
+buf = None
 
-for file in sorted(os.listdir('domains_xml/')):
-	if file.endswith('.xml'):
-		filename = os.path.join('', file)
-		number = re.findall('[0-9]', filename)
-		dom_number = int("".join(number))
-		print('Removing R' + str(dom_number) + '...')
+# Open domains.txt file and remove all domains
+
+domain_file = open('domains_xml/domains.txt', 'r')
+
+lines = domain_file.read().splitlines()
+
+if lines != []:
+	for dom_number in lines:
+		buf = print('Removing R' + str(dom_number) + '...')
 		try:
 			dom = conn.lookupByName('R' + str(dom_number))
 			dom.destroy()
@@ -29,3 +35,17 @@ for file in sorted(os.listdir('domains_xml/')):
 		img_dest = '~/images/R' + str(dom_number) + '.qcow2'
 		img_dest = os.path.expanduser(img_dest)
 		os.remove(img_dest)
+else:
+	print('No defined domains')
+
+domain_file.close()
+
+# Remove contents of domains.txt
+
+domain_file = open('domains_xml/domains.txt', 'w+')
+domain_file.close()
+
+# Close connection
+
+conn.close()
+sys.exit(0)
