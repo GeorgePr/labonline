@@ -6,7 +6,11 @@
 
 **Dependencies**
 
-sudo apt install libvirt-daemon-system libvirt-clients virt-viewer virt-manager ebtables bridge-utils qemu-kvm
+sudo apt install python3-pip python3-venv libvirt-daemon-system libvirt-clients virt-viewer virt-manager ebtables bridge-utils qemu-kvm
+
+sudo adduser $USER kvm
+
+[Reboot]
 
 sudo -H pip3 install -r requirements_dev.txt
 
