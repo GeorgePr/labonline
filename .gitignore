@@ -1,1 +1,4 @@
 python.py
+requirements_global.txt
+requirements_env.txt
+.env/
