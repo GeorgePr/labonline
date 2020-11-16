@@ -22,11 +22,9 @@
 
 **python3 libvirt_python.py**
 
-If no domains exist, the script will create R1.
+The user can specify the number of domains to be created.
 
-If n other domains exist, the script will create R(n+1).
-
-After domain is created, the user can select a domain to remove by inserting the domain index and then pressing d.
+After domains are created, the user can select a domain to remove by inserting the domain index and then pressing d.
 
 
 **python3 cleanup.py**

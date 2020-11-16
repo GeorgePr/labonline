@@ -34,7 +34,7 @@ dom_number = dom_number + 1
 
 # Input number of domains to create
 
-domains_input = input('\nEnter number of domains to be created...\n')
+domains_input = sys.argv[1]
 
 if not domains_input.isdigit():
 	print('You entered ' + domains_input + ' which is not a number. Exiting...')

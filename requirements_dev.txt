@@ -1,1 +1,12 @@
-flask
+appdirs==1.4.4
+click==7.1.2
+distlib==0.3.1
+filelock==3.0.12
+Flask==1.1.2
+itsdangerous==1.1.0
+Jinja2==2.11.2
+libvirt-python==6.9.0
+MarkupSafe==1.1.1
+six==1.15.0
+virtualenv==20.1.0
+Werkzeug==1.0.1
