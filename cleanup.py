@@ -26,7 +26,10 @@ if lines != []:
 		buf = print('Removing R' + str(dom_number) + '...')
 		try:
 			dom = conn.lookupByName('R' + str(dom_number))
-			dom.destroy()
+			try:
+				dom.destroy()
+			except:
+				pass
 			dom.undefine()
 		except:
 			pass
