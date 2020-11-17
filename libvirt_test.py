@@ -41,7 +41,7 @@ if not domains_input.isdigit():
 	sys.exit(1)
 
 domains_input = int(domains_input)
-# for j in range(3, 4)
+
 for j in range(dom_number, dom_number + domains_input):
 
 	dom_name = 'R' + str(j)
@@ -56,7 +56,7 @@ for j in range(dom_number, dom_number + domains_input):
 	# Create domain disk from template
 
 	print('Creating disk...')
-	copyfile(os.path.expanduser('~/images/BSDRP.qcow2'), img_dest)
+	copyfile(os.path.expanduser('~/images/BSDRP_linked.qcow2'), img_dest)
 
 	# Use sample XML
 
@@ -76,6 +76,13 @@ for j in range(dom_number, dom_number + domains_input):
 
 	source = root.find('./devices/disk/source')
 	source.set('file', img_dest)
+
+	# Set MAC address in new XML file
+
+	mac = root.find('./devices/interface/mac')
+	dom_mac = '52:54:00:ce:4d:0' + str(j)
+	print()
+	mac.set('address', dom_mac)
 
 	# Create XML for new domain
 
