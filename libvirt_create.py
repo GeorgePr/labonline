@@ -131,5 +131,3 @@ def create_domains(domains_input: str):
 	# Close connection
 
 	conn.close()
-
-create_domains("1")
