@@ -80,8 +80,8 @@ for j in range(dom_number, dom_number + domains_input):
 	# Set MAC address in new XML file
 
 	mac = root.find('./devices/interface/mac')
-	dom_mac = '52:54:00:ce:4d:0' + str(j)
-	print()
+	k = "{:02x}".format(j)
+	dom_mac = '52:54:00:ce:4d:' + k
 	mac.set('address', dom_mac)
 
 	# Create XML for new domain

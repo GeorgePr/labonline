@@ -10,7 +10,7 @@ from shutil import copyfile
 # This file contains a function which creates the
 # number of domains specified by the argument.
 
-def create_domains(domains_input):
+def create_domains(domains_input: str):
 
 	# Initialize connection
 
@@ -87,8 +87,8 @@ def create_domains(domains_input):
 		# Set MAC address in new XML file
 
 		mac = root.find('./devices/interface/mac')
-		dom_mac = '52:54:00:ce:4d:0' + str(j)
-		print()
+		k = "{:02x}".format(j)
+		dom_mac = '52:54:00:ce:4d:' + k
 		mac.set('address', dom_mac)
 
 		# Create XML for new domain
@@ -131,4 +131,5 @@ def create_domains(domains_input):
 	# Close connection
 
 	conn.close()
-	sys.exit(0)
+
+create_domains("1")
