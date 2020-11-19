@@ -60,7 +60,7 @@ for j in range(dom_number, dom_number + domains_input):
 
 	# Use sample XML
 
-	xml_file = 'sample_domain.xml'
+	xml_file = 'domains_xml/sample_domain.xml'
 
 	# Get tree root in XML file
 
@@ -77,12 +77,36 @@ for j in range(dom_number, dom_number + domains_input):
 	source = root.find('./devices/disk/source')
 	source.set('file', img_dest)
 
-	# Set MAC address in new XML file
-
-	mac = root.find('./devices/interface/mac')
+	# Set last octet of MAC address
+	
 	k = "{:02x}".format(j)
-	dom_mac = '52:54:00:ce:4d:' + k
-	mac.set('address', dom_mac)
+
+	# Create new NIC in XML if applicable
+	
+	for i in range(int(net_list[j-1])):
+		devices = root.find('.devices')
+
+		interface = ET.Element('interface')
+		interface.set('type', 'network')
+		mac = ET.SubElement(interface, 'mac')
+		mac.set('address', '52:54:00:c' + str(i+1) + ':4d:' + k)
+		source = ET.SubElement(interface, 'source')
+		source.set('network', 'network' + str(i+1))
+		source.set('bridge', 'virbr' + str(i))
+		target = ET.SubElement(interface, 'target')
+		target.set('dev', 'vnet' + str(i+1))
+		model = ET.SubElement(interface, 'model')
+		model.set('type', 'e1000')
+		alias = ET.SubElement(interface, 'alias')
+		alias.set('name', 'net' + str(i))
+		address = ET.SubElement(interface, 'address')
+		address.set('type', 'pci')
+		address.set('domain', '0x0000')
+		address.set('bus', '0x00')
+		address.set('slot', '0x0' + str(i+2))
+		address.set('function', '0x0')
+		
+		devices.append(interface)
 
 	# Create XML for new domain
 
@@ -140,13 +164,13 @@ if domains_input == 'd':
 		dom = conn.lookupByName('R' + dom_number_selected)
 		dom.destroy()
 		dom.undefine()
+		xml_dest = 'domains_xml/R' + dom_number_selected +'.xml'
+		os.remove(xml_dest)
+		img_dest = '~/images/R' + dom_number_selected + '.qcow2'
+		img_dest = os.path.expanduser(img_dest)
+		os.remove(img_dest)
 	except:
-		pass
-	xml_dest = 'domains_xml/R' + dom_number_selected +'.xml'
-	os.remove(xml_dest)
-	img_dest = '~/images/R' + dom_number_selected + '.qcow2'
-	img_dest = os.path.expanduser(img_dest)
-	os.remove(img_dest)
+		print('Domain not found.')
 	
 	with open('domains_xml/domains.txt', 'r') as fin:
 		lines = fin.readlines()

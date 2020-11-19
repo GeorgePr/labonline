@@ -10,7 +10,7 @@ from shutil import copyfile
 # This file contains a function which creates the
 # number of domains specified by the argument.
 
-def create_domains(domains_input: str):
+def create_domains(domains_input: str, net_list: list):
 
 	# Initialize connection
 
@@ -42,7 +42,7 @@ def create_domains(domains_input: str):
 		print('You entered ' + domains_input + ' which is not a number. Exiting...')
 		sys.exit(1)
 
-	if domains_input == "1":
+	if domains_input == '1':
 		print(domains_input + ' domain will be created')
 	else:
 		print(domains_input + ' domains will be created')
@@ -67,7 +67,7 @@ def create_domains(domains_input: str):
 
 		# Use sample XML
 
-		xml_file = 'sample_domain.xml'
+		xml_file = 'domains_xml/sample_domain.xml'
 
 		# Get tree root in XML file
 
@@ -84,12 +84,36 @@ def create_domains(domains_input: str):
 		source = root.find('./devices/disk/source')
 		source.set('file', img_dest)
 
-		# Set MAC address in new XML file
+		# Set last octet of MAC address
 
-		mac = root.find('./devices/interface/mac')
 		k = "{:02x}".format(j)
-		dom_mac = '52:54:00:ce:4d:' + k
-		mac.set('address', dom_mac)
+
+		# Create new NIC in XML if applicable
+		
+		for i in range(int(net_list[j-1])):
+			devices = root.find('.devices')
+
+			interface = ET.Element('interface')
+			interface.set('type', 'network')
+			mac = ET.SubElement(interface, 'mac')
+			mac.set('address', '52:54:00:c' + str(i+1) + ':4d:' + k)
+			source = ET.SubElement(interface, 'source')
+			source.set('network', 'network' + str(i+1))
+			source.set('bridge', 'virbr' + str(i))
+			target = ET.SubElement(interface, 'target')
+			target.set('dev', 'vnet' + str(i+1))
+			model = ET.SubElement(interface, 'model')
+			model.set('type', 'e1000')
+			alias = ET.SubElement(interface, 'alias')
+			alias.set('name', 'net' + str(i))
+			address = ET.SubElement(interface, 'address')
+			address.set('type', 'pci')
+			address.set('domain', '0x0000')
+			address.set('bus', '0x00')
+			address.set('slot', '0x0' + str(i+2))
+			address.set('function', '0x0')
+			
+			devices.append(interface)
 
 		# Create XML for new domain
 

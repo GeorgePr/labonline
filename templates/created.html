@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block head %}
+<title>Created | LabOnLine</title>
+{% endblock %}
+
+
+{% block body %}
+
+
+<p>{{number}} domains have been created</p>
+
+<table id=myTable>
+    {% for p in range(number|int): %}
+    <tr>
+        <td><h4>R{{p+1}}</h4></td>
+    </tr>
+    <tr>
+        <td>
+            <p1>Number of interfaces: {{net_list[5*p+2]}}</p1>
+        </td>
+    </tr>
+    {% endfor %}
+
+</table>
+
+
+{% endblock %}

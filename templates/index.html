@@ -1,17 +1,32 @@
 {% extends 'base.html' %}
 
 {% block head %}
-
+<title>Home | LabOnLine</title>
 {% endblock %}
 
 
 {% block body %}
 
-<form method="POST" action="{{ url_for('nextpage') }}">
+
+<form method="POST">
    <p>Select number of domains to create:</p>
-   <input name="nm" type=number min=0>
+   <input name="nm" id="nm" type=number min=0>
+   <button type="button" onclick="nm">Load</button><br />
+   <table id="net">
+   </table>
+
    <p><input type="submit" value="Submit"></p>
 </form>
+
+<script>
+   $("button").on("click", function(){
+      param = $("#nm").val();
+      for (var i=0; i < param; i++) {
+         $("table#net").append("<tr><td><h4>R" + (i+1) + "</h4></td></tr>");
+         $("table#net").append("<tr><td><p1>Number of interfaces:<input name=" + "net" + (i+1) + " type=number value=1 min=0 max=4 /></td></tr><br />");
+      }
+   });
+</script>
 
 
 {% endblock %}

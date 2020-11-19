@@ -10,20 +10,19 @@ def index():
         net_list = []
         for j in range(1, int(num)+1):
             k = request.form['net' + str(j)]
-            print('net' + str(j))
             net_list.append(k)
         print(net_list)
         try:
-            create_domains(num)
+            create_domains(num, net_list)
         except:
             return render_template('index.html')
-        return redirect(url_for('created', number=num))
+        return redirect(url_for('created', number=num, net_list=net_list))
     else:
         return render_template('index.html')
 
-@app.route('/created/<number>', methods=['POST', 'GET'])
-def created(number):
-    return render_template('created.html',number = number)
+@app.route('/created/<number>/<net_list>', methods=['POST', 'GET'])
+def created(number, net_list):
+    return render_template('created.html',number = number, net_list=net_list)
 
 
 if __name__ == '__main__':
