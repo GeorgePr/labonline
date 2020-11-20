@@ -15,7 +15,7 @@ def index():
         try:
             create_domains(num, net_list)
         except:
-            return render_template('index.html')
+            return redirect(url_for('index'))
         return redirect(url_for('created', number=num, net_list=net_list))
     else:
         return render_template('index.html')
@@ -23,7 +23,7 @@ def index():
 @app.route('/created/<number>/<net_list>', methods=['POST', 'GET'])
 def created(number, net_list):
     return render_template('created.html',number = number, net_list=net_list)
-
+    
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='0.0.0.0')

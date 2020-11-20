@@ -90,7 +90,7 @@ def create_domains(domains_input: str, net_list: list):
 
 		# Create new NIC in XML if applicable
 		
-		for i in range(int(net_list[j-1])):
+		for i in range(int(net_list[j-dom_number])):
 			devices = root.find('.devices')
 
 			interface = ET.Element('interface')
