@@ -4,7 +4,6 @@ import subprocess
 import xml.etree.ElementTree as ET
 import re
 import os
-
 from shutil import copyfile
 
 
@@ -19,16 +18,12 @@ except libvirt.libvirtError:
 # Find and print existing domains
 
 dom_number = 0
-
 domain_file = open('domains_xml/domains.txt', 'r')
-
 print('Defined domains:')
 lines = domain_file.read().splitlines()
 for dom_number in lines:
 	print('R' + dom_number)
-
 domain_file.close()
-
 dom_number = int(dom_number)
 dom_number = dom_number + 1
 
@@ -111,7 +106,6 @@ for j in range(dom_number, dom_number + domains_input):
 	# Create XML for new domain
 
 	xml_dest = 'domains_xml/' + dom_name + '.xml'
-
 	tree.write(xml_dest)
 	xml_open = open(xml_dest)
 	xmlconfig = xml_open.read()
@@ -128,21 +122,16 @@ for j in range(dom_number, dom_number + domains_input):
 	# Append domains.txt and add new domain index
 
 	domain_file = open('domains_xml/domains.txt', 'a')
-
 	domain_file.write(str(j) + '\n')
-
 	domain_file.close()
 
 # Find and print existing domains (again)
 
 domain_file = open('domains_xml/domains.txt', 'r')
-
 print('Defined domains:')
-
 lines = domain_file.read().splitlines()
 for i in lines:
     print('R' + i)
-
 domain_file.close()
 
 # Domain management interface
