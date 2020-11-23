@@ -10,7 +10,7 @@
 
 <p>{{number}} domains have been created</p>
 
-<table id=myTable>
+<table id="domains_created">
     {% for p in range(number|int): %}
     <tr>
         <td><h4>R{{p+1}}</h4></td>
@@ -18,6 +18,9 @@
     <tr>
         <td>
             <p1>Number of interfaces: {{net_list[5*p+2]}}</p1>
+            <form target="_blank" action="https://10.0.1.{{p+1}}:4200/">
+                <input type="submit" id="console" value="Console"></input>
+            </form>
         </td>
     </tr>
     {% endfor %}
