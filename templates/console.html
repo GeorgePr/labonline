@@ -1,0 +1,67 @@
+{% extends 'base.html' %}
+
+{% block head %}
+
+<title>Console | LabOnLine</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/xterm/css/xterm.css')}}" />
+<script src="{{ url_for('static', filename='node_modules/xterm/lib/xterm.js')}}"></script>
+
+{% endblock %}
+
+
+{% block body %}
+<p>{{domain}}</p>
+<div id="terminal">
+</div>
+
+<script>
+var term = new Terminal();
+var agent = 'https://agent.electricimp.com/3XR6GI0CvUGW';
+var lastbyte = 0;
+term.open(document.getElementById('terminal'));
+term.setOption('cursorBlink', true);
+term.focus();
+
+function poll() {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4) {
+            if (this.status == 200) {
+                // First line is the byte offset in ascii
+                var n = this.responseText.indexOf('\n');
+                lastbyte = this.responseText.slice(0, n);
+
+                // Write the data to the terminal
+                term.write(this.responseText.slice(n+1));
+            }
+            
+            // Fetch again (even if there was an error) - we long poll
+            // This prevents session death, though is obviously fairly
+            // obnoxious to ignore all errors.
+            setTimeout(poll, 100);
+        }
+    };
+    xhttp.open('GET', agent+'/rxstream', true);
+    xhttp.setRequestHeader('Range', 'bytes='+lastbyte+'-');
+    xhttp.timeout = 70000; // 70s for request life; agent should close after 60s
+    xhttp.send();
+}
+poll();
+
+// Keypress handler: no attempt at being clever here
+term.on('key', (key, ev) => {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open('POST', agent+'/txstream', true);
+    xhttp.send(key);
+});
+
+// Paste handler: hope it's not too big!
+term.on('paste', (paste, ev) => {
+    var xhttp = new XMLHttpRequest();
+    xhttp.open('POST', agent+'/txstream', true);
+    xhttp.send(paste);
+});
+</script>
+
+
+{% endblock %}

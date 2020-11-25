@@ -14,7 +14,7 @@ or other application using the libvirt API.
   </metadata>
   <memory unit='KiB'>524288</memory>
   <currentMemory unit='KiB'>524288</currentMemory>
-  <vcpu placement='static'>2</vcpu>
+  <vcpu placement='static'>1</vcpu>
   <os>
     <type arch='x86_64' machine='pc-i440fx-groovy'>hvm</type>
     <boot dev='hd'/>

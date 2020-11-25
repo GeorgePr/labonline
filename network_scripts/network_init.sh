@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for file in net_xml/*; do
+for file in ../net_xml/*; do
     virsh net-define $file
 done
 
