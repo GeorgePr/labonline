@@ -15,23 +15,24 @@
     <p>{{number}} domains have been created</p>
 {% endif %}
 
-<table id="domains_created">
-    {% for p in range(file_list|length): %}
+<table id="active_table">
+    {% for p in range(session['active_domains']|length): %}
     <tr>
         <td><h4>R{{p+1}}</h4></td>
     </tr>
     <tr>
         <td>
-            <p1>Number of interfaces: {{ active_net_list[p] }}</p1>
-            <form target="_blank" method="POST">
+             <p1>Number of interfaces: {{ active_net_list[p] }}</p1>
+             {% set dom = 'r' + (p+1)|string %}
+             <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
                 <input type="submit" id="console" value="Console"></input>
                 <input type="hidden" name="hid" value="{{p+1}}" />
-            </form>
+             </form>
         </td>
     </tr>
     {% endfor %}
+ </table>
 
-</table>
-
+<br /><a href="{{ url_for('domains_cleanup') }}">Remove</a> all domains.
 
 {% endblock %}

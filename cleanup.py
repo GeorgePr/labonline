@@ -7,48 +7,49 @@ import libvirt
 
 # Initialize connection
 
-try:
-	conn = libvirt.open("qemu:///system")
-except libvirt.libvirtError:
-	print('Failed to connect to the hypervisor')
-	sys.exit(1)
 
-buf = None
+def cleanup():
+	try:
+		conn = libvirt.open("qemu:///system")
+	except libvirt.libvirtError:
+		print('Failed to connect to the hypervisor')
+		sys.exit(1)
 
-# Open domains.txt file and remove all domains
+	buf = None
 
-domain_file = open('domains_xml/domains.txt', 'r')
+	# Open domains.txt file and remove all domains
 
-lines = domain_file.read().splitlines()
+	domain_file = open('domains_xml/domains.txt', 'r')
 
-if lines != []:
-	for dom_number in lines:
-		buf = print('Removing R' + str(dom_number) + '...')
-		try:
-			dom = conn.lookupByName('R' + str(dom_number))
+	lines = domain_file.read().splitlines()
+
+	if lines != []:
+		for dom_number in lines:
+			buf = print('Removing R' + str(dom_number) + '...')
 			try:
-				dom.destroy()
+				dom = conn.lookupByName('R' + str(dom_number))
+				try:
+					dom.destroy()
+				except:
+					pass
+				dom.undefine()
 			except:
 				pass
-			dom.undefine()
-		except:
-			pass
-		xml_dest = 'domains_xml/R' + str(dom_number) +'.xml'
-		os.remove(xml_dest)
-		img_dest = '~/images/R' + str(dom_number) + '.qcow2'
-		img_dest = os.path.expanduser(img_dest)
-		os.remove(img_dest)
-else:
-	print('No defined domains')
+			xml_dest = 'domains_xml/R' + str(dom_number) +'.xml'
+			os.remove(xml_dest)
+			img_dest = '~/images/R' + str(dom_number) + '.qcow2'
+			img_dest = os.path.expanduser(img_dest)
+			os.remove(img_dest)
+	else:
+		print('No defined domains')
 
-domain_file.close()
+	domain_file.close()
 
-# Remove contents of domains.txt
+	# Remove contents of domains.txt
 
-domain_file = open('domains_xml/domains.txt', 'w+')
-domain_file.close()
+	domain_file = open('domains_xml/domains.txt', 'w+')
+	domain_file.close()
 
-# Close connection
+	# Close connection
 
-conn.close()
-sys.exit(0)
+	conn.close()
