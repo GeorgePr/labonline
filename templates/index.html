@@ -15,6 +15,9 @@
    <tr>
        <td>
             <p1>Number of interfaces: {{ active_net_list[p] }}</p1>
+            {% for i in range(session['active_net_list']|length): %}
+               <br /><p1>{{ session['active_net_list_conf'][p][i] }}</p1>
+            {% endfor %}
             {% set dom = 'r' + (p+1)|string %}
             <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
                <input type="submit" id="console" value="Console"></input>
@@ -29,7 +32,7 @@
 <form method="POST">
    <p>Select number of domains to create
    {% if session['active_domains'] != [] %}
-      or <a href="{{ url_for('domains_cleanup') }}">remove</a> all domains.</p>
+      or <a href="{{ url_for('domains_cleanup') }}">remove</a> all domains</p>
    {% endif %}
 
    <p>Press Load to configure network interfaces:</p>
@@ -43,12 +46,12 @@
 <script>
    $("#load").click(function(){
       $("#load").attr("disabled", "disabled");
-      $("#net_conf").append("<button type=\"button\" id=\"load_interface\">Load interface selection</button><br><br>")
       param = $("#nm").val();
       for (var i=0; i<param; i++) {
-         $("#net_conf").append("<tr><td><h4>R" + (i+1) + "</h4></td></tr>");
-         $("#net_conf").append("<tr><td class=\"net" + (i+1) + "\">Number of interfaces:<input name=" + "\"net" + (i+1) + "\" id=" + "\"net" + (i+1) + "\" type=number value=1 min=0 max=4 /></td></tr><br />");
+         $("#net_conf").append("<tr><td><h4>R" + ({{ session['active_domains']|length }}+i+1) + "</h4></td></tr>");
+         $("#net_conf").append("<tr><td class=\"net" + (i+1) + "\">Number of interfaces: <input name=" + "\"net" + (i+1) + "\" id=" + "\"net" + (i+1) + "\" type=number value=1 min=1 max=4 /></td></tr><br />");
       }
+      $("#net_conf").append("<br /><button type=\"button\" id=\"load_interface\">Load interface selection</button><br><br>");
    });
    $(document).on("click", "#load_interface", function(){
       $("#load_interface").attr("disabled", "disabled");
@@ -56,9 +59,8 @@
       var net_arr = new Array();
       for (i=0; i<param; i++) {
          net_arr[i] = parseInt($("#net" + (i+1)).val());
-         console.log(net_arr[i]);
          for (j=0; j<net_arr[i]; j++) {
-               $("#net_conf tr:odd .net" + (i+1)).append("<br><p1>net" + (j+1) + ": </p1><select name=\"interface_type\" id=\"interface_type\"><option value=\"nat\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option></select>");
+               $("#net_conf tr:odd .net" + (i+1)).append("<br><p1>net" + (j+1) + ": </p1><select selected=\"nat\" name=\"interface_type\" id=\"interface_type\"><option value=\"nat\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option></select>");
          }
       }
    });
