@@ -72,7 +72,7 @@ def index():
         print('SESSION active_net_list_conf')
         print(session['active_net_list_conf'])
         try:
-            create_domains(num, net_list)
+            create_domains(num, net_list, net_list_conf)
         except:
             print('Domains have not been created')
             return redirect(url_for('index'))

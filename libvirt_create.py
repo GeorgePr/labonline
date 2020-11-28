@@ -9,7 +9,7 @@ from shutil import copyfile
 # This file contains a function which creates the
 # number of domains specified by the argument.
 
-def create_domains(domains_input: str, net_list: list):
+def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 
 	# Initialize connection
 
@@ -86,27 +86,70 @@ def create_domains(domains_input: str, net_list: list):
 		for i in range(int(net_list[j-dom_number])):
 			devices = root.find('.devices')
 
-			interface = ET.Element('interface')
-			interface.set('type', 'network')
-			mac = ET.SubElement(interface, 'mac')
-			mac.set('address', '52:54:00:c' + str(i+1) + ':4d:' + k)
-			source = ET.SubElement(interface, 'source')
-			source.set('network', 'network' + str(i+1))
-			source.set('bridge', 'virbr' + str(i))
-			target = ET.SubElement(interface, 'target')
-			target.set('dev', 'vnet' + str(i+1))
-			model = ET.SubElement(interface, 'model')
-			model.set('type', 'e1000')
-			alias = ET.SubElement(interface, 'alias')
-			alias.set('name', 'net' + str(i))
-			address = ET.SubElement(interface, 'address')
-			address.set('type', 'pci')
-			address.set('domain', '0x0000')
-			address.set('bus', '0x00')
-			address.set('slot', '0x0' + str(i+2))
-			address.set('function', '0x0')
-			
-			devices.append(interface)
+			if net_list_conf[j-dom_number][i] == 'nat':
+				interface = ET.Element('interface')
+				interface.set('type', 'network')
+				mac = ET.SubElement(interface, 'mac')
+				mac.set('address', '52:54:00:c' + str(i+1) + ':4d:' + k)
+				source = ET.SubElement(interface, 'source')
+				source.set('network', 'network' + str(i+1))
+				source.set('bridge', 'virbr' + str(i))
+				target = ET.SubElement(interface, 'target')
+				target.set('dev', 'vnet' + str(i))
+				model = ET.SubElement(interface, 'model')
+				model.set('type', 'e1000')
+				alias = ET.SubElement(interface, 'alias')
+				alias.set('name', 'net' + str(i))
+				address = ET.SubElement(interface, 'address')
+				address.set('type', 'pci')
+				address.set('domain', '0x0000')
+				address.set('bus', '0x00')
+				address.set('slot', '0x0' + str(i+2))
+				address.set('function', '0x0')
+				devices.append(interface)
+
+			elif net_list_conf[j-dom_number][i] == 'bridge':
+				interface = ET.Element('interface')
+				interface.set('type', 'bridge')
+				mac = ET.SubElement(interface, 'mac')
+				mac.set('address', '52:54:00:d' + str(i+1) + ':4d:' + k)
+				source = ET.SubElement(interface, 'source')
+				source.set('bridge', 'virbr' + str(i))
+				target = ET.SubElement(interface, 'target')
+				target.set('dev', 'vnet' + str(i+4))
+				model = ET.SubElement(interface, 'model')
+				model.set('type', 'e1000')
+				alias = ET.SubElement(interface, 'alias')
+				alias.set('name', 'net' + str(i))
+				address = ET.SubElement(interface, 'address')
+				address.set('type', 'pci')
+				address.set('domain', '0x0000')
+				address.set('bus', '0x00')
+				address.set('slot', '0x0' + str(i+2))
+				address.set('function', '0x0')
+				devices.append(interface)
+		
+			elif net_list_conf[j-dom_number][i] == 'hostonly':
+				interface = ET.Element('interface')
+				interface.set('type', 'bridge')
+				mac = ET.SubElement(interface, 'mac')
+				mac.set('address', '52:54:00:d' + str(i+1) + ':4d:' + k)
+				source = ET.SubElement(interface, 'source')
+				source.set('bridge', 'virbr' + str(i+4))
+				target = ET.SubElement(interface, 'target')
+				target.set('dev', 'vnet' + str(i))
+				model = ET.SubElement(interface, 'model')
+				model.set('type', 'e1000')
+				alias = ET.SubElement(interface, 'alias')
+				alias.set('name', 'net' + str(i))
+				address = ET.SubElement(interface, 'address')
+				address.set('type', 'pci')
+				address.set('domain', '0x0000')
+				address.set('bus', '0x00')
+				address.set('slot', '0x0' + str(i+2))
+				address.set('function', '0x0')
+				devices.append(interface)
+
 
 		# Create XML for new domain
 

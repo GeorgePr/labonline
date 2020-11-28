@@ -1,10 +1,3 @@
-<!--
-WARNING: THIS IS AN AUTO-GENERATED FILE. CHANGES TO IT ARE LIKELY TO BE
-OVERWRITTEN AND LOST. Changes to this xml configuration should be made using:
-  virsh net-edit network1
-or other application using the libvirt API.
--->
-
 <network>
   <name>network2</name>
   <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8ccd2</uuid>
