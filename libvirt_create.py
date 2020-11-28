@@ -14,7 +14,7 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 	# Initialize connection
 
 	try:
-		conn = libvirt.open("qemu:///system")
+		conn = libvirt.open('qemu:///system')
 	except libvirt.libvirtError:
 		print('Failed to connect to the hypervisor')
 		sys.exit(1)
@@ -79,7 +79,7 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 
 		# Set last octet of MAC address
 
-		k = "{:02x}".format(j)
+		k = '{:02x}'.format(j)
 
 		# Create new NIC in XML if applicable
 		
