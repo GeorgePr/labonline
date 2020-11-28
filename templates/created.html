@@ -23,7 +23,7 @@
     <tr>
         <td>
             <p1>Number of interfaces: {{ active_net_list[p] }}</p1>
-            {% for i in range(active_net_list|length): %}
+            {% for i in range((active_net_list[p])|int): %}
                 <br /><p1>{{ active_net_list_conf[p][i] }}</p1>
             {% endfor %}
             {% set dom = 'r' + (p+1)|string %}

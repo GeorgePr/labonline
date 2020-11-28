@@ -11,11 +11,12 @@ app.permanent_session_lifetime = timedelta(days = 1)
 def favicon():
     return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
 
-net_list = []
+
 active_domains = []
 active_net_list = []
 net_list_conf = []
-active_net_list_conf = [[] for i in range(len(net_list))]
+active_net_list_conf = []
+
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -48,6 +49,7 @@ def index():
             k = request.form['net' + str(j)]
             net_list.append(k)
         session['net_list'] = net_list
+        print('net_list')
         print(net_list)
         session['active_net_list'].extend(net_list)
 
@@ -64,8 +66,10 @@ def index():
                 index = index + 1
 
         session['net_list_conf'] = net_list_conf
+        print('SESSION net_list_conf')
         print(session['net_list_conf'])
         session['active_net_list_conf'].extend(net_list_conf)
+        print('SESSION active_net_list_conf')
         print(session['active_net_list_conf'])
         try:
             create_domains(num, net_list)
@@ -122,6 +126,7 @@ def domains_cleanup():
     session.clear()
     active_domains.clear()
     active_net_list.clear()
+    active_net_list_conf.clear()
     return redirect(url_for('index'))
 
 
