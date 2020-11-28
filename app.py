@@ -1,11 +1,13 @@
 from flask import Flask, send_from_directory, render_template, url_for, request, redirect, session
 from datetime import timedelta
 from libvirt_create import *
+from libvirt_domain import *
 from cleanup import *
 
 app = Flask(__name__)
-app.secret_key = "isaofj"
+app.secret_key = 'isaofj'
 app.permanent_session_lifetime = timedelta(days = 1)
+
 
 @app.route('/favicon.ico')
 def favicon():
@@ -117,6 +119,22 @@ def xterm(domain):
             return render_template('console.html', domain = domain)
         else:
             return render_template('404.html')
+
+
+@app.route('/domain_start', methods=['POST', 'GET'])
+def domain_start():
+    domain = request.args.get('domain')
+    print(domain)
+    start_domain(domain)
+    return redirect(url_for('index'))
+
+
+@app.route('/domain_shutdown', methods=['POST', 'GET'])
+def domain_shutdown():
+    domain = request.args.get('domain')
+    print(domain)
+    shutdown_domain(domain)
+    return redirect(url_for('index'))
 
 
 @app.route('/domains_cleanup', methods=['POST', 'GET'])

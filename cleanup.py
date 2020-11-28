@@ -30,10 +30,11 @@ def cleanup():
 				dom = conn.lookupByName('R' + str(dom_number))
 				try:
 					dom.destroy()
-				except:
+				except libvirt.libvirtError:
 					pass
 				dom.undefine()
-			except:
+			except libvirt.libvirtError:
+				print('Domain R' + str(dom_number) + ' does not exist')
 				pass
 			xml_dest = 'domains_xml/R' + str(dom_number) +'.xml'
 			os.remove(xml_dest)
