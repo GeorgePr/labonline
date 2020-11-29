@@ -32,11 +32,11 @@ def index():
         session['active_domains'] = active_domains
         session['active_net_list'] = active_net_list
         session['active_net_list_conf'] = active_net_list_conf
-    with open('domains_xml/domains.txt') as f:
-        for line in f.readlines():
-            line = line.split('\n')
-            if line != '\n' and line[0] not in session['active_domains']:
-                session['active_domains'].append(line[0])
+    #with open('domains_xml/domains.txt') as f:
+    #    for line in f.readlines():
+    #        line = line.split('\n')
+    #        if line != '\n' and line[0] not in session['active_domains']:
+    #            session['active_domains'].append(line[0])
     print('SESSION active_domains')
     print(session['active_domains'])
     print('active_net_list')
@@ -46,8 +46,6 @@ def index():
         print('INDEX POST SUBMIT')
         print('REQUEST FORM DATA')
         num = request.form['nm']
-        print(request.form)
-        print(request.data)
         session['num'] = num
         net_list = []
         for j in range(1, int(num)+1):
@@ -98,7 +96,6 @@ def index():
 @app.route('/created', methods=['POST', 'GET'])
 def created():
     session['current_page'] = request.endpoint
-    print(session['current_page'])
     print('CREATED GET')
     number = session['num']
     session['num'] = '0'
@@ -130,13 +127,43 @@ def xterm(domain):
 def domain_start():
     domain = request.args.get('domain')
     start_domain(domain)
-    return redirect(url_for('index'))
+    return redirect(url_for(session['current_page']))
 
 
 @app.route('/domain_shutdown', methods=['POST', 'GET'])
 def domain_shutdown():
     domain = request.args.get('domain')
     shutdown_domain(domain)
+    return redirect(url_for(session['current_page']))
+
+
+@app.route('/domain_remove', methods=['POST', 'GET'])
+def domain_remove():
+    domain = request.args.get('domain')
+    remove_domain(domain)
+    domain_number = domain.split('R', )
+    domain_number = str(domain_number[1])
+    with open('domains_xml/domains.txt', 'r') as fin:
+        lines = fin.readlines()
+    with open('domains_xml/domains.txt', 'w') as fout:
+        for line in lines:
+            if domain_number not in line:
+                fout.write(line)
+    
+    print('REMOVE IF')
+    domain_index = session['active_domains'].index(domain_number)
+    if domain_number in session['active_domains']:
+        del session['active_domains'][domain_index]
+        print(session['active_domains'])
+        del session['active_net_list'][domain_index]
+        del session['active_net_list_conf'][domain_index]
+
+    active_domains = session['active_domains']
+    print(session['active_domains'])
+    print(session['active_net_list'])
+    active_net_list = session['active_net_list']
+    print(session['active_net_list_conf'])
+    active_net_list_conf = session['active_net_list_conf']
     return redirect(url_for(session['current_page']))
 
 
@@ -149,6 +176,7 @@ def domains_cleanup():
     active_net_list.clear()
     active_net_list_conf.clear()
     return redirect(url_for('index'))
+
 
 
 if __name__ == '__main__':
