@@ -1,4 +1,51 @@
 body {
-    margin: 10px;
-    font-family: sans-serif;
+    margin-top: 0px;
+    margin-left: 15px;
+    font-family: 'IBM Plex Sans', sans-serif;
+}
+
+p1 {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+form {
+    display: inline-block;
+}
+
+h2 {
+    margin-top: 5px;
+    margin-bottom: 0px;
+}
+
+h2 a {
+    color: #080808;
+    text-decoration: none;
+    font-weight: 550;
+}
+
+h2 a:hover {
+    color: #585858;
+}
+
+#active_table h4, #net_conf h4 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    margin-top: 20px;
+
+}
+
+#active_table tr, #net_conf tr {
+    border-bottom: 1px;
+
+}
+
+#active_table tr:nth-child(odd), #net_conf tr:nth-child(odd) {
+    border: solid-thin;
+}
+
+#active_table {
+    border: 10px solid-black;
+    border-collapse: collapse;
 }

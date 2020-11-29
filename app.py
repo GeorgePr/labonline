@@ -23,6 +23,7 @@ active_net_list_conf = []
 @app.route('/', methods=['POST', 'GET'])
 def index():
     session.permanent = True
+    session['current_page'] = request.endpoint
     active_net_list = []
     active_net_list_conf = []
     print('INDEX')
@@ -45,6 +46,8 @@ def index():
         print('INDEX POST SUBMIT')
         print('REQUEST FORM DATA')
         num = request.form['nm']
+        print(request.form)
+        print(request.data)
         session['num'] = num
         net_list = []
         for j in range(1, int(num)+1):
@@ -94,6 +97,8 @@ def index():
 
 @app.route('/created', methods=['POST', 'GET'])
 def created():
+    session['current_page'] = request.endpoint
+    print(session['current_page'])
     print('CREATED GET')
     number = session['num']
     session['num'] = '0'
@@ -124,7 +129,6 @@ def xterm(domain):
 @app.route('/domain_start', methods=['POST', 'GET'])
 def domain_start():
     domain = request.args.get('domain')
-    print(domain)
     start_domain(domain)
     return redirect(url_for('index'))
 
@@ -132,9 +136,8 @@ def domain_start():
 @app.route('/domain_shutdown', methods=['POST', 'GET'])
 def domain_shutdown():
     domain = request.args.get('domain')
-    print(domain)
     shutdown_domain(domain)
-    return redirect(url_for('index'))
+    return redirect(url_for(session['current_page']))
 
 
 @app.route('/domains_cleanup', methods=['POST', 'GET'])

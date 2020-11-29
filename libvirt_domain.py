@@ -10,8 +10,9 @@ from shutil import copyfile
 # Functions: start, shutdown, remove
 
 def start_domain(domain: str):
-    print(domain)
+
     # Initialize connection
+    
     try:
         conn = libvirt.open('qemu:///system')
     except libvirt.libvirtError:
@@ -32,6 +33,7 @@ def start_domain(domain: str):
     if domain_state == libvirt.VIR_DOMAIN_SHUTOFF:
         try:
             dom.create()
+            print('Domain ' + domain + ' has booted')
         except libvirt.libvirtError:
             print('Could not start domain')
             sys.exit(1)
@@ -42,7 +44,7 @@ def start_domain(domain: str):
     conn.close()
 
 def shutdown_domain(domain: str):
-    print(domain)
+
     # Initialize connection
     try:
         conn = libvirt.open('qemu:///system')
@@ -58,12 +60,13 @@ def shutdown_domain(domain: str):
         print('Domain not found')
         sys.exit(1)
     
-    # Check if domain is shutdown
+    # Check if domain is running
 
     domain_state = dom.info()[0]
     if domain_state == libvirt.VIR_DOMAIN_RUNNING:
         try:
             dom.destroy()
+            print('Domain ' + domain + ' has been shutdown')
         except libvirt.libvirtError:
             print('Could not shutdown domain')
             sys.exit(1)

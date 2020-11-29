@@ -31,6 +31,7 @@ def cleanup():
 				try:
 					dom.destroy()
 				except libvirt.libvirtError:
+					print('Domain R' + str(dom_number) + ' is not running')
 					pass
 				dom.undefine()
 			except libvirt.libvirtError:
