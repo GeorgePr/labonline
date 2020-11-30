@@ -6,3 +6,4 @@ __pycache__/
 .vscode/
 static/node_modules/
 package*.json
+domains_xml/R*.xml

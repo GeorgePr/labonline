@@ -2,7 +2,6 @@
 # consolecallback - provide a persistent console that survives guest reboots
 
 import os
-import logging
 import libvirt
 import tty
 import termios
@@ -19,22 +18,16 @@ def error_handler(unused, error) -> None:
     # The console stream errors on VM shutdown; we don't care
     if error[0] == libvirt.VIR_ERR_RPC and error[1] == libvirt.VIR_FROM_STREAMS:
         return
-    logging.warn(error)
-
 
 class Console(object):
-    def __init__(self, uri: str, uuid: str) -> None:
-        self.uri = uri
-        self.uuid = uuid
-        self.connection = libvirt.open(uri)
-        self.domain = self.connection.lookupByUUIDString(uuid)
+    def __init__(self, domain_name: str) -> None:
+        self.connection = libvirt.open('qemu:///system')
+        self.domain = self.connection.lookupByName(domain_name)
         self.state = self.domain.state(0)
         self.connection.domainEventRegister(lifecycle_callback, self)
         self.stream = None  # type: Optional[libvirt.virStream]
         self.run_console = True
         self.stdin_watch = -1
-        logging.info("%s initial state %d, reason %d",
-                     self.uuid, self.state[0], self.state[1])
 
 
 def check_console(console: Console) -> bool:
@@ -47,13 +40,12 @@ def check_console(console: Console) -> bool:
         if console.stream:
             console.stream.eventRemoveCallback()
             console.stream = None
-
     return console.run_console
 
 
 def stdin_callback(watch: int, fd: int, events: int, console: Console) -> None:
     readbuf = os.read(fd, 1024)
-    if readbuf.startswith(b""):
+    if readbuf.startswith(b''):
         console.run_console = False
         return
     if console.stream:
@@ -71,20 +63,13 @@ def stream_callback(stream: libvirt.virStream, events: int, console: Console) ->
 
 def lifecycle_callback(connection: libvirt.virConnect, domain: libvirt.virDomain, event: int, detail: int, console: Console) -> None:
     console.state = console.domain.state(0)
-    logging.info("%s transitioned to state %d, reason %d",
-                 console.uuid, console.state[0], console.state[1])
 
 
-# main
-parser = ArgumentParser(epilog="Example: %(prog)s 'qemu:///system' '32ad945f-7e78-c33a-e96d-39f25e025d81'")
-parser.add_argument("uri")
-parser.add_argument("uuid")
+parser = ArgumentParser()
+parser.add_argument('domain_name')
 args = parser.parse_args()
 
-print("Escape character is ^]")
-logging.basicConfig(filename='msg.log', level=logging.DEBUG)
-logging.info("URI: %s", args.uri)
-logging.info("UUID: %s", args.uuid)
+print('Escape character is ^]')
 
 libvirt.virEventRegisterDefaultImpl()
 libvirt.registerErrorHandler(error_handler, None)
@@ -93,7 +78,7 @@ atexit.register(reset_term)
 attrs = termios.tcgetattr(0)
 tty.setraw(0)
 
-console = Console(args.uri, args.uuid)
+console = Console(args.domain_name)
 console.stdin_watch = libvirt.virEventAddHandle(0, libvirt.VIR_EVENT_HANDLE_READABLE, stdin_callback, console)
 
 while check_console(console):

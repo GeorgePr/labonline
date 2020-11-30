@@ -28,24 +28,19 @@ h2 a:hover {
     color: #585858;
 }
 
-#active_table h4, #net_conf h4 {
+h4 {
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 10px;
     margin-top: 20px;
-
 }
 
-#active_table tr, #net_conf tr {
-    border-bottom: 1px;
-
+table tr:nth-child(even) {
+    border-bottom: 1px solid black;
+    margin-bottom: 10px;
+    padding-bottom: 10px;
 }
 
-#active_table tr:nth-child(odd), #net_conf tr:nth-child(odd) {
-    border: solid-thin;
-}
-
-#active_table {
-    border: 10px solid-black;
+#active_table, #net_conf {
     border-collapse: collapse;
 }

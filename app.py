@@ -32,11 +32,6 @@ def index():
         session['active_domains'] = active_domains
         session['active_net_list'] = active_net_list
         session['active_net_list_conf'] = active_net_list_conf
-    #with open('domains_xml/domains.txt') as f:
-    #    for line in f.readlines():
-    #        line = line.split('\n')
-    #        if line != '\n' and line[0] not in session['active_domains']:
-    #            session['active_domains'].append(line[0])
     print('SESSION active_domains')
     print(session['active_domains'])
     print('active_net_list')
@@ -121,6 +116,7 @@ def xterm(domain):
             return render_template('console.html', domain = domain)
         else:
             return render_template('404.html')
+            
 
 
 @app.route('/domain_start', methods=['POST', 'GET'])
@@ -176,7 +172,6 @@ def domains_cleanup():
     active_net_list.clear()
     active_net_list_conf.clear()
     return redirect(url_for('index'))
-
 
 
 if __name__ == '__main__':
