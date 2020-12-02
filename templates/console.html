@@ -2,21 +2,25 @@
 
 {% block head %}
 
-<title>Console | LabOnLine</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='node_modules/xterm/css/xterm.css')}}" />
+<title>{{ domain }} Console | LabOnLine</title>
+<link rel='stylesheet' href="{{ url_for('static', filename='node_modules/xterm/css/xterm.css')}}" />
 <script src="{{ url_for('static', filename='node_modules/xterm/lib/xterm.js')}}"></script>
 
 {% endblock %}
 
 
 {% block body %}
+
 <p>{{domain}}</p>
-<div id="terminal">
+<div id='terminal'>
 </div>
 
 <script>
+/*
+import { Terminal } from 'xterm';
+
 var term = new Terminal();
-var agent = 'https://agent.electricimp.com/3XR6GI0CvUGW';
+var agent = '{{ domain }}';
 var lastbyte = 0;
 term.open(document.getElementById('terminal'));
 term.setOption('cursorBlink', true);
@@ -38,7 +42,7 @@ function poll() {
             // Fetch again (even if there was an error) - we long poll
             // This prevents session death, though is obviously fairly
             // obnoxious to ignore all errors.
-            setTimeout(poll, 100);
+            setTimeout(poll, 1000);
         }
     };
     xhttp.open('GET', agent+'/rxstream', true);
@@ -61,7 +65,10 @@ term.on('paste', (paste, ev) => {
     xhttp.open('POST', agent+'/txstream', true);
     xhttp.send(paste);
 });
+*/
 </script>
 
 
+
 {% endblock %}
+

@@ -6,7 +6,6 @@ import libvirt
 import tty
 import termios
 import atexit
-from argparse import ArgumentParser
 from typing import Optional  # noqa F401
 
 
@@ -18,6 +17,7 @@ def error_handler(unused, error) -> None:
     # The console stream errors on VM shutdown; we don't care
     if error[0] == libvirt.VIR_ERR_RPC and error[1] == libvirt.VIR_FROM_STREAMS:
         return
+
 
 class Console(object):
     def __init__(self, domain_name: str) -> None:
@@ -64,11 +64,6 @@ def stream_callback(stream: libvirt.virStream, events: int, console: Console) ->
 def lifecycle_callback(connection: libvirt.virConnect, domain: libvirt.virDomain, event: int, detail: int, console: Console) -> None:
     console.state = console.domain.state(0)
 
-
-parser = ArgumentParser()
-parser.add_argument('domain_name')
-args = parser.parse_args()
-
 print('Escape character is ^]')
 
 libvirt.virEventRegisterDefaultImpl()
@@ -77,8 +72,8 @@ libvirt.registerErrorHandler(error_handler, None)
 atexit.register(reset_term)
 attrs = termios.tcgetattr(0)
 tty.setraw(0)
-
-console = Console(args.domain_name)
+domain_name = 'R1'
+console = Console(domain_name)
 console.stdin_watch = libvirt.virEventAddHandle(0, libvirt.VIR_EVENT_HANDLE_READABLE, stdin_callback, console)
 
 while check_console(console):

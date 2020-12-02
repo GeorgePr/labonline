@@ -5,8 +5,9 @@ filelock==3.0.12
 Flask==1.1.2
 itsdangerous==1.1.0
 Jinja2==2.11.2
-libvirt-python==6.9.0
+libvirt-python==6.10.0
 MarkupSafe==1.1.1
+python-dotenv==0.15.0
 six==1.15.0
-virtualenv==20.1.0
+virtualenv==20.2.1
 Werkzeug==1.0.1

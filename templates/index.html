@@ -64,7 +64,7 @@
       $("#number").removeAttr("hidden");
       $("#number").append(param);
       for (var i=0; i<param; i++) {
-         $("#net_conf").append("<tr><td><h4>R" + ({{ session['active_domains']|length }}+i+1) + "</h4></td></tr>");
+         $("#net_conf").append("<tr><td><h4>R" + ({{ session['active_domains']|length }} + i + 1) + "</h4></td></tr>");
          $("#net_conf").append("<tr><td class=\"net" + (i+1) + "\"><p1>Number of interfaces:</p1> <p1 id=\"number_int_" + (i+1) + "\" hidden=\"hidden\"></p1><input name=" + "\"net" + (i+1) + "\" id=" + "\"net" + (i+1) + "\" type=number value=1 min=1 max=4 /></td></tr><br />");
       }
       $("#net_conf").append("<br /><button type=\"button\" id=\"load_interface\">Load interface selection</button>");
@@ -79,7 +79,7 @@
          $("#number_int_" + (i+1)).append(net_arr[i]);
          $("#number_int_" + (i+1)).removeAttr("hidden");
          for (j=0; j<net_arr[i]; j++) {
-               $("#net_conf tr:odd .net" + (i+1)).append("<br><p1>net" + (j+1) + ": </p1><select selected=\"nat\" name=\"interface_type\" id=\"interface_type\"><option value=\"nat\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option></select>");
+            $("#net_conf tr:odd .net" + (i+1)).append("<br><p1>net" + (j+1) + ": </p1><select selected=\"nat\" name=\"interface_type\" id=\"interface_type\"><option value=\"nat\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option></select>");
          }
       }
    });
