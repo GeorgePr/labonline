@@ -5,70 +5,99 @@
 <title>{{ domain }} Console | LabOnLine</title>
 <link rel='stylesheet' href="{{ url_for('static', filename='node_modules/xterm/css/xterm.css')}}" />
 <script src="{{ url_for('static', filename='node_modules/xterm/lib/xterm.js')}}"></script>
+<meta charset="utf-8">
+<link rel="stylesheet" href="https://unpkg.com/xterm@3.6.0/dist/xterm.css" />
 
 {% endblock %}
 
 
 {% block body %}
 
-<p>{{domain}}</p>
-<div id='terminal'>
-</div>
+<span style="font-size: 1.4em;">{{ domain }}</span>&nbsp;&nbsp;&nbsp;
+<span style="font-size: small;">status: <span style="font-size: small;" id="status">connecting...</span></span>
+
+<div style="width: 100%; height: calc(100% - 50px);" id="terminal"></div>
+
+<!-- xterm -->
+<script src="https://unpkg.com/xterm@3.6.0/dist/xterm.js"></script>
+<script src="https://unpkg.com/xterm@3.6.0/dist/addons/fit/fit.js"></script>
+<script src="https://unpkg.com/xterm@3.6.0/dist/addons/webLinks/webLinks.js"></script>
+<script src="https://unpkg.com/xterm@3.6.0/dist/addons/fullscreen/fullscreen.js"></script>
+<script src="https://unpkg.com/xterm@3.6.0/dist/addons/search/search.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.1.1/socket.io.js"></script>
+
 
 <script>
-/*
-import { Terminal } from 'xterm';
+  Terminal.applyAddon(fullscreen)
+  Terminal.applyAddon(fit)
+  Terminal.applyAddon(webLinks)
+  Terminal.applyAddon(search)
+  const term = new Terminal({
+        cursorBlink: true,
+        macOptionIsMeta: true,
+        scrollback: true,
+    });
+  term.open(document.getElementById('terminal'))
+  term.fit()
+  term.resize(15, 50)
 
-var term = new Terminal();
-var agent = '{{ domain }}';
-var lastbyte = 0;
-term.open(document.getElementById('terminal'));
-term.setOption('cursorBlink', true);
-term.focus();
+  var data = '{{ data }}'
 
-function poll() {
-    var xhttp = new XMLHttpRequest();
-    xhttp.onreadystatechange = function() {
-        if (this.readyState == 4) {
-            if (this.status == 200) {
-                // First line is the byte offset in ascii
-                var n = this.responseText.indexOf('\n');
-                lastbyte = this.responseText.slice(0, n);
+  /*
+  term.on('key', (key, ev) => {
+    socket.emit("pty-input", {"input": key})
+  });
+  */
 
-                // Write the data to the terminal
-                term.write(this.responseText.slice(n+1));
-            }
-            
-            // Fetch again (even if there was an error) - we long poll
-            // This prevents session death, though is obviously fairly
-            // obnoxious to ignore all errors.
-            setTimeout(poll, 1000);
-        }
-    };
-    xhttp.open('GET', agent+'/rxstream', true);
-    xhttp.setRequestHeader('Range', 'bytes='+lastbyte+'-');
-    xhttp.timeout = 70000; // 70s for request life; agent should close after 60s
-    xhttp.send();
-}
-poll();
+  term.on('key', (key, ev) => {
+    console.log(key.charCodeAt(0));
+      if (key.charCodeAt(0) == 13)
+      socket.emit("pty-input", {"input": key})
+      term.write(key);
+  });
 
-// Keypress handler: no attempt at being clever here
-term.on('key', (key, ev) => {
-    var xhttp = new XMLHttpRequest();
-    xhttp.open('POST', agent+'/txstream', true);
-    xhttp.send(key);
-});
 
-// Paste handler: hope it's not too big!
-term.on('paste', (paste, ev) => {
-    var xhttp = new XMLHttpRequest();
-    xhttp.open('POST', agent+'/txstream', true);
-    xhttp.send(paste);
-});
-*/
+  const socket = io.connect('/pty')
+  const status = document.getElementById("status")
+
+ 
+  console.log(data)
+
+  socket.on('pty-output', function(data){
+    term.write(data)
+  })
+
+
+  //term.write(data)
+  socket.on("connect", () => {
+    fitToscreen()
+    status.innerHTML = '<span style="background-color: lightgreen;">connected</span>'
+    }
+  )
+
+  socket.on("disconnect", () => {
+    status.innerHTML = '<span style="background-color: #ff8383;">disconnected</span>'
+  })
+
+  function fitToscreen(){
+    term.fit()
+    socket.emit("resize", {"cols": term.cols, "rows": term.rows})
+  }
+
+  function debounce(func, wait_ms) {
+    let timeout
+    return function(...args) {
+      const context = this
+      clearTimeout(timeout)
+      timeout = setTimeout(() => func.apply(context, args), wait_ms)
+    }
+  }
+
+  const wait_ms = 50
+  window.onresize = debounce(fitToscreen, wait_ms)
+
+
 </script>
 
 
-
 {% endblock %}
-

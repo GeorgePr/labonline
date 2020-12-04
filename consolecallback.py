@@ -8,6 +8,7 @@ import termios
 import atexit
 from typing import Optional  # noqa F401
 
+attrs = termios.tcgetattr(0)
 
 def reset_term() -> None:
     termios.tcsetattr(0, termios.TCSADRAIN, attrs)
@@ -64,17 +65,18 @@ def stream_callback(stream: libvirt.virStream, events: int, console: Console) ->
 def lifecycle_callback(connection: libvirt.virConnect, domain: libvirt.virDomain, event: int, detail: int, console: Console) -> None:
     console.state = console.domain.state(0)
 
-print('Escape character is ^]')
+def main():
+    print('Escape character is ^]')
 
-libvirt.virEventRegisterDefaultImpl()
-libvirt.registerErrorHandler(error_handler, None)
+    libvirt.virEventRegisterDefaultImpl()
+    libvirt.registerErrorHandler(error_handler, None)
 
-atexit.register(reset_term)
-attrs = termios.tcgetattr(0)
-tty.setraw(0)
-domain_name = 'R1'
-console = Console(domain_name)
-console.stdin_watch = libvirt.virEventAddHandle(0, libvirt.VIR_EVENT_HANDLE_READABLE, stdin_callback, console)
+    atexit.register(reset_term)
+    tty.setraw(0)
+    domain_name = 'R1'
+    console = Console(domain_name)
+    console.stdin_watch = libvirt.virEventAddHandle(0, libvirt.VIR_EVENT_HANDLE_READABLE, stdin_callback, console)
 
-while check_console(console):
-    libvirt.virEventRunDefaultImpl()
+    while check_console(console):
+        libvirt.virEventRunDefaultImpl()
+

@@ -3,10 +3,67 @@ from datetime import timedelta
 from libvirt_create import *
 from libvirt_domain import *
 from cleanup import *
+import subprocess
+from consolecallback import reset_term, error_handler, Console, check_console, stdin_callback, stream_callback, lifecycle_callback
 
 app = Flask(__name__)
 app.secret_key = 'isaofj'
 app.permanent_session_lifetime = timedelta(days = 1)
+
+name = 'R1'
+
+
+##########################################
+
+import argparse
+from flask_socketio import SocketIO
+import pty
+import os
+import select
+import termios
+import struct
+import fcntl
+import shlex
+
+import eventlet
+
+
+app.config['TESTING'] = True
+app.config['DEBUG'] = True
+app.config['SECRET_KEY'] = 'secret!'
+app.config['FLASK_ENV'] = 'development'
+app.config['child_pid'] = None
+app.config['fd'] = None
+app.config['cmd'] = '/bin/zsh'
+socketio = SocketIO(app, async_mode='threading')
+
+async_mode = None
+
+if async_mode is None:
+    try:
+        import eventlet
+        async_mode = 'eventlet'
+    except ImportError:
+        pass
+
+    if async_mode is None:
+        try:
+            from gevent import monkey
+            async_mode = 'gevent'
+        except ImportError:
+            pass
+
+    if async_mode is None:
+        async_mode = 'threading'
+
+    print('async_mode is ' + async_mode)
+
+
+import eventlet
+eventlet.monkey_patch(os=True, select=True, socket=True, thread=False, time=True)
+
+##########################################
+
 
 
 @app.route('/favicon.ico')
@@ -104,21 +161,6 @@ def created():
         active_net_list_conf = active_net_list_conf, active_domains = active_domains)
 
 
-@app.route('/xterm/<domain>', methods=['POST', 'GET'])
-def xterm(domain):
-    print('XTERM POST')
-    inp = domain.split('r', )
-    inp = int(inp[1])
-    print(str(inp))
-    with open('domains_xml/domains.txt') as f:
-        if str(inp) in f.read():
-            print('Exists')
-            return render_template('console.html', domain = domain)
-        else:
-            return render_template('404.html')
-            
-
-
 @app.route('/domain_start', methods=['POST', 'GET'])
 def domain_start():
     domain = request.args.get('domain')
@@ -172,6 +214,102 @@ def domains_cleanup():
     active_net_list.clear()
     active_net_list_conf.clear()
     return redirect(url_for('index'))
+
+
+@app.route('/xterm/<domain>', methods=['POST', 'GET'])
+def xterm(domain):
+    print('XTERM POST')
+    inp = domain.split('R', )
+    inp = int(inp[1])
+    print(str(inp))
+    with open('domains_xml/domains.txt') as f:
+        if str(inp) in f.read():
+            print('Exists')
+            #data = console(domain)
+
+            return render_template('console.html', domain = domain, data = console(domain))
+        else:
+            return render_template('404.html')
+
+def console(domain):
+    max_read_bytes = 1024 * 20
+    while True:
+        socketio.sleep(0.01)
+        timeout_sec = 0
+        #command = 'ls -al'
+        command = 'virsh console ' + str(domain)
+        command = command.replace('\n', '')
+        print(app.config['fd'])
+        subp = subprocess.Popen(command.split(), stdout=app.config['fd'])
+        output = subp.communicate()
+        socketio.emit('pty-output', output, namespace='/pty')
+        return output
+
+
+##########################################
+
+
+def main():
+    socketio.run(app, debug=True, port='5000', host='127.0.0.1')
+
+
+def read_and_forward_pty_output():
+    max_read_bytes = 1024 * 20
+    while True:
+        socketio.sleep(0.01)
+        if app.config['fd']:
+            timeout_sec = 0
+            (data_ready, _, _) = select.select([app.config['fd']], [], [], timeout_sec)
+            if data_ready:
+                output = os.read(app.config['fd'], max_read_bytes).decode()
+                socketio.emit('pty-output', data_ready, namespace='/pty')
+
+
+def set_winsize(fd, row, col, xpix=0, ypix=0):
+    winsize = struct.pack('HHHH', row, col, xpix, ypix)
+    fcntl.ioctl(fd, termios.TIOCSWINSZ, winsize)
+
+
+@socketio.on('pty-input', namespace='/pty')
+def pty_input(data):
+    if app.config['fd']:
+        os.write(app.config['fd'], data['input'].encode())
+
+
+@socketio.on('resize', namespace='/pty')
+def resize(data):
+    if app.config['fd']:
+        set_winsize(app.config['fd'], data['rows'], data['cols'])
+
+
+@socketio.on('connect', namespace='/pty')
+def connect():
+    if app.config['child_pid']:
+        # already started child process, don't start another
+        return
+
+    # create child process attached to a pty we can read from and write to
+    (child_pid, fd) = pty.fork()
+    if child_pid == 0:
+        # this is the child process fork.
+        # anything printed here will show up in the pty, including the output
+        # of this subprocess
+        subprocess.run(app.config['cmd'])
+    else:
+        # this is the parent process fork.
+        # store child fd and pid
+        app.config['fd'] = fd
+        app.config['child_pid'] = child_pid
+        set_winsize(fd, 50, 50)
+        cmd = ' '.join(shlex.quote(c) for c in app.config['cmd'])
+        socketio.start_background_task(target=read_and_forward_pty_output)
+
+
+
+
+##########################################
+
+
 
 
 if __name__ == '__main__':
