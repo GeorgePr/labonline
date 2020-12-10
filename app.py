@@ -1,10 +1,10 @@
-from flask import Flask, send_from_directory, render_template, url_for, request, redirect, session
+import subprocess
+
 from datetime import timedelta
+from flask import Flask, send_from_directory, render_template, url_for, request, redirect, session
 from libvirt_create import *
 from libvirt_domain import *
 from cleanup import *
-import subprocess
-from consolecallback import reset_term, error_handler, Console, check_console, stdin_callback, stream_callback, lifecycle_callback
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'eiaj38dx09'

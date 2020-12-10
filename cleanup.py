@@ -1,5 +1,4 @@
 import os
-import re
 import sys
 import libvirt
 
@@ -14,8 +13,6 @@ def cleanup():
 	except libvirt.libvirtError:
 		print('Failed to connect to the hypervisor')
 		sys.exit(1)
-
-	buf = None
 
 	# Open domains.txt file and remove all domains
 
