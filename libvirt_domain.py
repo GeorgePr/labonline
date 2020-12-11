@@ -111,9 +111,10 @@ def remove_domain(domain: str):
             sys.exit(1)
     try:
         dom.undefine()
-        os.remove('domains_xml/' + domain +'.xml')
-        img_dest = '~/images/' + domain + '.qcow2'
-        img_dest = os.path.expanduser(img_dest)
+        abs_path = os.path.dirname(__file__)
+        xml_dest = os.path.join(abs_path, 'images/' + domain + '.xml')
+        os.remove(xml_dest)
+        img_dest = os.path.join(abs_path, 'images/' + domain + '.qcow2')
         os.remove(img_dest)
         print('Domain ' + domain + ' has been removed')
     except libvirt.libvirtError:

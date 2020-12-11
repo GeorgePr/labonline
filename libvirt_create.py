@@ -48,15 +48,15 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 		print('\nDomain', dom_name, 'will be created')
 
 		# Print domain disk location
-
-		img_dest = '~/images/R' + str(j) + '.qcow2'
+		abs_path = os.path.dirname(__file__)
+		img_dest = os.path.join(abs_path, 'images/R' + str(j) + '.qcow2')
 		print('Disk image location:', img_dest)
-		img_dest = os.path.expanduser(img_dest)
 
 		# Create domain disk from template
 
 		print('Creating disk...')
-		copyfile(os.path.expanduser('~/images/BSDRP_linked.qcow2'), img_dest)
+		linked_dest = os.path.join(abs_path, 'images/BSDRP_linked.qcow2')
+		copyfile(linked_dest, img_dest)
 
 		# Use sample XML
 

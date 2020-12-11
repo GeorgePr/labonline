@@ -34,10 +34,10 @@ def cleanup():
 			except libvirt.libvirtError:
 				print('Domain R' + str(dom_number) + ' does not exist')
 				pass
-			xml_dest = 'domains_xml/R' + str(dom_number) +'.xml'
+			abs_path = os.path.dirname(__file__)
+			xml_dest = os.path.join(abs_path, 'domains_xml/R' + str(dom_number) + '.xml')
 			os.remove(xml_dest)
-			img_dest = '~/images/R' + str(dom_number) + '.qcow2'
-			img_dest = os.path.expanduser(img_dest)
+			img_dest = os.path.join(abs_path, 'images/R' + str(dom_number) + '.qcow2')
 			os.remove(img_dest)
 	else:
 		print('No defined domains')

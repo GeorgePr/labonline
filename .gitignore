@@ -9,3 +9,4 @@ package*.json
 domains_xml/R*.xml
 *.code-workspace
 .pylintrc
+images/*

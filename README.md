@@ -36,9 +36,9 @@ Then it removes all existing domains and removes the contents of domains.txt fil
 
 ## Directories
 
-Template image: `~/images/BSDRP.qcow2`
+Template image: `images/BSDRP_linked.qcow2` (linked clone of `images/BSDRP.qcow2`)
 
-Created images: `~/images/R#.qcow2`   (# is the domain index)
+Created images: `images/R#.qcow2`   (# is the domain index)
 
 XML sample: `sample_domain.xml`
 
