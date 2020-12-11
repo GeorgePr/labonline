@@ -1,3 +1,5 @@
+''' This script contains cleanup function '''
+
 import os
 import sys
 import libvirt
@@ -8,6 +10,7 @@ import libvirt
 
 
 def cleanup():
+	''' Removes all domains '''
 	try:
 		conn = libvirt.open("qemu:///system")
 	except libvirt.libvirtError:
@@ -15,9 +18,7 @@ def cleanup():
 		sys.exit(1)
 
 	# Open domains.txt file and remove all domains
-
 	domain_file = open('domains_xml/domains.txt', 'r')
-
 	lines = domain_file.read().splitlines()
 
 	if lines != []:
@@ -45,10 +46,8 @@ def cleanup():
 	domain_file.close()
 
 	# Remove contents of domains.txt
-
 	domain_file = open('domains_xml/domains.txt', 'w+')
 	domain_file.close()
 
 	# Close connection
-
 	conn.close()
