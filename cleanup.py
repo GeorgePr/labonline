@@ -22,7 +22,7 @@ def cleanup():
 
 	if lines != []:
 		for dom_number in lines:
-			buf = print('Removing R' + str(dom_number) + '...')
+			print('Removing R' + str(dom_number) + '...')
 			try:
 				dom = conn.lookupByName('R' + str(dom_number))
 				try:
