@@ -1,0 +1,109 @@
+<network>
+  <name>internal3</name>
+  <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8ccf3</uuid>
+  <bridge name='virbr11' stp='on' delay='0'/>
+  <mac address='52:54:00:f3:4d:00'/>
+  <dns>
+    <host ip='10.10.3.1'>
+      <hostname>R1</hostname>
+    </host>
+    <host ip='10.10.3.2'>
+      <hostname>R2</hostname>
+    </host>
+    <host ip='10.10.3.3'>
+      <hostname>R3</hostname>
+    </host>
+    <host ip='10.10.3.4'>
+      <hostname>R4</hostname>
+    </host>
+    <host ip='10.10.3.5'>
+      <hostname>R5</hostname>
+    </host>
+    <host ip='10.10.3.6'>
+      <hostname>R6</hostname>
+    </host>
+    <host ip='10.10.3.7'>
+      <hostname>R7</hostname>
+    </host>
+    <host ip='10.10.3.8'>
+      <hostname>R8</hostname>
+    </host>
+    <host ip='10.10.3.9'>
+      <hostname>R9</hostname>
+    </host>
+    <host ip='10.10.3.10'>
+      <hostname>R10</hostname>
+    </host>
+    <host ip='10.10.3.11'>
+      <hostname>R11</hostname>
+    </host>
+    <host ip='10.10.3.12'>
+      <hostname>R12</hostname>
+    </host>
+    <host ip='10.10.3.13'>
+      <hostname>R13</hostname>
+    </host>
+    <host ip='10.10.3.14'>
+      <hostname>R14</hostname>
+    </host>
+    <host ip='10.10.3.15'>
+      <hostname>R15</hostname>
+    </host>
+    <host ip='10.10.3.16'>
+      <hostname>R16</hostname>
+    </host>
+    <host ip='10.10.3.17'>
+      <hostname>R17</hostname>
+    </host>
+    <host ip='10.10.3.18'>
+      <hostname>R18</hostname>
+    </host>
+    <host ip='10.10.3.19'>
+      <hostname>R19</hostname>
+    </host>
+    <host ip='10.10.3.20'>
+      <hostname>R20</hostname>
+    </host>
+    <host ip='10.10.3.21'>
+      <hostname>R21</hostname>
+    </host>
+    <host ip='10.10.3.22'>
+      <hostname>R22</hostname>
+    </host>
+    <host ip='10.10.3.23'>
+      <hostname>R23</hostname>
+    </host>
+    <host ip='10.10.3.24'>
+      <hostname>R24</hostname>
+    </host>
+  </dns>
+  <ip address='10.10.3.200' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='10.10.3.50' end='10.10.3.192'/>
+      <host mac='52:54:00:f3:4d:01' ip='10.10.3.1'/>
+      <host mac='52:54:00:f3:4d:02' ip='10.10.3.2'/>
+      <host mac='52:54:00:f3:4d:03' ip='10.10.3.3'/>
+      <host mac='52:54:00:f3:4d:04' ip='10.10.3.4'/>
+      <host mac='52:54:00:f3:4d:05' ip='10.10.3.5'/>
+      <host mac='52:54:00:f3:4d:06' ip='10.10.3.6'/>
+      <host mac='52:54:00:f3:4d:07' ip='10.10.3.7'/>
+      <host mac='52:54:00:f3:4d:08' ip='10.10.3.8'/>
+      <host mac='52:54:00:f3:4d:09' ip='10.10.3.9'/>
+      <host mac='52:54:00:f3:4d:0a' ip='10.10.3.10'/>
+      <host mac='52:54:00:f3:4d:0b' ip='10.10.3.11'/>
+      <host mac='52:54:00:f3:4d:0c' ip='10.10.3.12'/>
+      <host mac='52:54:00:f3:4d:0d' ip='10.10.3.13'/>
+      <host mac='52:54:00:f3:4d:0e' ip='10.10.3.14'/>
+      <host mac='52:54:00:f3:4d:0f' ip='10.10.3.15'/>
+      <host mac='52:54:00:f3:4d:10' ip='10.10.3.16'/>
+      <host mac='52:54:00:f3:4d:11' ip='10.10.3.17'/>
+      <host mac='52:54:00:f3:4d:12' ip='10.10.3.18'/>
+      <host mac='52:54:00:f3:4d:13' ip='10.10.3.19'/>
+      <host mac='52:54:00:f3:4d:14' ip='10.10.3.20'/>
+      <host mac='52:54:00:f3:4d:15' ip='10.10.3.21'/>
+      <host mac='52:54:00:f3:4d:16' ip='10.10.3.22'/>
+      <host mac='52:54:00:f3:4d:17' ip='10.10.3.23'/>
+      <host mac='52:54:00:f3:4d:18' ip='10.10.3.24'/>
+    </dhcp>
+  </ip>
+</network>

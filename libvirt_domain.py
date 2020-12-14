@@ -102,7 +102,7 @@ def remove_domain(domain: str):
 	try:
 		dom.undefine()
 		abs_path = os.path.dirname(__file__)
-		xml_dest = os.path.join(abs_path, 'images/' + domain + '.xml')
+		xml_dest = os.path.join(abs_path, 'domains_xml/' + domain + '.xml')
 		os.remove(xml_dest)
 		img_dest = os.path.join(abs_path, 'images/' + domain + '.qcow2')
 		os.remove(img_dest)

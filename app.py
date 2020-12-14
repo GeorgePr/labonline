@@ -41,7 +41,6 @@ def index():
 		session['active_net_list_conf'] = active_net_list_conf
 	print('SESSION active_domains')
 	print(session['active_domains'])
-	print('active_net_list')
 	active_net_list = session['active_net_list']
 	print(session['active_net_list'])
 	if request.method == 'POST':
@@ -169,10 +168,8 @@ def domains_cleanup():
 @app.route('/xterm/<domain>', methods=['POST', 'GET'])
 def xterm(domain):
 	''' Opens console of selected domain '''
-	print('XTERM POST')
 	inp = domain.split('R', )
-	inp = int(inp[1])
-	print(str(inp))
+	inp = int(inp[1])  
 	with open('domains_xml/domains.txt') as file:
 		if str(inp) in file.read():
 			print('Exists')
