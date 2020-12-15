@@ -11,9 +11,14 @@ for i in $(seq 1 4); do
     virsh net-start hostonly${i}
 done
 
-for i in $(seq 1 8); do
-    virsh net-autostart internal${i}
-    virsh net-start internal${i}
+for i in $(seq 1 5); do
+    virsh net-autostart LAN${i}
+    virsh net-start LAN${i}
+done
+
+for i in $(seq 1 5); do
+    virsh net-autostart WAN${i}
+    virsh net-start WAN${i}
 done
 
 virsh net-autostart bridge

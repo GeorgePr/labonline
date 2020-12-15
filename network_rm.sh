@@ -7,9 +7,14 @@ for i in $(seq 1 4); do
     virsh net-undefine hostonly${i}
 done
 
-for i in $(seq 1 8); do
-    virsh net-destroy internal${i}
-    virsh net-undefine internal${i}
+for i in $(seq 1 5); do
+    virsh net-destroy LAN${i}
+    virsh net-undefine LAN${i}
+done
+
+for i in $(seq 1 5); do
+    virsh net-destroy WAN${i}
+    virsh net-undefine WAN${i}
 done
 
 virsh net-destroy bridge
