@@ -53,23 +53,83 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 		linked_dest = os.path.join(abs_path, 'images/BSDRP_linked.qcow2')
 		copyfile(linked_dest, img_dest)
 
-		# Use sample XML
-		xml_file = 'domains_xml/sample_domain.xml'
+		# Create network for management interface
+		# Use sample domain XML
+		xml_file = 'net_xml/sample_nat.xml'
 
-		# Get tree root in XML file
+		# Get tree root in network XML file
 		tree = ET.parse(xml_file)
 		root = tree.getroot()
 
-		# Set name in new XML file
+		# Set name in new network XML file
+		attr_name = root.find('name')
+		attr_name.text = 'nat' + str(j)
+
+		# Set UUID in new network XML file
+		uuid = root.find('./uuid')
+		uuid.text = '6ac5acf9-940b-41fc-87a7-1ae02af8ccb' + str(j)
+
+		# Set bridge name in new network XML file
+		bridge_name = root.find('./bridge')
+		bridge_name.set('name', 'virbr' + str(j+16))
+
+		# Set network MAC address in new network XML file
+		mac_add = root.find('./mac')
+		mac_add.set('mac', '52:54:00:b' + str(j) + ':4d:00')
+
+		# Set host IP in new network XML file
+		host_ip = root.find('./dns/host')
+		host_ip.set('ip', '172.22.' + str(j) + '.1')
+
+		# Set hostname in new network XML file
+		hostname = root.find('./dns/host/hostname')
+		hostname.text = 'R' + str(j)
+
+		# Set DHCP IP in new network XML file
+		ip = root.find('./ip')
+		ip.set('address', '172.22.' + str(j) + '.200')
+
+		# Set host MAC and IP in new network XML file
+		host = root.find('./ip/dhcp/host')
+		host.set('mac', '52:54:00:b' + str(j) + ':4d:01')
+		host.set('ip', '172.22.' + str(j) + '.1')
+
+		# Create XML for new network
+		xml_dest = 'net_xml/nat' + str(j) + '.xml'
+		tree.write(xml_dest)
+		xml_open = open(xml_dest)
+		xmlconfig = xml_open.read()
+
+		# Create network from new XML file
+		nat_network = conn.networkDefineXML(xmlconfig)
+
+		# Set as autostart and start network
+		nat_network.setAutostart(True)
+		nat_network.create()
+		print('Network nat' + str(j) + ' has been created\n', file = sys.stderr)
+
+
+
+		# Create domain
+		# Use sample domain XML
+		xml_file = 'domains_xml/sample_domain.xml'
+
+		# Get tree root in domain XML file
+		tree = ET.parse(xml_file)
+		root = tree.getroot()
+
+		# Set name in new domain XML file
 		attr_name = root.find('name')
 		attr_name.text = dom_name
 
-		# Set image file in new XML file
+		# Set image file in new domain XML file
 		source = root.find('./devices/disk/source')
 		source.set('file', img_dest)
 
 		# Set last octet of MAC address
 		k = '{:02x}'.format(j)
+
+		i = 0
 
 		# Create new NIC in XML if applicable
 		for i in range(int(net_list[j-dom_number])):
@@ -141,7 +201,6 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 				devices.append(interface)
 
 			elif re.match('internal[0-9]', current_interface):
-				print('MATCHED')
 				tmp = current_interface.split('internal', )
 				tmp = int(tmp[1])
 				interface = ET.Element('interface')
@@ -163,11 +222,33 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 				address.set('slot', '0x0' + str(i+2))
 				address.set('function', '0x0')
 				devices.append(interface)
+		
+		i = i + 1
 
+		# Define management interface
+		interface = ET.Element('interface')
+		interface.set('type', 'network')
+		mac = ET.SubElement(interface, 'mac')
+		mac.set('address', '52:54:00:b' + str(j) + ':4d:01')
+		source = ET.SubElement(interface, 'source')
+		source.set('network', 'nat' + str(j))
+		source.set('bridge', 'virbr' + str(j+16))
+		target = ET.SubElement(interface, 'target')
+		target.set('dev', 'vnet' + str(i))
+		model = ET.SubElement(interface, 'model')
+		model.set('type', 'e1000')
+		alias = ET.SubElement(interface, 'alias')
+		alias.set('name', 'net' + str(i))
+		address = ET.SubElement(interface, 'address')
+		address.set('type', 'pci')
+		address.set('domain', '0x0000')
+		address.set('bus', '0x00')
+		address.set('slot', '0x0' + str(i+2))
+		address.set('function', '0x0')
+		devices.append(interface)
 
 		# Create XML for new domain
 		xml_dest = 'domains_xml/' + dom_name + '.xml'
-
 		tree.write(xml_dest)
 		xml_open = open(xml_dest)
 		xmlconfig = xml_open.read()

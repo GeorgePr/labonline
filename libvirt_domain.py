@@ -74,7 +74,7 @@ def shutdown_domain(domain: str):
 
 
 def remove_domain(domain: str):
-	''' Removes selected domain '''
+	''' Removes selected domain and management network '''
 
 	# Initialize connection
 	try:
@@ -109,6 +109,20 @@ def remove_domain(domain: str):
 		print('Domain ' + domain + ' has been removed')
 	except libvirt.libvirtError:
 		print('Could not remove domain')
+
+	# Remove management network
+	try:
+		dom_number = domain.split('R', )
+		dom_number = int(dom_number[1])
+		network = conn.networkLookupByName('nat' + str(dom_number))
+		network.destroy()
+		network.undefine()
+		abs_path = os.path.dirname(__file__)
+		xml_dest = os.path.join(abs_path, 'net_xml/nat' + str(dom_number) + '.xml')
+		os.remove(xml_dest)
+		print('Network nat' + str(dom_number) + ' has been undefined')
+	except libvirt.libvirtError:
+		print('Could not remove network')
 
 	# Close connection
 	conn.close()

@@ -169,11 +169,11 @@ def domains_cleanup():
 def xterm(domain):
 	''' Opens console of selected domain '''
 	inp = domain.split('R', )
-	inp = int(inp[1])  
+	inp = int(inp[1])
 	with open('domains_xml/domains.txt') as file:
 		if str(inp) in file.read():
 			print('Exists')
-			xterm_url = 'http://10.0.1.' + str(inp)
+			xterm_url = 'http://172.22.' + str(inp) + '.1'
 			return redirect(xterm_url)
 		else:
 			return render_template('404.html')

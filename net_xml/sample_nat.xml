@@ -1,0 +1,17 @@
+<network>
+  <name></name>
+  <uuid></uuid>
+  <forward mode='nat'/>
+  <bridge stp='on' delay='0'/>
+  <mac />
+  <dns>
+    <host>
+      <hostname></hostname>
+    </host>
+  </dns>
+  <ip netmask='255.255.255.0'>
+    <dhcp>
+      <host />
+    </dhcp>
+  </ip>
+</network>
