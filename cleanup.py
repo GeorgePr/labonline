@@ -35,6 +35,19 @@ def cleanup():
 			except libvirt.libvirtError:
 				print('Domain R' + str(dom_number) + ' does not exist')
 				pass
+
+			# Remove management network
+			try:
+				network = conn.networkLookupByName('nat' + str(dom_number))
+				network.destroy()
+				network.undefine()
+				abs_path = os.path.dirname(__file__)
+				xml_dest = os.path.join(abs_path, 'net_xml/nat' + str(dom_number) + '.xml')
+				os.remove(xml_dest)
+				print('Network nat' + str(dom_number) + ' has been undefined')
+			except libvirt.libvirtError:
+				print('Could not remove network')
+
 			abs_path = os.path.dirname(__file__)
 			xml_dest = os.path.join(abs_path, 'domains_xml/R' + str(dom_number) + '.xml')
 			os.remove(xml_dest)

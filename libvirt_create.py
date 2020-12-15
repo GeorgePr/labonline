@@ -200,29 +200,35 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 				address.set('function', '0x0')
 				devices.append(interface)
 
-			elif re.match('internal[0-9]', current_interface):
-				tmp = current_interface.split('internal', )
-				tmp = int(tmp[1])
-				interface = ET.Element('interface')
-				interface.set('type', 'bridge')
-				mac = ET.SubElement(interface, 'mac')
-				mac.set('address', '52:54:00:f' + str(tmp) + ':4d:' + k)
-				source = ET.SubElement(interface, 'source')
-				source.set('bridge', 'virbr' + str(tmp+8))
-				target = ET.SubElement(interface, 'target')
-				target.set('dev', 'vnet' + str(i))
-				model = ET.SubElement(interface, 'model')
-				model.set('type', 'e1000')
-				alias = ET.SubElement(interface, 'alias')
-				alias.set('name', 'net' + str(i))
-				address = ET.SubElement(interface, 'address')
-				address.set('type', 'pci')
-				address.set('domain', '0x0000')
-				address.set('bus', '0x00')
-				address.set('slot', '0x0' + str(i+2))
-				address.set('function', '0x0')
-				devices.append(interface)
-		
+			else:
+				regex_match = re.match('LAN|WAN[0-9]', current_interface)
+				if regex_match:
+					# if LAN 0, if WAN 5
+					int_type = 0
+					if regex_match[0] == 'WAN':
+						int_type = 5
+					net_number = current_interface.split(regex_match[0], )
+					net_number = int(net_number[1])
+					interface = ET.Element('interface')
+					interface.set('type', 'bridge')
+					mac = ET.SubElement(interface, 'mac')
+					mac.set('address', '52:54:00:f' + str(int_type + net_number) + ':4d:' + k)
+					source = ET.SubElement(interface, 'source')
+					source.set('bridge', 'virbr' + str(int_type + net_number + 8))
+					target = ET.SubElement(interface, 'target')
+					target.set('dev', 'vnet' + str(i))
+					model = ET.SubElement(interface, 'model')
+					model.set('type', 'e1000')
+					alias = ET.SubElement(interface, 'alias')
+					alias.set('name', 'net' + str(i))
+					address = ET.SubElement(interface, 'address')
+					address.set('type', 'pci')
+					address.set('domain', '0x0000')
+					address.set('bus', '0x00')
+					address.set('slot', '0x0' + str(i+2))
+					address.set('function', '0x0')
+					devices.append(interface)
+
 		i = i + 1
 
 		# Define management interface

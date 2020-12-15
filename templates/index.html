@@ -78,7 +78,7 @@
          $("#number_int_" + (i+1)).append(net_arr[i]);
          $("#number_int_" + (i+1)).removeAttr("hidden");
          for (j=0; j<net_arr[i]; j++) {
-            $("#net_conf tr:odd .net" + (i+1)).append("<br><p1>net" + (j+1) + ": </p1><select selected=\"nat\" name=\"interface_type\" id=\"interface_type\"><option value=\"nat\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"internal1\">Internal1</option><option value=\"internal2\">Internal2</option><option value=\"internal3\">Internal3</option><option value=\"internal4\">Internal4</option><option value=\"internal5\">Internal5</option><option value=\"internal6\">Internal6</option><option value=\"internal7\">Internal7</option><option value=\"internal8\">Internal8</option></select>");
+            $("#net_conf tr:odd .net" + (i+1)).append("<br><p1>net" + (j+1) + ": </p1><select selected=\"nat\" name=\"interface_type\" id=\"interface_type\"><option value=\"nat\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>");
          }
       }
    });

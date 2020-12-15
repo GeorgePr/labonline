@@ -1,5 +1,5 @@
 <network>
-  <name>internal7</name>
+  <name>WAN2</name>
   <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8ccf7</uuid>
   <bridge name='virbr15' stp='on' delay='0'/>
   <mac address='52:54:00:f7:4d:00'/>

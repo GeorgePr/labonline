@@ -1,5 +1,5 @@
 <network>
-  <name>internal4</name>
+  <name>LAN4</name>
   <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8ccf4</uuid>
   <bridge name='virbr12' stp='on' delay='0'/>
   <mac address='52:54:00:f4:4d:00'/>
