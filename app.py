@@ -83,8 +83,6 @@ def index():
 				line = line.split('\n')
 				if line != '\n' and line[0] not in session['active_domains']:
 					session['active_domains'].append(line[0])
-		print('SESSION active_domains')
-		print(session['active_domains'])
 		return redirect(url_for('created'))
 	else:
 		print('INDEX GET')
@@ -104,6 +102,7 @@ def created():
 	print('SESSION active_domains')
 	print(session['active_domains'])
 	active_net_list_conf = session['active_net_list_conf']
+	print(session['active_net_list_conf'])
 	return render_template('created.html', number = number, active_net_list = active_net_list, \
 		active_net_list_conf = active_net_list_conf, active_domains = active_domains)
 

@@ -49,7 +49,6 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 		print('Disk image location:', img_dest)
 
 		# Create domain disk from template
-		print('Creating disk...')
 		linked_dest = os.path.join(abs_path, 'images/BSDRP_linked.qcow2')
 		copyfile(linked_dest, img_dest)
 
@@ -71,7 +70,7 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 
 		# Set bridge name in new network XML file
 		bridge_name = root.find('./bridge')
-		bridge_name.set('name', 'virbr' + str(j+16))
+		bridge_name.set('name', 'virbr' + str(j+18))
 
 		# Set network MAC address in new network XML file
 		mac_add = root.find('./mac')
@@ -201,7 +200,7 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 				devices.append(interface)
 
 			else:
-				regex_match = re.match('LAN|WAN[0-9]', current_interface)
+				regex_match = re.match('LAN|WAN', current_interface)
 				if regex_match:
 					# if LAN 0, if WAN 5
 					int_type = 0
@@ -238,7 +237,7 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 		mac.set('address', '52:54:00:b' + str(j) + ':4d:01')
 		source = ET.SubElement(interface, 'source')
 		source.set('network', 'nat' + str(j))
-		source.set('bridge', 'virbr' + str(j+16))
+		source.set('bridge', 'virbr' + str(j+18))
 		target = ET.SubElement(interface, 'target')
 		target.set('dev', 'vnet' + str(i))
 		model = ET.SubElement(interface, 'model')
