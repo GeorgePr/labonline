@@ -4,20 +4,16 @@ import os
 import sys
 import libvirt
 
-# Script to remove and cleanup all created domains
-
-# Initialize connection
-
-
 def cleanup():
-	''' Removes all domains '''
+	''' Removes all domains and management networks '''
+	# Initialize connection
 	try:
 		conn = libvirt.open("qemu:///system")
 	except libvirt.libvirtError:
 		print('Failed to connect to the hypervisor')
 		sys.exit(1)
 
-	# Open domains.txt file and remove all domains
+	# Open domains.txt file (read)
 	domain_file = open('domains_xml/domains.txt', 'r')
 	lines = domain_file.read().splitlines()
 
@@ -30,25 +26,26 @@ def cleanup():
 					dom.destroy()
 				except libvirt.libvirtError:
 					print('Domain R' + str(dom_number) + ' is not running')
-					pass
 				dom.undefine()
 			except libvirt.libvirtError:
 				print('Domain R' + str(dom_number) + ' does not exist')
-				pass
 
 			# Remove management network
 			try:
 				network = conn.networkLookupByName('nat' + str(dom_number))
 				network.destroy()
 				network.undefine()
-				abs_path = os.path.dirname(__file__)
-				xml_dest = os.path.join(abs_path, 'net_xml/nat' + str(dom_number) + '.xml')
-				os.remove(xml_dest)
-				print('Network nat' + str(dom_number) + ' has been undefined')
+				print('Removing network nat' + str(dom_number) + '...')
+
 			except libvirt.libvirtError:
 				print('Could not remove network')
 
+			# Remove network XML
 			abs_path = os.path.dirname(__file__)
+			xml_dest = os.path.join(abs_path, 'net_xml/nat' + str(dom_number) + '.xml')
+			os.remove(xml_dest)
+
+			# Remove domain XML and image
 			xml_dest = os.path.join(abs_path, 'domains_xml/R' + str(dom_number) + '.xml')
 			os.remove(xml_dest)
 			img_dest = os.path.join(abs_path, 'images/R' + str(dom_number) + '.qcow2')
