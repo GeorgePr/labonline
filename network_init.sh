@@ -1,5 +1,8 @@
 #!/bin/sh
 
+virsh net-destroy default
+virsh net-undefine default
+
 for file in net_xml/*; do
     virsh net-define $file
 done

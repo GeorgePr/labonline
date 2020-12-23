@@ -6,7 +6,7 @@
 
 **Dependencies**
 
-`sudo apt install python3-pip python3-venv libvirt-daemon-system libvirt-clients virt-viewer virt-manager ebtables bridge-utils qemu-kvm`
+`sudo apt install python3-pip python3-virtualenv libvirt-daemon-system libvirt-clients libvirt-dev virt-viewer virt-manager ebtables bridge-utils qemu-kvm`
 
 `sudo adduser $USER kvm`
 
