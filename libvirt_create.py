@@ -241,7 +241,7 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 		target = ET.SubElement(interface, 'target')
 		target.set('dev', 'vnet' + str(i))
 		model = ET.SubElement(interface, 'model')
-		model.set('type', 'e1000')
+		model.set('type', 'virtio')
 		alias = ET.SubElement(interface, 'alias')
 		alias.set('name', 'net' + str(i))
 		address = ET.SubElement(interface, 'address')
