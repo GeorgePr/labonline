@@ -22,11 +22,11 @@
 
 **python3 libvirt_python.py**
 
-The user can specify the number of domains to be created in first argument.
+The user can specify the number of domains to create.
 
-After domains are created, the user can select a domain to remove by inserting the domain index and then pressing d.
+After domains are created, the user can open a console, start/shutdown and delete each domain.
 
-Each domain is named R[n], has IP address 192.168.122.[n], MAC address 52:54:00:ce:4d:[hex(n)] and hostname r[n], where [n] is the domain index.
+Each domain is named R[n] and has a number of interfaces specified by the user. Also, it has a management interface ().
 
 **python3 cleanup.py**
 

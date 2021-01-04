@@ -1,46 +1,46 @@
 body {
-    margin-top: 0px;
-    margin-left: 15px;
-    font-family: 'IBM Plex Sans', sans-serif;
+  margin-top: 0px;
+  margin-left: 15px;
+  font-family: "IBM Plex Sans", sans-serif;
 }
 
 p1 {
-    margin-top: 4px;
-    margin-bottom: 4px;
+  margin-top: 4px;
+  margin-bottom: 4px;
 }
 
 form {
-    display: inline-block;
+  display: inline-block;
 }
 
 h2 {
-    margin-top: 5px;
-    margin-bottom: 0px;
+  margin-top: 5px;
+  margin-bottom: 0px;
 }
-
 h2 a {
-    color: #080808;
-    text-decoration: none;
-    font-weight: 550;
+  color: #080808;
+  text-decoration: none;
+  font-weight: 550;
 }
-
 h2 a:hover {
-    color: #585858;
+  color: #585858;
 }
 
 h4 {
-    font-size: 18px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    margin-top: 20px;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  margin-top: 20px;
 }
 
 table tr:nth-child(even) {
-    border-bottom: 1px solid black;
-    margin-bottom: 10px;
-    padding-bottom: 10px;
+  border-bottom: 1px solid black;
+  margin-bottom: 10px;
+  padding-bottom: 10px;
 }
 
 #active_table, #net_conf {
-    border-collapse: collapse;
+  border-collapse: collapse;
 }
+
+/*# sourceMappingURL=main.css.map */

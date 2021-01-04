@@ -2,6 +2,8 @@
 
 {% block head %}
 <title>Created | LabOnLine</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='css/drag.scss')}}">
+
 {% endblock %}
 
 
@@ -49,5 +51,16 @@
  </table>
 
 <br /><a href="{{ url_for('domains_cleanup') }}">Remove</a> all domains
+
+{% for p in range(session['active_domains']|length): %}
+   <div class="draggable">R{{ (session['active_domains'][p])|string }}</div><br />
+{% endfor %}
+
+<script>
+   $(function() {
+      $(".draggable").draggable();
+   });
+
+</script>
 
 {% endblock %}
