@@ -20,7 +20,7 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 
 	# Find and print existing domains
 	dom_number = 0
-	domain_file = open('domains_xml/domains.txt', 'r')
+	domain_file = open('domains_xml/domains_r.txt', 'r')
 	print('Defined domains:')
 	lines = domain_file.read().splitlines()
 	for dom_number in lines:
@@ -265,13 +265,13 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 		dom.create()
 		print('Guest ' + dom.name() + ' has booted\n', file = sys.stderr)
 
-		# Append domains.txt and add new domain index
-		domain_file = open('domains_xml/domains.txt', 'a')
+		# Append domains_r.txt and add new domain index
+		domain_file = open('domains_xml/domains_r.txt', 'a')
 		domain_file.write(str(j) + '\n')
 		domain_file.close()
 
 	# Find and print existing domains (again)
-	domain_file = open('domains_xml/domains.txt', 'r')
+	domain_file = open('domains_xml/domains_r.txt', 'r')
 	print('Defined domains:')
 	lines = domain_file.read().splitlines()
 	for i in lines:

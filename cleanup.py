@@ -13,8 +13,8 @@ def cleanup():
 		print('Failed to connect to the hypervisor')
 		sys.exit(1)
 
-	# Open domains.txt file (read)
-	domain_file = open('domains_xml/domains.txt', 'r')
+	# Open domains_r.txt file (read)
+	domain_file = open('domains_xml/domains_r.txt', 'r')
 	lines = domain_file.read().splitlines()
 
 	if lines != []:
@@ -55,8 +55,8 @@ def cleanup():
 
 	domain_file.close()
 
-	# Remove contents of domains.txt
-	domain_file = open('domains_xml/domains.txt', 'w+')
+	# Remove contents of domains_r.txt
+	domain_file = open('domains_xml/domains_r.txt', 'w+')
 	domain_file.close()
 
 	# Close connection

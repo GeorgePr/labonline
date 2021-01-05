@@ -11,4 +11,4 @@ for i in $(seq 1 20); do
     rm domains_xml/R${i}.xml
 done
 
-cp /dev/null domains_xml/domains.txt
+cp /dev/null domains_xml/domains_r.txt

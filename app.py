@@ -78,7 +78,7 @@ def index():
 		except libvirt.libvirtError:
 			print('Domains have not been created')
 			return redirect(url_for('index'))
-		with open('domains_xml/domains.txt') as file:
+		with open('domains_xml/domains_r.txt') as file:
 			for line in file.readlines():
 				line = line.split('\n')
 				if line != '\n' and line[0] not in session['active_domains']:
@@ -130,9 +130,9 @@ def domain_remove():
 	remove_domain(domain)
 	domain_number = domain.split('R', )
 	domain_number = str(domain_number[1])
-	with open('domains_xml/domains.txt', 'r') as fin:
+	with open('domains_xml/domains_r.txt', 'r') as fin:
 		lines = fin.readlines()
-	with open('domains_xml/domains.txt', 'w') as fout:
+	with open('domains_xml/domains_r.txt', 'w') as fout:
 		for line in lines:
 			if domain_number not in line:
 				fout.write(line)
@@ -169,7 +169,7 @@ def xterm(domain):
 	''' Opens console of selected domain '''
 	inp = domain.split('R', )
 	inp = int(inp[1])
-	with open('domains_xml/domains.txt') as file:
+	with open('domains_xml/domains_r.txt') as file:
 		if str(inp) in file.read():
 			print('Exists')
 			xterm_url = 'http://172.22.' + str(inp) + '.1'
