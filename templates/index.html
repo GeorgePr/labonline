@@ -15,6 +15,7 @@
    <tr>
       <td>
          {% set dom = 'R' + session['active_r'][p]|string %}
+         <input type="hidden" name="hid" value="{{ status }}" />
          <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
             <input type="submit" id="console" value="Console"></input>
             <input type="hidden" name="hid" value="{{ p+1 }}" />
@@ -47,7 +48,7 @@
    {% endif %}
 
    <p>Press Load to configure network interfaces:</p>
-   Routers: <input name="nm" id="nm" type=number value=1 min=1 max=24>
+   Routers: <input name="num_r" id="num_r" type=number value=1 min=1 max=24>
    <p1 id="number" hidden="hidden"></p1>
    <button type="button" id="load">Load</button>
    <table id="net_conf">
@@ -58,8 +59,8 @@
 <script>
    $("#load").click(function(){
       $("#load").remove();
-      $("#nm").attr("hidden", "hidden");
-      param = $("#nm").val();
+      $("#num_r").attr("hidden", "hidden");
+      param = $("#num_r").val();
       $("#number").removeAttr("hidden");
       $("#number").append(param);
       for (var i=0; i<param; i++) {
@@ -84,6 +85,7 @@
          }
       }
    });
+   
 </script>
 
 {% endblock %}

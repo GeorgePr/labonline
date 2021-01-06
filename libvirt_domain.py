@@ -5,7 +5,7 @@ import os
 import libvirt
 
 # This file handles functions for each individual domain
-# Functions: start, shutdown, remove
+# Functions: start, shutdown, remove, status
 
 def start_domain(domain: str):
 	''' Starts selected domain '''
@@ -126,3 +126,28 @@ def remove_domain(domain: str):
 
 	# Close connection
 	conn.close()
+
+
+def domain_status(domain: str):
+	''' Returns domain  status '''
+
+	# Initialize connection
+	try:
+		conn = libvirt.open('qemu:///system')
+	except libvirt.libvirtError:
+		print('Failed to connect to the hypervisor')
+		sys.exit(1)
+
+	# Check if domain exists
+	try:
+		dom = conn.lookupByName(domain)
+	except libvirt.libvirtError:
+		print('Domain not found')
+		sys.exit(1)
+
+	# Close connection
+	conn.close()
+
+	# Return domain status
+	domain_state = dom.info()[0]
+	return domain_state
