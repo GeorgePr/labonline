@@ -2,7 +2,7 @@
 
 {% block head %}
 <title>Created | LabOnLine</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/drag.scss')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/drag.css')}}">
 
 {% endblock %}
 
@@ -18,13 +18,13 @@
 {% endif %}
 
 <table id="active_table">
-    {% for p in range(session['active_domains']|length): %}
+    {% for p in range(session['active_r']|length): %}
     <tr>
-        <td><h4>R{{ (session['active_domains'][p])|string }}</h4></td>
+        <td><h4>R{{ (session['active_r'][p])|string }}</h4></td>
     </tr>
     <tr>
        <td>
-          {% set dom = 'R' + session['active_domains'][p]|string %}
+          {% set dom = 'R' + session['active_r'][p]|string %}
           <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
              <input type="submit" id="console" value="Console"></input>
              <input type="hidden" name="hid" value="{{ p+1 }}" />
@@ -41,9 +41,9 @@
              <input type="submit" value="Remove"></input>
              <input type="hidden" name="hid" value="{{ p+1 }}" />
           </form><br />
-          <p1>Number of interfaces: {{ active_net_list[p] }}</p1>
-          {% for i in range((active_net_list[p])|int): %}
-             <br /><p1>{{ session['active_net_list_conf'][p][i] }}</p1>
+          <p1>Number of interfaces: {{ active_net_r[p] }}</p1>
+          {% for i in range((active_net_r[p])|int): %}
+             <br /><p1>{{ session['active_netconf_r'][p][i] }}</p1>
           {% endfor %}
        </td>
     </tr>
@@ -51,9 +51,9 @@
  </table>
 
 <br /><a href="{{ url_for('domains_cleanup') }}">Remove</a> all domains
-
-{% for p in range(session['active_domains']|length): %}
-   <div class="draggable">R{{ (session['active_domains'][p])|string }}</div><br />
+<br />
+{% for p in range(session['active_r']|length): %}
+   <div class="draggable">R{{ (session['active_r'][p])|string }}</div><br />
 {% endfor %}
 
 <script>

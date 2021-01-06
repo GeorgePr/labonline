@@ -8,7 +8,7 @@ import re
 import libvirt
 
 
-def create_domains(domains_input: str, net_list: list, net_list_conf: list):
+def create_domains(domains_input: str, net_r: list, netconf_r: list):
 	'''Creates the number of domains specified by the argument'''
 
 	# Initialize connection
@@ -131,11 +131,11 @@ def create_domains(domains_input: str, net_list: list, net_list_conf: list):
 		i = 0
 
 		# Create new NIC in XML if applicable
-		for i in range(int(net_list[j-dom_number])):
+		for i in range(int(net_r[j-dom_number])):
 			devices = root.find('.devices')
-			current_interface = net_list_conf[j-dom_number][i]
+			current_interface = netconf_r[j-dom_number][i]
 
-			if current_interface == 'nat':
+			if current_interface == 'NAT':
 				interface = ET.Element('interface')
 				interface.set('type', 'network')
 				mac = ET.SubElement(interface, 'mac')

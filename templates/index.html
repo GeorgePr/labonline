@@ -8,13 +8,13 @@
 {% block body %}
 
 <table id="active_table">
-   {% for p in range(session['active_domains']|length): %}
+   {% for p in range(session['active_r']|length): %}
    <tr>
-       <td><h4>R{{ (session['active_domains'][p])|string }}</h4></td>
+       <td><h4>R{{ (session['active_r'][p])|string }}</h4></td>
    </tr>
    <tr>
       <td>
-         {% set dom = 'R' + session['active_domains'][p]|string %}
+         {% set dom = 'R' + session['active_r'][p]|string %}
          <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
             <input type="submit" id="console" value="Console"></input>
             <input type="hidden" name="hid" value="{{ p+1 }}" />
@@ -31,9 +31,9 @@
             <input type="submit" value="Remove"></input>
             <input type="hidden" name="hid" value="{{ p+1 }}" />
          </form><br />
-         <p1>Number of interfaces: {{ active_net_list[p] }}</p1>
-         {% for i in range((active_net_list[p])|int): %}
-            <br /><p1>{{ session['active_net_list_conf'][p][i] }}</p1>
+         <p1>Number of interfaces: {{ active_net_r[p] }}</p1>
+         {% for i in range((active_net_r[p])|int): %}
+            <br /><p1>{{ session['active_netconf_r'][p][i] }}</p1>
          {% endfor %}
       </td>
    </tr>
@@ -41,13 +41,13 @@
 </table>
 
 <form method="POST">
-   <p>Select number of domains to create
-   {% if session['active_domains'] != [] %}
+   <p>Select number of routers to create
+   {% if session['active_r'] != [] %}
       or <a href="{{ url_for('domains_cleanup') }}">remove</a> all domains</p>
    {% endif %}
 
    <p>Press Load to configure network interfaces:</p>
-   <input name="nm" id="nm" type=number value=1 min=1 max=24>
+   Routers: <input name="nm" id="nm" type=number value=1 min=1 max=24>
    <p1 id="number" hidden="hidden"></p1>
    <button type="button" id="load">Load</button>
    <table id="net_conf">
@@ -63,8 +63,10 @@
       $("#number").removeAttr("hidden");
       $("#number").append(param);
       for (var i=0; i<param; i++) {
-         $("#net_conf").append("<tr><td><h4>R" + ({{ session['active_domains']|last }} + i + 1) + "</h4></td></tr>");
-         $("#net_conf").append("<tr><td class=\"net" + (i+1) + "\"><p1>Number of interfaces:</p1> <p1 id=\"number_int_" + (i+1) + "\" hidden=\"hidden\"></p1><input name=" + "\"net" + (i+1) + "\" id=" + "\"net" + (i+1) + "\" type=number value=1 min=1 max=4 /></td></tr><br />");
+         $("#net_conf").append("<tr><td><h4>R" + ({{ session['active_r']|last }} + i + 1) + "</h4></td></tr>");
+         $("#net_conf").append("<tr><td class=\"net" + (i+1) + "\"><p1>Number of interfaces:</p1> <p1 id=\"number_int_" 
+            + (i+1) + "\" hidden=\"hidden\"></p1><input name=" + "\"net" + (i+1) + "\" id=" + "\"net" + (i+1) 
+            + "\" type=number value=1 min=1 max=4 /></td></tr><br />");
       }
       $("#net_conf").append("<br /><button type=\"button\" id=\"load_interface\">Load interface selection</button>");
    });
@@ -78,7 +80,7 @@
          $("#number_int_" + (i+1)).append(net_arr[i]);
          $("#number_int_" + (i+1)).removeAttr("hidden");
          for (j=0; j<net_arr[i]; j++) {
-            $("#net_conf tr:odd .net" + (i+1)).append("<br><p1>net" + (j+1) + ": </p1><select selected=\"nat\" name=\"interface_type\" id=\"interface_type\"><option value=\"nat\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>");
+            $("#net_conf tr:odd .net" + (i+1)).append("<br><p1>net" + (j+1) + ": </p1><select selected=\"NAT\" name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>");
          }
       }
    });

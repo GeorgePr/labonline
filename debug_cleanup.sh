@@ -12,3 +12,5 @@ for i in $(seq 1 20); do
 done
 
 cp /dev/null domains_xml/domains_r.txt
+
+rm -rf __pycache__

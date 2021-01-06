@@ -20,10 +20,10 @@ def favicon():
 	return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
 
 
-active_domains = []
-active_net_list = []
-net_list_conf = []
-active_net_list_conf = []
+active_r = []
+active_net_r = []
+netconf_r = []
+active_netconf_r = []
 
 
 @app.route('/', methods=['POST', 'GET'])
@@ -31,63 +31,63 @@ def index():
 	''' Handles index.html '''
 	session.permanent = True
 	session['current_page'] = request.endpoint
-	active_net_list = []
-	active_net_list_conf = []
+	active_net_r = []
+	active_netconf_r = []
 	print('INDEX')
-	if 'active_domains' not in session and 'active_net_list' not in session:
+	if 'active_r' not in session and 'active_net_r' not in session:
 		print('NO SESSION')
-		session['active_domains'] = active_domains
-		session['active_net_list'] = active_net_list
-		session['active_net_list_conf'] = active_net_list_conf
-	print('SESSION active_domains')
-	print(session['active_domains'])
-	active_net_list = session['active_net_list']
-	print(session['active_net_list'])
+		session['active_r'] = active_r
+		session['active_net_r'] = active_net_r
+		session['active_netconf_r'] = active_netconf_r
+	print('SESSION active_r')
+	print(session['active_r'])
+	active_net_r = session['active_net_r']
+	print(session['active_net_r'])
 	if request.method == 'POST':
 		num = request.form['nm']
 		session['num'] = num
-		net_list = []
+		net_r = []
 		for j in range(1, int(num)+1):
 			k = request.form['net' + str(j)]
-			net_list.append(k)
-		session['net_list'] = net_list
-		print('net_list')
-		print(net_list)
-		session['active_net_list'].extend(net_list)
+			net_r.append(k)
+		session['net_r'] = net_r
+		print('net_r')
+		print(net_r)
+		session['active_net_r'].extend(net_r)
 
 		net_conf_data = request.form
 		net_conf_data = net_conf_data.to_dict(flat = False)
 
 		j = 0
-		net_list_conf = [[] for i in range(len(net_list))]
+		netconf_r = [[] for i in range(len(net_r))]
 
-		for i in range(len(net_list)):
-			for elem in range(int(net_list[i])):
+		for i in range(len(net_r)):
+			for elem in range(int(net_r[i])):
 				print(net_conf_data['interface_type'][j])
-				net_list_conf[i].append(net_conf_data['interface_type'][j])
+				netconf_r[i].append(net_conf_data['interface_type'][j])
 				j = j + 1
 
-		session['net_list_conf'] = net_list_conf
-		print('SESSION net_list_conf')
-		print(session['net_list_conf'])
-		session['active_net_list_conf'].extend(net_list_conf)
-		print('SESSION active_net_list_conf')
-		print(session['active_net_list_conf'])
+		session['netconf_r'] = netconf_r
+		print('SESSION netconf_r')
+		print(session['netconf_r'])
+		session['active_netconf_r'].extend(netconf_r)
+		print('SESSION active_netconf_r')
+		print(session['active_netconf_r'])
 		try:
-			create_domains(num, net_list, net_list_conf)
+			create_domains(num, net_r, netconf_r)
 		except libvirt.libvirtError:
 			print('Domains have not been created')
 			return redirect(url_for('index'))
 		with open('domains_xml/domains_r.txt') as file:
 			for line in file.readlines():
 				line = line.split('\n')
-				if line != '\n' and line[0] not in session['active_domains']:
-					session['active_domains'].append(line[0])
+				if line != '\n' and line[0] not in session['active_r']:
+					session['active_r'].append(line[0])
 		return redirect(url_for('created'))
 	else:
 		print('INDEX GET')
-		return render_template('index.html', active_domains = active_domains, \
-			active_net_list = active_net_list, active_net_list_conf = active_net_list_conf)
+		return render_template('index.html', active_r = active_r, \
+			active_net_r = active_net_r, active_netconf_r = active_netconf_r)
 
 
 @app.route('/created', methods=['POST', 'GET'])
@@ -96,15 +96,15 @@ def created():
 	session['current_page'] = request.endpoint
 	number = session['num']
 	session['num'] = '0'
-	active_net_list = session['active_net_list']
-	print('SESSION active_net_list')
-	print(session['active_net_list'])
-	print('SESSION active_domains')
-	print(session['active_domains'])
-	active_net_list_conf = session['active_net_list_conf']
-	print(session['active_net_list_conf'])
-	return render_template('created.html', number = number, active_net_list = active_net_list, \
-		active_net_list_conf = active_net_list_conf, active_domains = active_domains)
+	active_net_r = session['active_net_r']
+	print('SESSION active_net_r')
+	print(session['active_net_r'])
+	print('SESSION active_r')
+	print(session['active_r'])
+	active_netconf_r = session['active_netconf_r']
+	print(session['active_netconf_r'])
+	return render_template('created.html', number = number, active_net_r = active_net_r, \
+		active_netconf_r = active_netconf_r, active_r = active_r)
 
 
 @app.route('/domain_start', methods=['POST', 'GET'])
@@ -136,19 +136,19 @@ def domain_remove():
 		for line in lines:
 			if domain_number not in line:
 				fout.write(line)
-	domain_index = session['active_domains'].index(domain_number)
-	if domain_number in session['active_domains']:
-		del session['active_domains'][domain_index]
-		print(session['active_domains'])
-		del session['active_net_list'][domain_index]
-		del session['active_net_list_conf'][domain_index]
+	domain_index = session['active_r'].index(domain_number)
+	if domain_number in session['active_r']:
+		del session['active_r'][domain_index]
+		print(session['active_r'])
+		del session['active_net_r'][domain_index]
+		del session['active_netconf_r'][domain_index]
 
-	active_domains = session['active_domains']
-	print(session['active_domains'])
-	print(session['active_net_list'])
-	active_net_list = session['active_net_list']
-	print(session['active_net_list_conf'])
-	active_net_list_conf = session['active_net_list_conf']
+	active_r = session['active_r']
+	print(session['active_r'])
+	print(session['active_net_r'])
+	active_net_r = session['active_net_r']
+	print(session['active_netconf_r'])
+	active_netconf_r = session['active_netconf_r']
 	return redirect(url_for(session['current_page']))
 
 
@@ -158,9 +158,9 @@ def domains_cleanup():
 	print('CLEANUP')
 	cleanup()
 	session.clear()
-	active_domains.clear()
-	active_net_list.clear()
-	active_net_list_conf.clear()
+	active_r.clear()
+	active_net_r.clear()
+	active_netconf_r.clear()
 	return redirect(url_for('index'))
 
 
