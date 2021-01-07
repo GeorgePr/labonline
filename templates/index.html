@@ -53,7 +53,19 @@
          }
       }
    });
-   
+   $(document).ready(function(){
+      var status = "{{ status|safe }}";
+      len = status.length;
+      for (i=2;i<len;i=i+5) {
+         if (status[i] === '5') {
+            $("#shutdown_" + (i+3)/5).attr("disabled", "disabled");
+            $("#console_" + (i+3)/5).attr("disabled", "disabled");
+         }
+         if (status[i] === '1') {
+            $("#start_" + (i+3)/5).attr("disabled", "disabled");
+         }
+      }
+   });
 </script>
 
 {% endblock %}
