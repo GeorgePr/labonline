@@ -1,4 +1,4 @@
-python.py
+python_*.py
 .env/
 __pycache__/
 .vscode/

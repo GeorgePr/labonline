@@ -109,7 +109,7 @@ def created():
 	print(status)
 
 	return render_template('created.html', number = number, active_net_r = active_net_r, \
-		active_netconf_r = active_netconf_r, active_r = active_r, status = json.dumps(status))
+		active_netconf_r = active_netconf_r, active_r = active_r, status = status)
 
 
 @app.route('/domain_start', methods=['POST', 'GET'])

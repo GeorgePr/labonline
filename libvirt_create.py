@@ -65,8 +65,11 @@ def create_domains(domains_input: str, net_r: list, netconf_r: list):
 		attr_name.text = 'nat' + str(j)
 
 		# Set UUID in new network XML file
+		b_hex = int('b0', 16)
+		uuid_last = j + b_hex
+		uuid_last = '{:02x}'.format(uuid_last)
 		uuid = root.find('./uuid')
-		uuid.text = '6ac5acf9-940b-41fc-87a7-1ae02af8ccb' + str(j)
+		uuid.text = '6ac5acf9-940b-41fc-87a7-1ae02af8cc' + uuid_last
 
 		# Set bridge name in new network XML file
 		bridge_name = root.find('./bridge')
@@ -74,7 +77,7 @@ def create_domains(domains_input: str, net_r: list, netconf_r: list):
 
 		# Set network MAC address in new network XML file
 		mac_add = root.find('./mac')
-		mac_add.set('mac', '52:54:00:b' + str(j) + ':4d:00')
+		mac_add.set('mac', '52:54:00:' + uuid_last + ':4d:00')
 
 		# Set host IP in new network XML file
 		host_ip = root.find('./dns/host')
@@ -90,7 +93,7 @@ def create_domains(domains_input: str, net_r: list, netconf_r: list):
 
 		# Set host MAC and IP in new network XML file
 		host = root.find('./ip/dhcp/host')
-		host.set('mac', '52:54:00:b' + str(j) + ':4d:01')
+		host.set('mac', '52:54:00:' + uuid_last + ':4d:01')
 		host.set('ip', '172.22.' + str(j) + '.1')
 
 		# Create XML for new network
@@ -106,8 +109,6 @@ def create_domains(domains_input: str, net_r: list, netconf_r: list):
 		nat_network.setAutostart(True)
 		nat_network.create()
 		print('Network nat' + str(j) + ' has been created\n', file = sys.stderr)
-
-
 
 		# Create domain
 		# Use sample domain XML
@@ -210,8 +211,11 @@ def create_domains(domains_input: str, net_r: list, netconf_r: list):
 					net_number = int(net_number[1])
 					interface = ET.Element('interface')
 					interface.set('type', 'bridge')
+					f_hex = int('f0', 16)
+					uuid_last = int_type + net_number + f_hex
+					uuid_last = '{:02x}'.format(uuid_last)
 					mac = ET.SubElement(interface, 'mac')
-					mac.set('address', '52:54:00:f' + str(int_type + net_number) + ':4d:' + k)
+					mac.set('address', '52:54:00:' + uuid_last + ':4d:' + k)
 					source = ET.SubElement(interface, 'source')
 					source.set('bridge', 'virbr' + str(int_type + net_number + 8))
 					target = ET.SubElement(interface, 'target')
@@ -234,7 +238,7 @@ def create_domains(domains_input: str, net_r: list, netconf_r: list):
 		interface = ET.Element('interface')
 		interface.set('type', 'network')
 		mac = ET.SubElement(interface, 'mac')
-		mac.set('address', '52:54:00:b' + str(j) + ':4d:01')
+		mac.set('address', '52:54:00:' + uuid_last + ':4d:01')
 		source = ET.SubElement(interface, 'source')
 		source.set('network', 'nat' + str(j))
 		source.set('bridge', 'virbr' + str(j+18))

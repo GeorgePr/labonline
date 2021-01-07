@@ -8,7 +8,7 @@
 
 
 {% block body %}
-
+<br />
 {% if number == '0' %}
     <p1></p1>
 {% elif number == '1' %}
@@ -16,39 +16,6 @@
 {% else %}
     <p1>{{number}} domains have been created</p1>
 {% endif %}
-
-<table id="active_table">
-    {% for p in range(session['active_r']|length): %}
-    <tr>
-        <td><h4>R{{ (session['active_r'][p])|string }}</h4></td>
-    </tr>
-    <tr>
-       <td>
-          {% set dom = 'R' + session['active_r'][p]|string %}
-          <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
-             <input type="submit" id="console" value="Console"></input>
-             <input type="hidden" name="hid" value="{{ p+1 }}" />
-          </form>
-          <form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
-             <input type="submit" id="start_R{{ session['active_r'][p]|string }}" value="Start"></input>
-             <input type="hidden" name="hid" value="{{ p+1 }}" />
-          </form>
-          <form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
-             <input type="submit" id="shutdown_R{{ session['active_r'][p]|string }}" value="Shutdown"></input>
-             <input type="hidden" name="hid" value="{{ p+1 }}" />
-          </form>
-          <form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
-             <input type="submit" value="Remove"></input>
-             <input type="hidden" name="hid" value="{{ p+1 }}" />
-          </form><br />
-          <p1>Number of interfaces: {{ active_net_r[p] }}</p1>
-          {% for i in range((active_net_r[p])|int): %}
-             <br /><p1>{{ session['active_netconf_r'][p][i] }}</p1>
-          {% endfor %}
-       </td>
-    </tr>
-    {% endfor %}
- </table>
 
 <br /><a href="{{ url_for('domains_cleanup') }}">Remove</a> all domains
 <br /><br />
@@ -63,16 +30,20 @@
    $(document).ready(function(){
       $("#load_interface").remove();
       $("#submit").removeAttr("disabled");
-      var status = "{{ status }}";
+      var status = "{{ status|safe }}";
+      len = status.length;
+      console.log(len);
       console.log(status);
       console.log($.type(status));
-      for (i=2;i<14;i=i+5) {
-         console.log(status[i])
-         if (status[i] === 5) {
-            $("#shutdown_R" + i).attr("disabled");
+      for (i=2;i<len;i=i+5) {
+         console.log(i);
+         if (status[i] === '5') {
+            console.log('DISABLED');
+            $("#shutdown_R" + i-2).attr("disabled", "disabled");
          }
-         if (status[i] === 1) {
-            $("#start_R{{ session['active_r'][i]|string }}").attr("disabled");
+         if (status[i] === '1') {
+            console.log('ENABLED');
+            $("#start_R{{ session['active_r'][i]|string }}").attr("disabled", "disabled");
          }
       }
    });
