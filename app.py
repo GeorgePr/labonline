@@ -24,7 +24,7 @@ active_r = []
 active_net_r = []
 netconf_r = []
 active_netconf_r = []
-
+status = []
 
 @app.route('/', methods=['POST', 'GET'])
 def index():
@@ -33,16 +33,19 @@ def index():
 	session['current_page'] = request.endpoint
 	active_net_r = []
 	active_netconf_r = []
-	print('INDEX')
+	status = []
 	if 'active_r' not in session and 'active_net_r' not in session:
 		print('NO SESSION')
 		session['active_r'] = active_r
 		session['active_net_r'] = active_net_r
 		session['active_netconf_r'] = active_netconf_r
+		session['status'] = status
+	active_net_r = session['active_net_r']
+	status = session['status']
 	print('SESSION active_r')
 	print(session['active_r'])
-	active_net_r = session['active_net_r']
 	print(session['active_net_r'])
+	print(session['status'])
 	if request.method == 'POST':
 		num_r = request.form['num_r']
 		session['num_r'] = num_r
@@ -58,10 +61,8 @@ def index():
 		net_conf_data = request.form
 		net_conf_data = net_conf_data.to_dict(flat = False)
 		print(net_conf_data)
-
 		j = 0
 		netconf_r = [[] for i in net_r]
-
 		for i in range(len(net_r)):
 			for elem in range(int(net_r[i])):
 				netconf_r[i].append(net_conf_data['interface_type'][j])
@@ -87,7 +88,8 @@ def index():
 	else:
 		print('INDEX GET')
 		return render_template('index.html', active_r = active_r, \
-			active_net_r = active_net_r, active_netconf_r = active_netconf_r)
+			active_net_r = active_net_r, active_netconf_r = active_netconf_r, \
+			status = session['status'])
 
 
 @app.route('/created', methods=['POST', 'GET'])
@@ -102,20 +104,24 @@ def created():
 	print(session['active_netconf_r'])
 
 	active_r = session['active_r']
-	status = []
+	session['status'] = []
 	for i in active_r:
 		dom_status = domain_status('R' + str(i))
-		status.extend(str(dom_status))
-	print(status)
+		session['status'].extend(str(dom_status))
+	print(session['status'])
 
 	return render_template('created.html', number = number, active_net_r = active_net_r, \
-		active_netconf_r = active_netconf_r, active_r = active_r, status = status)
+		active_netconf_r = active_netconf_r, active_r = active_r, status = session['status'])
 
 
 @app.route('/domain_start', methods=['POST', 'GET'])
 def domain_start():
 	''' Starts selected domain '''
 	domain = request.args.get('domain')
+	domain_number = domain.split('R', )
+	domain_number = str(domain_number[1])
+	domain_index = session['active_r'].index(domain_number)
+	session['status'][domain_index] = '1'
 	start_domain(domain)
 	return redirect(url_for(session['current_page']))
 
@@ -124,6 +130,10 @@ def domain_start():
 def domain_shutdown():
 	''' Shuts down selected domain '''
 	domain = request.args.get('domain')
+	domain_number = domain.split('R', )
+	domain_number = str(domain_number[1])
+	domain_index = session['active_r'].index(domain_number)
+	session['status'][domain_index] = '5'
 	shutdown_domain(domain)
 	return redirect(url_for(session['current_page']))
 
@@ -146,6 +156,7 @@ def domain_remove():
 		del session['active_r'][domain_index]
 		del session['active_net_r'][domain_index]
 		del session['active_netconf_r'][domain_index]
+		del session['status'][domain_index]
 
 	print(session['active_r'])
 	print(session['active_net_r'])

@@ -2,21 +2,18 @@
 
 {% block head %}
 <title>Created | LabOnLine</title>
-<link rel="stylesheet" href="{{ url_for('static', filename='css/drag.css')}}">
-
+<link rel="stylesheet" href="{{ url_for('static', filename='css/drag.css') }}">
 {% endblock %}
 
 
 {% block body %}
-
 {% if number == '0' %}
-    <p1></p1>
+   <p1></p1>
 {% elif number == '1' %}
-    <p1>{{number}} domain has been created</p1>
+   <p1>{{number}} domain has been created</p1>
 {% else %}
-    <p1>{{number}} domains have been created</p1>
+   <p1>{{number}} domains have been created</p1>
 {% endif %}
-
 
 <br /><a href="{{ url_for('domains_cleanup') }}">Remove</a> all domains
 <br /><br />
@@ -27,19 +24,6 @@
 <script>
    $(function() {
       $(".draggable").draggable();
-   });
-   $(document).ready(function(){
-      var status = "{{ status|safe }}";
-      len = status.length;
-      for (i=2;i<len;i=i+5) {
-         if (status[i] === '5') {
-            $("#shutdown_" + (i+3)/5).attr("disabled", "disabled");
-            $("#console_" + (i+3)/5).attr("disabled", "disabled");
-         }
-         if (status[i] === '1') {
-            $("#start_" + (i+3)/5).attr("disabled", "disabled");
-         }
-      }
    });
 </script>
 

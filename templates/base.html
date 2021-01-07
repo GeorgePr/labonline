@@ -1,49 +1,65 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css')}}">
-    <link rel="preconnect" href="https://fonts.gstatic.com">
-    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+   <link rel="preconnect" href="https://fonts.gstatic.com">
+   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap">
+   <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+   <script src="//code.jquery.com/jquery-1.10.2.js"></script>
+   <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+   <script>
+      $(document).ready(function(){
+         var status = "{{ status|safe }}";
+         len = status.length;
+         for (i=2;i<len;i=i+5) {
+            if (status[i] === '5') {
+               $("#shutdown_" + (i+3)/5).attr("disabled", "disabled");
+               $("#console_" + (i+3)/5).attr("disabled", "disabled");
+            }
+            if (status[i] === '1') {
+               $("#start_" + (i+3)/5).attr("disabled", "disabled");
+            }
+         }
+      });
+   </script>
 
-    <script src="//code.jquery.com/jquery-1.10.2.js"></script>
-    <script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
-
-    {% block head %}{% endblock %}
+   {% block head %}{% endblock %}
 </head>
 <body>
-    <h2><a href={{ url_for('index') }}>LabOnLine</a></h2>
+   <h2><a href={{ url_for('index') }}>LabOnLine</a></h2>
 
-    <table id="active_table">
-        {% for p in range(session['active_r']|length): %}
-        <tr>
-            <td><h4>R{{ (session['active_r'][p])|string }}</h4></td>
-        </tr>
-        <tr>
-           <td>
-              {% set dom = 'R' + session['active_r'][p]|string %}
-              <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
-                 <input type="submit" id="console_{{ p+1 }}" value="Console"></input>
-              </form>
-              <form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
-                 <input type="submit" id="start_{{ p+1 }}" value="Start"></input>
-              </form>
-              <form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
-                 <input type="submit" id="shutdown_{{ p+1 }}" value="Shutdown"></input>
-              </form>
-              <form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
-                 <input type="submit" value="Remove"></input>
-              </form><br />
-              <p1>Number of interfaces: {{ active_net_r[p] }}</p1>
-              {% for i in range((active_net_r[p])|int): %}
-                 <br /><p1>{{ session['active_netconf_r'][p][i] }}</p1>
-              {% endfor %}
-           </td>
-        </tr>
-        {% endfor %}
-     </table>
-    {% block body %}{% endblock %}
+   <table id="active_table">
+      {% for p in range(session['active_r']|length): %}
+      <tr>
+         <td><h4>R{{ (session['active_r'][p])|string }}</h4></td>
+      </tr>
+      <tr>
+         <td>
+            {% set dom = 'R' + session['active_r'][p]|string %}
+            <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
+               <input type="submit" id="console_{{ p+1 }}" value="Console"></input>
+            </form>
+            <form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
+               <input type="submit" id="start_{{ p+1 }}" value="Start"></input>
+            </form>
+            <form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
+               <input type="submit" id="shutdown_{{ p+1 }}" value="Shutdown"></input>
+            </form>
+            <form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
+               <input type="submit" value="Remove"></input>
+            </form><br />
+            <p1>Number of interfaces: {{ active_net_r[p] }}</p1>
+            {% for i in range((active_net_r[p])|int): %}
+               <br /><p1>{{ session['active_netconf_r'][p][i] }}</p1>
+            {% endfor %}
+         </td>
+      </tr>
+      {% endfor %}
+   </table>
+
+   {% block body %}{% endblock %}
+   
 </body>
 </html>

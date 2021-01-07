@@ -6,9 +6,6 @@
 
 
 {% block body %}
-
-
-
 <form method="POST">
    <p>Select number of routers to create
    {% if session['active_r'] != [] %}
@@ -32,7 +29,7 @@
       $("#number").removeAttr("hidden");
       $("#number").append(param);
       for (var i=0; i<param; i++) {
-         $("#net_conf").append("<tr><td><h4>R" + ({{ session['active_r']|last }} + i + 1) + "</h4></td></tr>");
+         $("#net_conf").append("<tr><td><h4>R" + ({{ session['active_r']|last }} + (i+1)) + "</h4></td></tr>");
          $("#net_conf").append("<tr><td class=\"net" + (i+1) + "\"><p1>Number of interfaces:</p1> <p1 id=\"number_int_" 
             + (i+1) + "\" hidden=\"hidden\"></p1><input name=" + "\"net" + (i+1) + "\" id=" + "\"net" + (i+1) 
             + "\" type=number value=1 min=1 max=4 /></td></tr><br />");
@@ -53,19 +50,5 @@
          }
       }
    });
-   $(document).ready(function(){
-      var status = "{{ status|safe }}";
-      len = status.length;
-      for (i=2;i<len;i=i+5) {
-         if (status[i] === '5') {
-            $("#shutdown_" + (i+3)/5).attr("disabled", "disabled");
-            $("#console_" + (i+3)/5).attr("disabled", "disabled");
-         }
-         if (status[i] === '1') {
-            $("#start_" + (i+3)/5).attr("disabled", "disabled");
-         }
-      }
-   });
 </script>
-
 {% endblock %}
