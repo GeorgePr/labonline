@@ -20,6 +20,8 @@
 {% for p in range(session['active_r']|length): %}
    <div class="draggable">R{{ (session['active_r'][p])|string }}</div><br />
 {% endfor %}
+<a href={{ url_for('leases') }}>DHCP Leases</a>
+
 
 <script>
    $(function() {

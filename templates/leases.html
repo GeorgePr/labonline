@@ -1,0 +1,15 @@
+{% block head %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+<title>DHCP Leases | LabOnLine</title>
+{% endblock %}
+
+
+{% block body %}
+<h2><a href={{ url_for('index') }}>LabOnLine</a></h2><br />
+DHCP Leases:<br /><br />
+
+{% for lease in active_net_leases: %}
+   {{ lease }}<br />
+{% endfor %}
+
+{% endblock %}

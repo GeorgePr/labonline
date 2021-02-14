@@ -3,6 +3,7 @@
 import sys
 import os
 import libvirt
+import time
 
 # This file handles functions for each individual domain
 # Functions: start, shutdown, remove, status
@@ -151,3 +152,27 @@ def domain_status(domain: str):
 	# Return domain status
 	domain_state = dom.info()[0]
 	return domain_state
+
+
+def dhcp_leases():
+	try:
+		conn = libvirt.open('qemu:///system')
+	except libvirt.libvirtError:
+		print('Failed to connect to the hypervisor')
+		sys.exit(1)
+	
+	networks = conn.listNetworks()
+	networks.sort()
+	active_net_leases = []
+	for network in networks:
+		net = conn.networkLookupByName(network)
+		leases = net.DHCPLeases()
+		if leases != []:
+			active_net_leases.append(network)
+			for lease in leases:
+				active_net_leases.append(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(lease['expirytime'])))
+				active_net_leases.append(lease['mac'])
+				addr_prefix = str(lease['ipaddr']) + '/' + str(lease['prefix'])
+				active_net_leases.append(addr_prefix)
+				active_net_leases.append(lease['hostname'])
+	return(active_net_leases)

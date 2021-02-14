@@ -6,7 +6,7 @@ import json
 from flask import Flask, send_from_directory, render_template, url_for, request, redirect, session
 import libvirt
 from libvirt_create import create_domains
-from libvirt_domain import start_domain, shutdown_domain, remove_domain, domain_status
+from libvirt_domain import start_domain, shutdown_domain, remove_domain, domain_status, dhcp_leases
 from cleanup import cleanup
 
 
@@ -178,7 +178,7 @@ def domains_cleanup():
 
 @app.route('/xterm/<domain>', methods=['POST', 'GET'])
 def xterm(domain):
-	''' Opens console of selected domain '''
+	''' Opens console for selected domain '''
 	inp = domain.split('R', )
 	inp = int(inp[1])
 	with open('domains_xml/domains_r.txt') as file:
@@ -188,6 +188,13 @@ def xterm(domain):
 			return redirect(xterm_url)
 		else:
 			return render_template('404.html')
+
+
+@app.route('/leases', methods=['GET', 'POST'])
+def leases():
+	''' Lists info on DHCP leases '''
+	active_net_leases = dhcp_leases()
+	return render_template('leases.html', active_net_leases = active_net_leases)
 
 
 if __name__ == '__main__':
