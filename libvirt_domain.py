@@ -170,9 +170,11 @@ def dhcp_leases():
 		if leases != []:
 			active_net_leases.append(network)
 			for lease in leases:
-				active_net_leases.append(time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(lease['expirytime'])))
-				active_net_leases.append(lease['mac'])
+				expiry = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(lease['expirytime']))
+				mac = lease['mac']
 				addr_prefix = str(lease['ipaddr']) + '/' + str(lease['prefix'])
-				active_net_leases.append(addr_prefix)
-				active_net_leases.append(lease['hostname'])
+				hostname = lease['hostname']
+				dhcp_entry = expiry + ' ' + mac + ' ' + addr_prefix + ' ' + hostname
+				active_net_leases.append(dhcp_entry)
+	print(active_net_leases)
 	return(active_net_leases)
