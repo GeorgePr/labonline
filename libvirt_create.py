@@ -66,10 +66,10 @@ def create_domains(domains_input: str, net_r: list, netconf_r: list):
 
 		# Set UUID in new network XML file
 		b_hex = int('b0', 16)
-		uuid_last = j + b_hex
-		uuid_last = '{:02x}'.format(uuid_last)
+		uuid_last_mgmt = j + b_hex
+		uuid_last_mgmt = '{:02x}'.format(uuid_last_mgmt)
 		uuid = root.find('./uuid')
-		uuid.text = '6ac5acf9-940b-41fc-87a7-1ae02af8cc' + uuid_last
+		uuid.text = '6ac5acf9-940b-41fc-87a7-1ae02af8cc' + uuid_last_mgmt
 
 		# Set bridge name in new network XML file
 		bridge_name = root.find('./bridge')
@@ -77,7 +77,7 @@ def create_domains(domains_input: str, net_r: list, netconf_r: list):
 
 		# Set network MAC address in new network XML file
 		mac_add = root.find('./mac')
-		mac_add.set('mac', '52:54:00:' + uuid_last + ':4d:00')
+		mac_add.set('mac', '52:54:00:' + uuid_last_mgmt + ':4d:00')
 
 		# Set host IP in new network XML file
 		host_ip = root.find('./dns/host')
@@ -93,7 +93,7 @@ def create_domains(domains_input: str, net_r: list, netconf_r: list):
 
 		# Set host MAC and IP in new network XML file
 		host = root.find('./ip/dhcp/host')
-		host.set('mac', '52:54:00:' + uuid_last + ':4d:01')
+		host.set('mac', '52:54:00:' + uuid_last_mgmt + ':4d:01')
 		host.set('ip', '172.22.' + str(j) + '.1')
 
 		# Create XML for new network
@@ -238,7 +238,7 @@ def create_domains(domains_input: str, net_r: list, netconf_r: list):
 		interface = ET.Element('interface')
 		interface.set('type', 'network')
 		mac = ET.SubElement(interface, 'mac')
-		mac.set('address', '52:54:00:' + uuid_last + ':4d:01')
+		mac.set('address', '52:54:00:' + uuid_last_mgmt + ':4d:01')
 		source = ET.SubElement(interface, 'source')
 		source.set('network', 'nat' + str(j))
 		source.set('bridge', 'virbr' + str(j+18))
