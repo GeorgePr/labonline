@@ -1,5 +1,5 @@
 appdirs==1.4.4
-astroid==2.4.2
+astroid==2.5.1
 click==7.1.2
 distlib==0.3.1
 dnspython==2.1.0
@@ -10,11 +10,11 @@ isort==5.7.0
 itsdangerous==1.1.0
 Jinja2==2.11.3
 lazy-object-proxy==1.5.2
-libvirt-python==7.0.0
+libvirt-python==7.1.0
 MarkupSafe==1.1.1
 mccabe==0.6.1
 ptyprocess==0.7.0
-pylint==2.6.0
+pylint==2.7.2
 python-dotenv==0.15.0
 python-engineio==4.0.0
 simplejson==3.17.2
