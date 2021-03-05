@@ -7,18 +7,20 @@
 
 {% block body %}
 <form method="POST">
-   <p>Select number of routers to create
-   {% if session['active_r'] != [] %}
+   <p>Select number of VMs to create
+   {% if session['active_r'] != [] or session['active_pc'] != [] %}
       or <a href="{{ url_for('domains_cleanup') }}">remove</a> all domains</p>
    {% endif %}
 
    <p>Press Load to configure network interfaces:</p>
-   Routers: <input name="num_r" id="num_r" type=number value=1 min=1 max=24>
+   Routers: <input name="num_r" id="num_r" type=number value=1 min=0 max=24>
    <p1 id="number_r" hidden="hidden"></p1>
-   PCs: <input name="num_pc" id="num_pc" type=number value=1 min=1 max=24>
+   PCs: <input name="num_pc" id="num_pc" type=number value=1 min=0 max=24>
    <p1 id="number_pc" hidden="hidden"></p1>
    <button type="button" id="load">Load</button>
-   <table id="net_conf">
+   <table id="net_conf_r">
+   </table>
+   <table id="net_conf_pc">
    </table>
    <p><input type="submit" disabled="disabled" id="submit" value="Submit"></p>
 </form><br />
@@ -37,30 +39,42 @@
       $("#number_r").append(param_r);
       $("#number_pc").append(param_pc);
       for (var i=0; i<param_r; i++) {
-         $("#net_conf").append("<tr><td><h4>R" + ({{ session['active_r']|last }} + (i+1)) + "</h4></td></tr>");
-         $("#net_conf").append("<tr><td class=\"net" + (i+1) + "\"><p1>Number of interfaces:</p1> <p1 id=\"number_int_" 
-            + (i+1) + "\" hidden=\"hidden\"></p1><input name=" + "\"net" + (i+1) + "\" id=" + "\"net" + (i+1) 
+         $("#net_conf_r").append("<tr><td><h4>R" + ({{ session['active_r']|last }} + (i+1)) + "</h4></td></tr>");
+         $("#net_conf_r").append("<tr><td class=\"net_r" + (i+1) + "\"><p1>Number of interfaces:</p1> <p1 id=\"number_int_r" 
+            + (i+1) + "\" hidden=\"hidden\"></p1><input name=" + "\"net_r" + (i+1) + "\" id=" + "\"net_r" + (i+1) 
             + "\" type=number value=1 min=1 max=4 /></td></tr><br />");
       }
       for (var i=0; i<param_pc; i++) {
-         $("#net_conf").append("<tr><td><h4>PC" + ({{ session['active_r']|last }} + (i+1)) + "</h4></td></tr>");
-         $("#net_conf").append("<tr><td class=\"net" + (i+1) + "\"><p1>Number of interfaces:</p1> <p1 id=\"number_int_" 
-            + (i+1) + "\" hidden=\"hidden\"></p1><input name=" + "\"net" + (i+1) + "\" id=" + "\"net" + (i+1) 
+         $("#net_conf_pc").append("<tr><td><h4>PC" + ({{ session['active_pc']|last }} + (i+1)) + "</h4></td></tr>");
+         $("#net_conf_pc").append("<tr><td class=\"net_pc" + (i+1) + "\"><p1>Number of interfaces:</p1> <p1 id=\"number_int_pc" 
+            + (i+1) + "\" hidden=\"hidden\"></p1><input name=" + "\"net_pc" + (i+1) + "\" id=" + "\"net_pc" + (i+1) 
             + "\" type=number value=1 min=1 max=4 /></td></tr><br />");
       }
-      $("#net_conf").append("<br /><button type=\"button\" id=\"load_interface\">Load interface selection</button>");
+      $("#net_conf_pc").append("<br /><button type=\"button\" id=\"load_interface\">Load interface selection</button>");
    });
    $(document).on("click", "#load_interface", function(){
       $("#load_interface").remove();
       $("#submit").removeAttr("disabled");
-      var net_arr = new Array();
+      var net_arr_r = new Array();
       for (i=0; i<param_r; i++) {
-         net_arr[i] = parseInt($("#net" + (i+1)).val());
-         $("#net" + (i+1)).attr("hidden", "hidden");
-         $("#number_int_" + (i+1)).append(net_arr[i]);
-         $("#number_int_" + (i+1)).removeAttr("hidden");
-         for (j=0; j<net_arr[i]; j++) {
-            $("#net_conf tr:odd .net" + (i+1)).append("<br><p1>net" + (j+1) + ": </p1><select selected=\"NAT\" name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>");
+         net_arr_r[i] = parseInt($("#net_r" + (i+1)).val());
+         $("#net_r" + (i+1)).attr("hidden", "hidden");
+         $("#number_int_r" + (i+1)).append(net_arr_r[i]);
+         $("#number_int_r" + (i+1)).removeAttr("hidden");
+         for (j=0; j<net_arr_r[i]; j++) {
+            $("#net_conf_r tr:odd .net_r" + (i+1)).append("<br><p1>Interface " + (j+1)
+               + ": </p1><select selected=\"NAT\"name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>");
+         }
+      }
+      var net_arr_pc = new Array();
+      for (i=0; i<param_pc; i++) {
+         net_arr_pc[i] = parseInt($("#net_pc" + (i+1)).val());
+         $("#net_pc" + (i+1)).attr("hidden", "hidden");
+         $("#number_int_pc" + (i+1)).append(net_arr_pc[i]);
+         $("#number_int_pc" + (i+1)).removeAttr("hidden");
+         for (j=0; j<net_arr_pc[i]; j++) {
+            $("#net_conf_pc tr:odd .net_pc" + (i+1)).append("<br><p1>Interface " + (j+1)
+               + ": </p1><select selected=\"NAT\" name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>");
          }
       }
    });

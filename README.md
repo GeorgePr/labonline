@@ -30,8 +30,8 @@ Each domain is named R[n] and has a number of interfaces specified by the user. 
 
 **python3 cleanup.py**
 
-Reads defined domain indices in domains_r.txt file to find existing domains.
-Then it removes all existing domains and removes the contents of domains_r.txt file.
+Reads defined domain indices in domains.txt file to find existing domains.
+Then it removes all existing domains and removes the contents of domains.txt file.
 
 
 ## Directories
