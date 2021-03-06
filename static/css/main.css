@@ -39,6 +39,6 @@ table tr:nth-child(even) {
   padding-bottom: 10px;
 }
 
-#active_table, #net_conf {
+#active_table_r, #active_table_pc, #net_conf {
   border-collapse: collapse;
 }

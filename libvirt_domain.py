@@ -22,7 +22,7 @@ def init_conn():
 		sys.exit(1)
 
 def create_router(netconf_r: list):
-	''' Creates a domain '''
+	''' Creates a router '''
 
 	# Find existing routers
 	with open('domains_xml/domains.txt', 'r') as f:
@@ -274,7 +274,7 @@ def create_router(netconf_r: list):
 
 
 def create_pc(netconf_pc: list):
-	''' Creates a domain '''
+	''' Creates a PC '''
 
 	# Find existing PCs
 	with open('domains_xml/domains.txt', 'r') as f:

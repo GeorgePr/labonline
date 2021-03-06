@@ -27,23 +27,14 @@
             <script>
                $(document).ready(function(){
                   var domain = "{{ dom }}";
-                  console.log(domain);
-                  var status_r = "{{ status_r|safe }}";
-                  var status = new Array();
-                  len = status_r.length;
-                  var j = 0;
-                  for (i=2;i<len;i=i+5) {
-                     if (status_r[i] == '5') {
-                        status[j] = status_r[i];
-                        $("#shutdown_" + domain).attr("disabled", "disabled");
-                        $("#console_" + domain).attr("disabled", "disabled");
-                     }
-                     if (status_r[i] == '1') {
-                        status[j] = status_r[i];
-                        $("#start_" + domain).attr("disabled", "disabled");
-                     }
-                     j = j++;
-                     console.log(status);
+                  var p = "{{ p }}";
+                  var status_r = {{ status_r|safe }};
+                  if (status_r[p] == '5') {
+                     $("#shutdown_" + domain).attr("disabled", "disabled");
+                     $("#console_" + domain).attr("disabled", "disabled");
+                  }
+                  if (status_r[p] == '1') {
+                     $("#start_" + domain).attr("disabled", "disabled");
                   }
                });
             </script>
@@ -61,7 +52,7 @@
             </form><br />
             <p1>Number of interfaces: {{ active_net_r[p] }}</p1>
             {% for i in range((active_net_r[p])|int): %}
-               <br /><p1>{{ session['active_netconf'][p][i] }}</p1>
+               <br /><p1>{{ session['active_netconf_r'][p][i] }}</p1>
             {% endfor %}
          </td>
       </tr>
@@ -70,19 +61,33 @@
    <table id="active_table_pc">
       {% for p in range(session['active_pc']|length): %}
       <tr>
-         <td><h4>R{{ (session['active_pc'][p])|string }}</h4></td>
+         <td><h4>{{ (session['active_pc'][p])|string }}</h4></td>
       </tr>
       <tr>
          <td>
-            {% set dom = 'PC' + session['active_pc'][p]|string %}
+            {% set dom = session['active_pc'][p]|string %}
+            <script>
+               $(document).ready(function(){
+                  var domain = "{{ dom }}";
+                  var p = "{{ p }}";
+                  var status_pc = {{ status_pc|safe }};
+                  if (status_pc[p] == '5') {
+                     $("#shutdown_" + domain).attr("disabled", "disabled");
+                     $("#console_" + domain).attr("disabled", "disabled");
+                  }
+                  if (status_pc[p] == '1') {
+                     $("#start_" + domain).attr("disabled", "disabled");
+                  }
+               });
+            </script>
             <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
-               <input type="submit" id="console_{{ p+1 }}" value="Console"></input>
+               <input type="submit" id="console_{{ dom }}" value="Console"></input>
             </form>
             <form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
-               <input type="submit" id="start_{{ p+1 }}" value="Start"></input>
+               <input type="submit" id="start_{{ dom }}" value="Start"></input>
             </form>
             <form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
-               <input type="submit" id="shutdown_{{ p+1 }}" value="Shutdown"></input>
+               <input type="submit" id="shutdown_{{ dom }}" value="Shutdown"></input>
             </form>
             <form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
                <input type="submit" value="Remove"></input>

@@ -1,8 +1,6 @@
 ''' This script contains cleanup function '''
 
 import os
-import sys
-import re
 import libvirt
 from libvirt_domain import init_conn
 
@@ -11,18 +9,7 @@ def cleanup():
 
 	# Open domains.txt file (read)
 	with open('domains_xml/domains.txt', 'r') as f:
-		dom_numbers = []
-		max_pc = 0
-		max_r = 0
 		lines = f.read().splitlines()
-		for domain in lines:
-			dom_number = int(re.sub('[PCR]', '', domain))
-			if 'R' in domain:
-				max_r = dom_number
-			if 'PC' in domain:
-				max_pc = dom_number
-			dom_numbers.append(dom_number)
-		print(dom_numbers, max_r, max_pc)
 
 	if lines != []:
 		for dom_name in lines:

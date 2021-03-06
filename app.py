@@ -3,6 +3,7 @@
 import os
 from datetime import timedelta
 import json
+import re
 from flask import Flask, send_from_directory, render_template, url_for, request, redirect, session
 import libvirt
 from libvirt_domain import create_router, create_pc, start_domain, shutdown_domain, remove_domain, domain_status, dhcp_leases
@@ -13,7 +14,6 @@ active_r = []
 active_pc = []
 active_net_r = []
 active_net_pc = []
-netconf = []
 active_netconf_r = []
 active_netconf_pc = []
 status_r = []
@@ -45,7 +45,7 @@ def index():
 	active_netconf_pc = []
 	status_r = []
 	status_pc = []
-	if 'active_r' not in session and 'active_net_r' not in session:
+	if 'active_r' not in session  and 'active_pc' not in session:
 		print('NO SESSION')
 		session['active_r'] = active_r
 		session['active_pc'] = active_pc
@@ -61,12 +61,9 @@ def index():
 	active_net_pc = session['active_net_pc']
 	status_r = session['status_r']
 	status_pc = session['status_pc']
-	print('SESSION active_r', session['active_r'])
-	print('SESSION active_pc', session['active_pc'])
-	print('SESSION active_net_r', session['active_net_r'])
-	print('SESSION active_net_pc', session['active_net_pc'])
-	print('SESSION status_r', session['status_r'])
-	print('SESSION status_pc', session['status_pc'])
+	print(session['active_r'], session['active_pc'])
+	print(session['active_net_r'], session['active_net_pc'])
+	print(session['status_r'], session['status_pc'])
 	if request.method == 'POST':
 		num_r = request.form['num_r']
 		num_pc = request.form['num_pc']
@@ -82,8 +79,6 @@ def index():
 			net_pc.append(k)
 		session['net_r'] = net_r
 		session['net_pc'] = net_pc
-		print('net_r', net_r)
-		print('net_pc', net_pc)
 		session['active_net_r'].extend(net_r)
 		session['active_net_pc'].extend(net_pc)
 
@@ -110,8 +105,8 @@ def index():
 		session['netconf_pc'] = netconf_pc
 		session['active_netconf_r'].extend(netconf_r)
 		session['active_netconf_pc'].extend(netconf_pc)
-		print('SESSION active_netconf_r', session['active_netconf_r'])
-		print('SESSION active_netconf_pc', session['active_netconf_pc'])
+		print(session['active_netconf_r'], session['active_netconf_pc'])
+
 		for key, val in enumerate(netconf_r):
 			try:
 				create_router(netconf_r[key])
@@ -128,19 +123,22 @@ def index():
 		with open('domains_xml/domains.txt', 'r') as file:
 			for line in file.readlines():
 				line = line.split('\n')
-				if line != '\n' and line[0] not in session['active_r']:
-					if 'R' in line:
-						session['active_r'].append(line[0])
-					if 'PC' in line:
-						session['active_pc'].append(line[0])
+				line = line[0]
+				if 'R' in line and line not in session['active_r']:
+					session['active_r'].append(line)
+				if 'PC' in line and line not in session['active_pc']:
+					session['active_pc'].append(line)
+		active_r = session['active_r']
+		active_pc = session['active_pc']
+
 		return redirect(url_for('created'))
 	else:
 		print('INDEX GET')
 		return render_template('index.html',
-			active_r = json.dumps(active_r), active_pc = json.dumps(active_pc), \
+			active_r = active_r, active_pc = active_pc, \
 			active_net_r = active_net_r, active_net_pc = active_net_pc, \
 			active_netconf_r = active_netconf_r, active_netconf_pc = active_netconf_pc, \
-			status_r = session['status_r'], status_pc = session['status_pc'])
+			status_r = json.dumps(session['status_r']), status_pc = json.dumps(session['status_pc']))
 
 
 @app.route('/created', methods=['POST', 'GET'])
@@ -152,37 +150,28 @@ def created():
 	number_pc = session['num_pc']
 	session['num_r'] = '0'
 	session['num_pc'] = '0'
-
-	active_r = session['active_r']
-	active_pc = session['active_pc']
-	active_net_r = session['active_net_r']
-	active_net_pc = session['active_net_pc']
-	active_netconf_r = session['active_netconf_r']
-	active_netconf_pc = session['active_netconf_pc']
 	
-	print('SESSION active_r', session['active_r'])
-	print('SESSION active_pc', session['active_pc'])
-	print('SESSION active_net_r', session['active_net_r'])
-	print('SESSION active_net_pc', session['active_net_pc'])
-	print('SESSION active_netconf_r', session['active_netconf_r'])
-	print('SESSION active_netconf_pc', session['active_netconf_pc'])
+	print(session['active_r'], session['active_pc'])
+	print(session['active_net_r'], session['active_net_pc'])
+	print(session['active_netconf_r'], session['active_netconf_pc'])
 
 	session['status_r'] = []
-	session['status_pc'] = []
-	for i in active_r:
+	for i in session['active_r']:
 		dom_status = domain_status(i)
 		session['status_r'].extend(str(dom_status))
 	print(session['status_r'])
-	for i in active_pc:
+
+	session['status_pc'] = []
+	for i in session['active_pc']:
 		dom_status = domain_status(i)
 		session['status_pc'].extend(str(dom_status))
 	print(session['status_pc'])
 
 	return render_template('created.html', \
 		number_r = number_r, number_pc = number_pc, \
-		active_r = json.dumps(active_r), active_pc = json.dumps(active_pc), \
-		active_net_r = active_net_r, active_net_pc = active_net_pc, \
-		active_netconf_r = active_netconf_r, active_netconf_pc = active_netconf_pc, \
+		active_r = json.dumps(session['active_r']), active_pc = json.dumps(session['active_pc']), \
+		active_net_r = session['active_net_r'], active_net_pc = session['active_net_pc'], \
+		active_netconf_r = session['active_netconf_r'], active_netconf_pc = session['active_netconf_pc'], \
 		status_r = session['status_r'], status_pc = session['status_pc'])
 
 
@@ -190,9 +179,13 @@ def created():
 def domain_start():
 	''' Starts selected domain '''
 	domain = request.args.get('domain')
-	domain_index = session['active_r'].index(domain)
-	session['status_r'][domain_index] = '1'
 	start_domain(domain)
+	if 'R' in domain:
+		domain_index = session['active_r'].index(domain)
+		session['status_r'][domain_index] = '1'
+	if 'PC' in domain:
+		domain_index = session['active_pc'].index(domain)
+		session['status_pc'][domain_index] = '1'
 	return redirect(url_for(session['current_page']))
 
 
@@ -200,9 +193,13 @@ def domain_start():
 def domain_shutdown():
 	''' Shuts down selected domain '''
 	domain = request.args.get('domain')
-	domain_index = session['active_r'].index(domain)
-	session['status_r'][domain_index] = '5'
 	shutdown_domain(domain)
+	if 'R' in domain:
+		domain_index = session['active_r'].index(domain)
+		session['status_r'][domain_index] = '5'
+	if 'PC' in domain:
+		domain_index = session['active_pc'].index(domain)
+		session['status_pc'][domain_index] = '5'
 	return redirect(url_for(session['current_page']))
 
 
@@ -217,16 +214,20 @@ def domain_remove():
 		for line in lines:
 			if domain not in line:
 				fout.write(line)
-	domain_index = session['active_r'].index(domain)
-	if domain in session['active_r']:
-		del session['active_r'][domain_index]
-		del session['active_net_r'][domain_index]
-		del session['active_netconf'][domain_index]
-		del session['status_r'][domain_index]
-
-	print(session['active_r'])
-	print(session['active_net_r'])
-	print(session['active_netconf'])
+	if 'R' in domain:
+		domain_index = session['active_r'].index(domain)
+		if domain in session['active_r']:
+			del session['active_r'][domain_index]
+			del session['active_net_r'][domain_index]
+			del session['active_netconf_r'][domain_index]
+			del session['status_r'][domain_index]
+	if 'PC' in domain:
+		domain_index = session['active_pc'].index(domain)
+		if domain in session['active_pc']:
+			del session['active_pc'][domain_index]
+			del session['active_net_pc'][domain_index]
+			del session['active_netconf_pc'][domain_index]
+			del session['status_pc'][domain_index]
 	return redirect(url_for(session['current_page']))
 
 
@@ -236,21 +237,30 @@ def domains_cleanup():
 	print('CLEANUP')
 	cleanup()
 	session.clear()
+
 	active_r.clear()
+	active_pc.clear()
 	active_net_r.clear()
-	active_netconf.clear()
+	active_net_pc.clear()
+	active_netconf_r.clear()
+	active_netconf_pc.clear()
+	status_r.clear()
+	status_pc.clear()
+
 	return redirect(url_for('index'))
 
 
 @app.route('/xterm/<domain>', methods=['POST', 'GET'])
 def xterm(domain):
 	''' Opens console for selected domain '''
-	inp = domain.split('R', )
-	inp = int(inp[1])
+	second_octet = '21'
+	if 'R' in domain:
+		second_octet = '22'
+	domain_number = re.sub('[PCR]', '', domain)
 	with open('domains_xml/domains.txt') as file:
-		if str(inp) in file.read():
+		if domain in file.read():
 			print('Exists')
-			xterm_url = 'http://172.22.' + str(inp) + '.1'
+			xterm_url = 'http://172.' + second_octet + '.' + domain_number + '.1'
 			return redirect(xterm_url)
 		else:
 			return render_template('404.html')
