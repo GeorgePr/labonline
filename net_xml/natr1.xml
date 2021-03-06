@@ -1,0 +1,17 @@
+<network>
+  <name>natr1</name>
+  <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8ccb1</uuid>
+  <forward mode="nat" />
+  <bridge stp="on" delay="0" name="virbr19" />
+  <mac mac="52:54:00:b1:4d:00" />
+  <dns>
+    <host ip="172.22.1.1">
+      <hostname>R1</hostname>
+    </host>
+  </dns>
+  <ip netmask="255.255.255.0" address="172.22.1.200">
+    <dhcp>
+      <host mac="52:54:00:b1:4d:01" ip="172.22.1.1" />
+    </dhcp>
+  </ip>
+</network>

@@ -5,8 +5,7 @@ from datetime import timedelta
 import json
 from flask import Flask, send_from_directory, render_template, url_for, request, redirect, session
 import libvirt
-from libvirt_create import create_router, create_pc
-from libvirt_domain import start_domain, shutdown_domain, remove_domain, domain_status, dhcp_leases
+from libvirt_domain import create_router, start_domain, shutdown_domain, remove_domain, domain_status, dhcp_leases
 from cleanup import cleanup
 
 
@@ -75,7 +74,7 @@ def index():
 		print('SESSION netconf', session['netconf'])
 		session['active_netconf'].extend(netconf)
 		print('SESSION active_netconf', session['active_netconf'])
-		for key,val in enumerate(num_r):
+		for key, val in enumerate(netconf):
 			try:
 				create_router(netconf[key])
 			except libvirt.libvirtError:
@@ -148,16 +147,14 @@ def domain_remove():
 	''' Removes selected domain '''
 	domain = request.args.get('domain')
 	remove_domain(domain)
-	domain_number = domain.split('R', )
-	domain_number = str(domain_number[1])
 	with open('domains_xml/domains.txt', 'r') as fin:
 		lines = fin.readlines()
 	with open('domains_xml/domains.txt', 'w') as fout:
 		for line in lines:
-			if domain_number not in line:
+			if domain not in line:
 				fout.write(line)
-	domain_index = session['active_r'].index(domain_number)
-	if domain_number in session['active_r']:
+	domain_index = session['active_r'].index(domain)
+	if domain in session['active_r']:
 		del session['active_r'][domain_index]
 		del session['active_net_r'][domain_index]
 		del session['active_netconf'][domain_index]

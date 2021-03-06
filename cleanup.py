@@ -44,17 +44,17 @@ def cleanup():
 
 			# Remove management network
 			try:
-				network = conn.networkLookupByName('nat' + str(dom_name))
+				network = conn.networkLookupByName('nat' + str(dom_name.lower()))
 				network.destroy()
 				network.undefine()
-				print('Removing network nat' + str(dom_name) + '...')
+				print('Removing network nat' + str(dom_name.lower()) + '...')
 
 			except libvirt.libvirtError:
 				print('Could not remove network')
 
 			# Remove network XML
 			abs_path = os.path.dirname(__file__)
-			xml_dest = os.path.join(abs_path, 'net_xml/nat' + str(dom_name) + '.xml')
+			xml_dest = os.path.join(abs_path, 'net_xml/nat' + str(dom_name.lower()) + '.xml')
 			os.remove(xml_dest)
 
 			# Remove domain XML and image

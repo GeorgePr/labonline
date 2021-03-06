@@ -56,14 +56,16 @@
       $("#load_interface").remove();
       $("#submit").removeAttr("disabled");
       var net_arr_r = new Array();
+      var interface_select = '</p1><select selected=\"NAT\"name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>';
       for (i=0; i<param_r; i++) {
          net_arr_r[i] = parseInt($("#net_r" + (i+1)).val());
          $("#net_r" + (i+1)).attr("hidden", "hidden");
          $("#number_int_r" + (i+1)).append(net_arr_r[i]);
          $("#number_int_r" + (i+1)).removeAttr("hidden");
+         
          for (j=0; j<net_arr_r[i]; j++) {
             $("#net_conf_r tr:odd .net_r" + (i+1)).append("<br><p1>Interface " + (j+1)
-               + ": </p1><select selected=\"NAT\"name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>");
+               + ":" + interface_select);
          }
       }
       var net_arr_pc = new Array();
@@ -74,7 +76,7 @@
          $("#number_int_pc" + (i+1)).removeAttr("hidden");
          for (j=0; j<net_arr_pc[i]; j++) {
             $("#net_conf_pc tr:odd .net_pc" + (i+1)).append("<br><p1>Interface " + (j+1)
-               + ": </p1><select selected=\"NAT\" name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>");
+               + ":" + interface_select);
          }
       }
    });
