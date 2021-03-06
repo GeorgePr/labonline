@@ -39,6 +39,7 @@ After selecting the desired network modes, VMs are initialized by pressing
 "Submit".
 
 Once the VMs are created, the user can perform the following actions per VM:
+
 - Start VM (if it is not running)
 - Shutdown VM (if it is running)
 - Open console (in new tab)
@@ -50,11 +51,39 @@ The user can also remove all VMs at once.
 
 ## Directories
 
-Template image: `images/BSDRP_linked.qcow2` (linked clone of `images/BSDRP.qcow2`)
-                `images/FreeBSD_linked.qcow2` (linked clone of `images/FreeBSD.qcow2`)
+### Domain XML files
 
-Created images: `images/R#.qcow2`, `images/PC#.qcow2`   (# is the domain index)
+**Directory:** `domains_xml/`
 
-XML sample: `sample_domain.xml`
+Template XML:
+- `sample_domain.xml`
 
-Domain XML files: `domains_xml/`
+Created XML files:
+- `domains_xml/[PC|R]#.xml`
+(# is the domain index)
+
+### Domain images
+
+**Directory:** `images/`
+
+Template images:
+- `BSDRP_linked.qcow2` (linked clone of `BSDRP.qcow2`)
+- `FreeBSD_linked.qcow2` (linked clone of `FreeBSD.qcow2`)
+
+Created images: 
+- `[PC|R]#.qcow2`
+(# is the domain index)
+
+### Network XML files
+
+**Directory:** `net_xml/`
+
+Template NAT XML (management network):
+- `sample_nat.xml`
+
+Defined networks:
+- `bridge.xml`
+- `hostonly[1-4].xml`
+- `LAN[1-5].xml`
+- `network[1-4].xml`
+- `WAN[1-5].xml`

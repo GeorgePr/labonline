@@ -4,15 +4,10 @@ import os
 import sys
 import re
 import libvirt
+from libvirt_domain import init_conn
 
 def cleanup():
 	''' Removes all domains and management networks '''
-	# Initialize connection
-	try:
-		conn = libvirt.open("qemu:///system")
-	except libvirt.libvirtError:
-		print('Failed to connect to the hypervisor')
-		sys.exit(1)
 
 	# Open domains.txt file (read)
 	with open('domains_xml/domains.txt', 'r') as f:
@@ -33,7 +28,7 @@ def cleanup():
 		for dom_name in lines:
 			print('Removing ' + str(dom_name) + '...')
 			try:
-				dom = conn.lookupByName(str(dom_name))
+				dom = init_conn().lookupByName(str(dom_name))
 				try:
 					dom.destroy()
 				except libvirt.libvirtError:
@@ -44,7 +39,7 @@ def cleanup():
 
 			# Remove management network
 			try:
-				network = conn.networkLookupByName('nat' + str(dom_name.lower()))
+				network = init_conn().networkLookupByName('nat' + str(dom_name.lower()))
 				network.destroy()
 				network.undefine()
 				print('Removing network nat' + str(dom_name.lower()) + '...')
@@ -65,10 +60,6 @@ def cleanup():
 	else:
 		print('No defined domains')
 
-
 	# Remove contents of domains.txt
 	with open('domains_xml/domains.txt', 'w+') as f:
 		pass
-
-	# Close connection
-	conn.close()

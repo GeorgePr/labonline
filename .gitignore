@@ -2,7 +2,8 @@ python_*.py
 .env/
 __pycache__/
 .vscode/
-domains_xml/R*.xml
+domains_xml/[PC|R]*.xml
+net_xml/nat[pc|r]*.xml
 *.code-workspace
 .pylintrc
 images/*

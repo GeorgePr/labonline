@@ -1,25 +1,26 @@
-''' This script contains functions which handle domain initialization,
-startup, shutdown, status report, and removal. It contains a function
-for printing DHCP leases. '''
+''' This script contains functions which handle connection to qemu, 
+domain initialization, startup, shutdown, status report, removal, 
+and a function for printing DHCP leases. '''
 
 from shutil import copyfile
-import xml.etree.ElementTree as ET
+from lxml import etree
 import re
 import sys
 import os
 import libvirt
 import time
 
-
-def create_router(netconf: list):
-	''' Creates a domain '''
-
-	# Initialize connection
+def init_conn():
+	''' Initializes the connection to qemu '''
 	try:
 		conn = libvirt.open('qemu:///system')
+		return conn
 	except libvirt.libvirtError:
 		print('Failed to connect to the hypervisor')
 		sys.exit(1)
+
+def create_router(netconf: list):
+	''' Creates a domain '''
 
 	# Find and print existing domains
 	dom_number = 0
@@ -54,7 +55,7 @@ def create_router(netconf: list):
 	xml_file = 'net_xml/sample_nat.xml'
 
 	# Get tree root in network XML file
-	tree = ET.parse(xml_file)
+	tree = etree.parse(xml_file)
 	root = tree.getroot()
 
 	# Set name in new network XML file
@@ -100,7 +101,7 @@ def create_router(netconf: list):
 	xmlconfig = xml_open.read()
 
 	# Create network from new XML file
-	nat_network = conn.networkDefineXML(xmlconfig)
+	nat_network = init_conn().networkDefineXML(xmlconfig)
 
 	# Set as autostart and start network
 	nat_network.setAutostart(True)
@@ -112,7 +113,8 @@ def create_router(netconf: list):
 	xml_file = 'domains_xml/sample_domain.xml'
 
 	# Get tree root in domain XML file
-	tree = ET.parse(xml_file)
+	parser = etree.XMLParser(remove_blank_text=True)
+	tree = etree.parse(xml_file, parser)
 	root = tree.getroot()
 
 	# Set name in new domain XML file
@@ -132,20 +134,20 @@ def create_router(netconf: list):
 		current_interface = val
 
 		if current_interface == 'NAT':
-			interface = ET.Element('interface')
+			interface = etree.Element('interface')
 			interface.set('type', 'network')
-			mac = ET.SubElement(interface, 'mac')
+			mac = etree.SubElement(interface, 'mac')
 			mac.set('address', '52:54:00:c' + str(i+1) + ':4d:' + k)
-			source = ET.SubElement(interface, 'source')
+			source = etree.SubElement(interface, 'source')
 			source.set('network', 'network' + str(i+1))
 			source.set('bridge', 'virbr' + str(i))
-			target = ET.SubElement(interface, 'target')
+			target = etree.SubElement(interface, 'target')
 			target.set('dev', 'vnet' + str(i))
-			model = ET.SubElement(interface, 'model')
+			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
-			alias = ET.SubElement(interface, 'alias')
+			alias = etree.SubElement(interface, 'alias')
 			alias.set('name', 'net' + str(i))
-			address = ET.SubElement(interface, 'address')
+			address = etree.SubElement(interface, 'address')
 			address.set('type', 'pci')
 			address.set('domain', '0x0000')
 			address.set('bus', '0x00')
@@ -154,19 +156,19 @@ def create_router(netconf: list):
 			devices.append(interface)
 
 		elif current_interface == 'hostonly':
-			interface = ET.Element('interface')
+			interface = etree.Element('interface')
 			interface.set('type', 'bridge')
-			mac = ET.SubElement(interface, 'mac')
+			mac = etree.SubElement(interface, 'mac')
 			mac.set('address', '52:54:00:d' + str(i+1) + ':4d:' + k)
-			source = ET.SubElement(interface, 'source')
+			source = etree.SubElement(interface, 'source')
 			source.set('bridge', 'virbr' + str(i+4))
-			target = ET.SubElement(interface, 'target')
+			target = etree.SubElement(interface, 'target')
 			target.set('dev', 'vnet' + str(i))
-			model = ET.SubElement(interface, 'model')
+			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
-			alias = ET.SubElement(interface, 'alias')
+			alias = etree.SubElement(interface, 'alias')
 			alias.set('name', 'net' + str(i))
-			address = ET.SubElement(interface, 'address')
+			address = etree.SubElement(interface, 'address')
 			address.set('type', 'pci')
 			address.set('domain', '0x0000')
 			address.set('bus', '0x00')
@@ -175,19 +177,19 @@ def create_router(netconf: list):
 			devices.append(interface)
 
 		elif current_interface == 'bridge':
-			interface = ET.Element('interface')
+			interface = etree.Element('interface')
 			interface.set('type', 'bridge')
-			mac = ET.SubElement(interface, 'mac')
+			mac = etree.SubElement(interface, 'mac')
 			mac.set('address', '52:54:00:e1:4d:' + k)
-			source = ET.SubElement(interface, 'source')
+			source = etree.SubElement(interface, 'source')
 			source.set('bridge', 'virbr8')
-			target = ET.SubElement(interface, 'target')
+			target = etree.SubElement(interface, 'target')
 			target.set('dev', 'vnet' + str(i+4))
-			model = ET.SubElement(interface, 'model')
+			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
-			alias = ET.SubElement(interface, 'alias')
+			alias = etree.SubElement(interface, 'alias')
 			alias.set('name', 'net' + str(i))
-			address = ET.SubElement(interface, 'address')
+			address = etree.SubElement(interface, 'address')
 			address.set('type', 'pci')
 			address.set('domain', '0x0000')
 			address.set('bus', '0x00')
@@ -204,22 +206,22 @@ def create_router(netconf: list):
 					int_type = 5
 				net_number = current_interface.split(regex_match[0], )
 				net_number = int(net_number[1])
-				interface = ET.Element('interface')
+				interface = etree.Element('interface')
 				interface.set('type', 'bridge')
 				f_hex = int('f0', 16)
 				uuid_last = int_type + net_number + f_hex
 				uuid_last = '{:02x}'.format(uuid_last)
-				mac = ET.SubElement(interface, 'mac')
+				mac = etree.SubElement(interface, 'mac')
 				mac.set('address', '52:54:00:' + uuid_last + ':4d:' + k)
-				source = ET.SubElement(interface, 'source')
+				source = etree.SubElement(interface, 'source')
 				source.set('bridge', 'virbr' + str(int_type + net_number + 8))
-				target = ET.SubElement(interface, 'target')
+				target = etree.SubElement(interface, 'target')
 				target.set('dev', 'vnet' + str(i))
-				model = ET.SubElement(interface, 'model')
+				model = etree.SubElement(interface, 'model')
 				model.set('type', 'e1000')
-				alias = ET.SubElement(interface, 'alias')
+				alias = etree.SubElement(interface, 'alias')
 				alias.set('name', 'net' + str(i))
-				address = ET.SubElement(interface, 'address')
+				address = etree.SubElement(interface, 'address')
 				address.set('type', 'pci')
 				address.set('domain', '0x0000')
 				address.set('bus', '0x00')
@@ -230,20 +232,20 @@ def create_router(netconf: list):
 		i = i + 1
 
 	# Define management interface
-	interface = ET.Element('interface')
+	interface = etree.Element('interface')
 	interface.set('type', 'network')
-	mac = ET.SubElement(interface, 'mac')
+	mac = etree.SubElement(interface, 'mac')
 	mac.set('address', '52:54:00:' + uuid_last_mgmt + ':4d:01')
-	source = ET.SubElement(interface, 'source')
+	source = etree.SubElement(interface, 'source')
 	source.set('network', 'nat' + dom_name.lower())
 	source.set('bridge', 'virbr' + str(j+18))
-	target = ET.SubElement(interface, 'target')
+	target = etree.SubElement(interface, 'target')
 	target.set('dev', 'vnet' + str(i))
-	model = ET.SubElement(interface, 'model')
+	model = etree.SubElement(interface, 'model')
 	model.set('type', 'virtio')
-	alias = ET.SubElement(interface, 'alias')
+	alias = etree.SubElement(interface, 'alias')
 	alias.set('name', 'net' + str(i))
-	address = ET.SubElement(interface, 'address')
+	address = etree.SubElement(interface, 'address')
 	address.set('type', 'pci')
 	address.set('domain', '0x0000')
 	address.set('bus', '0x00')
@@ -253,12 +255,11 @@ def create_router(netconf: list):
 
 	# Create XML for new domain
 	xml_dest = 'domains_xml/' + dom_name + '.xml'
-	tree.write(xml_dest)
-	xml_open = open(xml_dest)
-	xmlconfig = xml_open.read()
+	tree.write(xml_dest, pretty_print=True)
 
 	# Create domain from new XML file
-	dom = conn.defineXML(xmlconfig)
+	with open(xml_dest, 'r') as xmlconfig:
+		dom = init_conn().defineXML(xmlconfig.read())
 
 	# Start domain
 	dom.create()
@@ -272,34 +273,21 @@ def create_router(netconf: list):
 	print('Defined domains:')
 	with open('domains_xml/domains.txt', 'r') as f:
 		dom_numbers = []
-		max_pc = 0
 		max_r = 0
 		lines = f.read().splitlines()
 		for domain in lines:
 			dom_number = int(re.sub('[PCR]', '', domain))
 			if 'R' in domain:
 				max_r = dom_number
-			if 'PC' in domain:
-				max_pc = dom_number
 			dom_numbers.append(dom_number)
-
-	# Close connection
-	conn.close()
 
 
 def start_domain(domain: str):
 	''' Starts selected domain '''
 
-	# Initialize connection
-	try:
-		conn = libvirt.open('qemu:///system')
-	except libvirt.libvirtError:
-		print('Failed to connect to the hypervisor')
-		sys.exit(1)
-
 	# Check if domain exists
 	try:
-		dom = conn.lookupByName(domain)
+		dom = init_conn().lookupByName(domain)
 	except libvirt.libvirtError:
 		print('Domain not found')
 		sys.exit(1)
@@ -316,23 +304,13 @@ def start_domain(domain: str):
 	elif domain_state == libvirt.VIR_DOMAIN_RUNNING:
 		print('Domain is running')
 
-	# Close connection
-	conn.close()
-
 
 def shutdown_domain(domain: str):
 	''' Shuts down selected domain '''
 
-	# Initialize connection
-	try:
-		conn = libvirt.open('qemu:///system')
-	except libvirt.libvirtError:
-		print('Failed to connect to the hypervisor')
-		sys.exit(1)
-
 	# Check if domain exists
 	try:
-		dom = conn.lookupByName(domain)
+		dom = init_conn().lookupByName(domain)
 	except libvirt.libvirtError:
 		print('Domain not found')
 		sys.exit(1)
@@ -349,23 +327,13 @@ def shutdown_domain(domain: str):
 	elif domain_state == libvirt.VIR_DOMAIN_SHUTOFF:
 		print('Domain is not running')
 
-	# Close connection
-	conn.close()
-
 
 def remove_domain(domain: str):
 	''' Removes selected domain and management network '''
 
-	# Initialize connection
-	try:
-		conn = libvirt.open('qemu:///system')
-	except libvirt.libvirtError:
-		print('Failed to connect to the hypervisor')
-		sys.exit(1)
-
 	# Check if domain exists
 	try:
-		dom = conn.lookupByName(domain)
+		dom = init_conn().lookupByName(domain)
 	except libvirt.libvirtError:
 		print('Domain not found')
 		sys.exit(1)
@@ -392,7 +360,7 @@ def remove_domain(domain: str):
 
 	# Remove management network
 	try:
-		network = conn.networkLookupByName('nat' + domain.lower())
+		network = init_conn().networkLookupByName('nat' + domain.lower())
 		network.destroy()
 		network.undefine()
 		abs_path = os.path.dirname(__file__)
@@ -402,29 +370,16 @@ def remove_domain(domain: str):
 	except libvirt.libvirtError:
 		print('Could not remove network')
 
-	# Close connection
-	conn.close()
-
 
 def domain_status(domain: str):
 	''' Returns domain status '''
 
-	# Initialize connection
-	try:
-		conn = libvirt.open('qemu:///system')
-	except libvirt.libvirtError:
-		print('Failed to connect to the hypervisor')
-		sys.exit(1)
-
 	# Check if domain exists
 	try:
-		dom = conn.lookupByName(domain)
+		dom = init_conn().lookupByName(domain)
 	except libvirt.libvirtError:
 		print('Domain not found')
 		sys.exit(1)
-
-	# Close connection
-	conn.close()
 
 	# Return domain status
 	domain_state = dom.info()[0]
@@ -432,17 +387,13 @@ def domain_status(domain: str):
 
 
 def dhcp_leases():
-	try:
-		conn = libvirt.open('qemu:///system')
-	except libvirt.libvirtError:
-		print('Failed to connect to the hypervisor')
-		sys.exit(1)
+	''' Returns DHCP leases '''
 	
-	networks = conn.listNetworks()
+	networks = init_conn().listNetworks()
 	networks.sort()
 	active_net_leases = []
 	for network in networks:
-		net = conn.networkLookupByName(network)
+		net = init_conn().networkLookupByName(network)
 		leases = net.DHCPLeases()
 		if leases != []:
 			active_net_leases.append(network)
@@ -453,5 +404,4 @@ def dhcp_leases():
 				hostname = lease['hostname']
 				dhcp_entry = expiry + ' ' + mac + ' ' + addr_prefix + ' ' + hostname
 				active_net_leases.append(dhcp_entry)
-	print(active_net_leases)
 	return(active_net_leases)
