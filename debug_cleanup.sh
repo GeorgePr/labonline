@@ -1,6 +1,6 @@
 #!/bin/sh
 
-for i in $(seq 1 20); do
+for i in $(seq 1 24); do
     virsh net-destroy natpc${i}
     virsh net-undefine natpc${i}
     rm net_xml/natpc${i}.xml

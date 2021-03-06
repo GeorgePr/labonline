@@ -1,6 +1,6 @@
 <network>
   <name>network1</name>
-  <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8ccd1</uuid>
+  <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8ccfb</uuid>
   <forward mode='nat'/>
   <bridge name='virbr0' stp='on' delay='0'/>
   <mac address='52:54:00:c1:4d:00'/>
