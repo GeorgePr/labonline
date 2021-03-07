@@ -34,33 +34,26 @@ def favicon():
 @app.route('/', methods=['POST', 'GET'])
 def index():
 	''' Handles index.html '''
+
 	session.permanent = True
 	session['current_page'] = request.endpoint
 
-	active_r = []
-	active_pc = []
 	active_net_r = []
 	active_net_pc = []
 	active_netconf_r = []
 	active_netconf_pc = []
-	status_r = []
-	status_pc = []
 	if 'active_r' not in session  and 'active_pc' not in session:
 		print('NO SESSION')
-		session['active_r'] = active_r
-		session['active_pc'] = active_pc
-		session['active_net_r'] = active_net_r
-		session['active_net_pc'] = active_net_pc
-		session['active_netconf_r'] = active_netconf_r
-		session['active_netconf_pc'] = active_netconf_pc
-		session['status_r'] = status_r
-		session['status_pc'] = status_pc
-	active_r = session['active_r']
-	active_pc = session['active_pc']
+		session['active_r'] = []
+		session['active_pc'] = []
+		session['active_net_r'] = []
+		session['active_net_pc'] = []
+		session['active_netconf_r'] = []
+		session['active_netconf_pc'] = []
+		session['status_r'] = []
+		session['status_pc'] = []
 	active_net_r = session['active_net_r']
 	active_net_pc = session['active_net_pc']
-	status_r = session['status_r']
-	status_pc = session['status_pc']
 	print(session['active_r'], session['active_pc'])
 	print(session['active_net_r'], session['active_net_pc'])
 	print(session['status_r'], session['status_pc'])
@@ -71,27 +64,27 @@ def index():
 		session['num_pc'] = num_pc
 		net_r = []
 		net_pc = []
+
+		print(request.form)
 		for j in range(1, int(num_r)+1):
 			k = request.form['net_r' + str(j)]
 			net_r.append(k)
 		for j in range(1, int(num_pc)+1):
 			k = request.form['net_pc' + str(j)]
 			net_pc.append(k)
-		session['net_r'] = net_r
-		session['net_pc'] = net_pc
+
 		session['active_net_r'].extend(net_r)
 		session['active_net_pc'].extend(net_pc)
 
-		net_conf_data = request.form
-		net_conf_data = net_conf_data.to_dict(flat = False)
+		net_conf_data = request.form.to_dict(flat = False)
 		print(net_conf_data)
+		
 		j = 0
 		netconf_r = [[] for i in net_r]
 		for i in range(len(net_r)):
 			for elem in range(int(net_r[i])):
 				netconf_r[i].append(net_conf_data['interface_type'][j])
 				j = j + 1
-		print('netconf_r', netconf_r)
 
 		j = 0
 		netconf_pc = [[] for i in net_pc]
@@ -99,7 +92,8 @@ def index():
 			for elem in range(int(net_pc[i])):
 				netconf_pc[i].append(net_conf_data['interface_type'][j])
 				j = j + 1
-		print('netconf_pc', netconf_pc)
+		
+		print(netconf_r, netconf_pc)
 
 		session['netconf_r'] = netconf_r
 		session['netconf_pc'] = netconf_pc
@@ -128,14 +122,11 @@ def index():
 					session['active_r'].append(line)
 				if 'PC' in line and line not in session['active_pc']:
 					session['active_pc'].append(line)
-		active_r = session['active_r']
-		active_pc = session['active_pc']
-
+		
 		return redirect(url_for('created'))
 	else:
-		print('INDEX GET')
 		return render_template('index.html',
-			active_r = active_r, active_pc = active_pc, \
+			active_r = session['active_r'], active_pc = session['active_pc'], \
 			active_net_r = active_net_r, active_net_pc = active_net_pc, \
 			active_netconf_r = active_netconf_r, active_netconf_pc = active_netconf_pc, \
 			status_r = json.dumps(session['status_r']), status_pc = json.dumps(session['status_pc']))
@@ -144,29 +135,28 @@ def index():
 @app.route('/created', methods=['POST', 'GET'])
 def created():
 	''' Handles created.html '''
+
 	session['current_page'] = request.endpoint
 
 	number_r = session['num_r']
 	number_pc = session['num_pc']
 	session['num_r'] = '0'
 	session['num_pc'] = '0'
+	session['status_r'] = []
+	session['status_pc'] = []
+
+	for i in session['active_r']:
+		session['status_r'].extend(str(domain_status(i)))
+	for i in session['active_pc']:
+		session['status_pc'].extend(str(domain_status(i)))
 	
 	print(session['active_r'], session['active_pc'])
 	print(session['active_net_r'], session['active_net_pc'])
 	print(session['active_netconf_r'], session['active_netconf_pc'])
+	print(session['status_r'], session['status_pc'])
 
-	session['status_r'] = []
-	for i in session['active_r']:
-		dom_status = domain_status(i)
-		session['status_r'].extend(str(dom_status))
-	print(session['status_r'])
-
-	session['status_pc'] = []
-	for i in session['active_pc']:
-		dom_status = domain_status(i)
-		session['status_pc'].extend(str(dom_status))
-	print(session['status_pc'])
-
+	if session['active_r'] == [] and session['active_pc'] == []:
+		return(redirect(url_for('index')))
 	return render_template('created.html', \
 		number_r = number_r, number_pc = number_pc, \
 		active_r = json.dumps(session['active_r']), active_pc = json.dumps(session['active_pc']), \
@@ -178,6 +168,7 @@ def created():
 @app.route('/domain_start', methods=['POST', 'GET'])
 def domain_start():
 	''' Starts selected domain '''
+
 	domain = request.args.get('domain')
 	start_domain(domain)
 	if 'R' in domain:
@@ -192,6 +183,7 @@ def domain_start():
 @app.route('/domain_shutdown', methods=['POST', 'GET'])
 def domain_shutdown():
 	''' Shuts down selected domain '''
+
 	domain = request.args.get('domain')
 	shutdown_domain(domain)
 	if 'R' in domain:
@@ -206,6 +198,7 @@ def domain_shutdown():
 @app.route('/domain_remove', methods=['POST', 'GET'])
 def domain_remove():
 	''' Removes selected domain '''
+
 	domain = request.args.get('domain')
 	remove_domain(domain)
 	with open('domains_xml/domains.txt', 'r') as fin:
@@ -234,6 +227,7 @@ def domain_remove():
 @app.route('/domains_cleanup', methods=['POST', 'GET'])
 def domains_cleanup():
 	''' Removes all domains '''
+
 	print('CLEANUP')
 	cleanup()
 	session.clear()
@@ -253,6 +247,7 @@ def domains_cleanup():
 @app.route('/xterm/<domain>', methods=['POST', 'GET'])
 def xterm(domain):
 	''' Opens console for selected domain '''
+
 	second_octet = '21'
 	if 'R' in domain:
 		second_octet = '22'
@@ -269,6 +264,7 @@ def xterm(domain):
 @app.route('/leases', methods=['GET', 'POST'])
 def leases():
 	''' Lists info on DHCP leases '''
+
 	active_net_leases = dhcp_leases()
 	return render_template('leases.html', active_net_leases = active_net_leases)
 

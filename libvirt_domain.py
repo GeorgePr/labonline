@@ -14,12 +14,14 @@ import time
 
 def init_conn():
 	''' Initializes the connection to qemu '''
+	
 	try:
 		conn = libvirt.open('qemu:///system')
 		return conn
 	except libvirt.libvirtError:
 		print('Failed to connect to the hypervisor')
 		sys.exit(1)
+
 
 def create_router(netconf_r: list):
 	''' Creates a router '''
