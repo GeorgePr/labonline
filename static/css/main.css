@@ -47,13 +47,15 @@ select {
 }
 
 div[id^='circle'] {
-	width: 11pt;
-	height: 11pt;
-	border-radius: 12pt;
+	width: 9.5pt;
+	height: 9.5pt;
+	border-radius: 9.5pt;
 	display: inline-block;
+	box-shadow: 0 0 1pt 0.5pt #9b9b9b;
 }
 
 .control {
+	background-color: #ffffff;
 	border-width: 0pt;
 	border-radius: 2pt;
 }
@@ -63,12 +65,22 @@ div[id^='circle'] {
 	color: #919191;
 }
 
+input[id^='num'] {
+	border-width: 1pt;
+	border-radius: 2.5pt;
+}
+
+input[id^='net'] {
+	border-width: 1pt;
+	border-radius: 2.5pt;
+}
+
 input[id^='start'] {
-	background-color: #32cd32;
+	background-color: #009e26;
 }
 
 input[id^='shutdown'] {
-	background-color: #da1b41;
+	background-color: #d7292f;
 }
 
 #submit {
@@ -99,33 +111,15 @@ input[id^='shutdown'] {
 	padding-bottom: 5pt;
 }
 
-#router, #pc {
-	display: inline-block;
-	background-color: #e6e6e6;
-	border-style: solid;
-	border-width: 1pt;
-	border-radius: 2.5pt;
-	border-color: rgb(87, 87, 87);
-	padding-top: 1pt;
-	padding-bottom: 3pt;
-	padding-left: 6pt;
-	padding-right: 6pt;
-	margin-bottom: 4pt;
-	box-shadow: 0 0 0.5pt 0.5pt rgb(192, 192, 192);
-}
-
-#router:hover, #pc:hover {
-	box-shadow: 0 0 5pt 1pt rgb(192, 192, 192);
-}
-
 .draggable {
-	background: #e6e6e6;
-	width: 120pt;
-	padding: 0 0 0 30pt;
-	margin-top: 5pt;
-	margin-bottom: 5pt;
+	background-color: #e6e6e6;
+	padding-top: 1pt;
+	padding-bottom: 2pt;
+	padding-left: 25pt;
+	padding-right: 7pt;
+	margin-top: 4pt;
+	margin-bottom: 4pt;
 	color: #000000;
-	line-height: 50px;
 	cursor: url(cursors/openhand.cur), all-scroll;
 	cursor: grab;
 	transition: transform 0.2s, box-shadow 0.2s;
@@ -142,19 +136,18 @@ input[id^='shutdown'] {
 .draggable:active {
 	cursor: url(cursors/closedhand.cur), all-scroll;
 	cursor: grabbing;
-
-	transform: scale(1.06, 1.06);
-	box-shadow: rgba(0, 0, 0, 0.7)x 8px;
+	transform: scale(1.05, 1.05);
+	box-shadow: #000000b3 8px;
 }
 
 .draggable:before {
 	content: '.';
 	position: absolute;
-	left: 14px;
-	font-size: 20px;
-	line-height: 26px;
-	color: #000000;
-	text-shadow: 0 5px #000000, 0 10px #000000, 5px 0 #000000, 5px 5px #000000, 5px 10px #000000, 10px 0 #000000, 10px 5px #000000, 10px 10px #000000;
+	left: 6pt;
+	font-size: 16pt;
+	top: 30%;
+	color: #4e4e4e;
+	text-shadow: 0 5px #4e4e4e, 0 10px #4e4e4e, 5px 0 #4e4e4e, 5px 5px #4e4e4e, 5px 10px #4e4e4e, 10px 0 #4e4e4e, 10px 5px #4e4e4e, 10px 10px #4e4e4e;
 }
 
 .shot {
