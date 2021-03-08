@@ -32,6 +32,58 @@ h4 {
 	font-weight: 600;
 	margin-top: 2pt;
 	margin-bottom: 2pt;
+	display: inline-block;
+}
+
+button, input {
+	font-size: 10pt;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
+}
+
+select {
+	background-color: #f5f5f5;
+	border-radius: 2pt;
+}
+
+div[id^='circle'] {
+	width: 11pt;
+	height: 11pt;
+	border-radius: 12pt;
+	display: inline-block;
+}
+
+.control {
+	border-width: 0pt;
+	border-radius: 2pt;
+}
+
+.control:disabled {
+	background-color: #ececec;
+	color: #919191;
+}
+
+input[id^='start'] {
+	background-color: #32cd32;
+}
+
+input[id^='shutdown'] {
+	background-color: #da1b41;
+}
+
+#submit {
+	background-color: #008afc;
+	color: #ffffff;
+	font-size: 12pt;
+	font-weight: 620;
+	padding: 8pt 20pt;
+	border-width: 0pt;
+	border-radius: 7pt;
+}
+
+#submit:disabled {
+	background-color: #ececec;
+	color: #919191;
 }
 
 #new_vm_numbers {
@@ -49,7 +101,7 @@ h4 {
 
 #router, #pc {
 	display: inline-block;
-	background-color: #e4e4e4;
+	background-color: #e6e6e6;
 	border-style: solid;
 	border-width: 1pt;
 	border-radius: 2.5pt;
@@ -64,4 +116,47 @@ h4 {
 
 #router:hover, #pc:hover {
 	box-shadow: 0 0 5pt 1pt rgb(192, 192, 192);
+}
+
+.draggable {
+	background: #e6e6e6;
+	width: 120pt;
+	padding: 0 0 0 30pt;
+	margin-top: 5pt;
+	margin-bottom: 5pt;
+	color: #000000;
+	line-height: 50px;
+	cursor: url(cursors/openhand.cur), all-scroll;
+	cursor: grab;
+	transition: transform 0.2s, box-shadow 0.2s;
+	border-radius: 2.5pt;
+	box-shadow: #000000 0 0 3px;
+	display: inline-block;
+}
+
+.draggable:hover {
+	transform: scale(1.02, 1.02);
+	box-shadow: #000000 0 1px 3px;
+}
+
+.draggable:active {
+	cursor: url(cursors/closedhand.cur), all-scroll;
+	cursor: grabbing;
+
+	transform: scale(1.06, 1.06);
+	box-shadow: rgba(0, 0, 0, 0.7)x 8px;
+}
+
+.draggable:before {
+	content: '.';
+	position: absolute;
+	left: 14px;
+	font-size: 20px;
+	line-height: 26px;
+	color: #000000;
+	text-shadow: 0 5px #000000, 0 10px #000000, 5px 0 #000000, 5px 5px #000000, 5px 10px #000000, 10px 0 #000000, 10px 5px #000000, 10px 10px #000000;
+}
+
+.shot {
+	position: absolute;
 }

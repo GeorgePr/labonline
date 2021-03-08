@@ -104,7 +104,7 @@ def create_router(netconf_r: list):
 	# Set as autostart and start network
 	nat_network.setAutostart(True)
 	nat_network.create()
-	print('Network nat' + dom_name.lower() + ' has been created\n', file = sys.stderr)
+	print('Network nat' + dom_name.lower(), 'has been created')
 
 	# Create domain
 	# Use sample domain XML
@@ -267,13 +267,6 @@ def create_router(netconf_r: list):
 	with open('domains_xml/domains.txt', 'a') as f:
 		f.write(dom_name + '\n')
 
-	# Find and print existing domains (again)
-	print('Defined domains:')
-	with open('domains_xml/domains.txt', 'r') as f:
-		lines = f.read().splitlines()
-		for domain in lines:
-			print(domain)
-
 
 def create_pc(netconf_pc: list):
 	''' Creates a PC '''
@@ -356,7 +349,7 @@ def create_pc(netconf_pc: list):
 	# Set as autostart and start network
 	nat_network.setAutostart(True)
 	nat_network.create()
-	print('Network nat' + dom_name.lower() + ' has been created\n', file = sys.stderr)
+	print('Network nat' + dom_name.lower(), 'has been created')
 
 	# Create domain
 	# Use sample domain XML
@@ -519,14 +512,6 @@ def create_pc(netconf_pc: list):
 	with open('domains_xml/domains.txt', 'a') as f:
 		f.write(dom_name + '\n')
 
-	# Find and print existing domains (again)
-	print('Defined domains:')
-	with open('domains_xml/domains.txt', 'r') as f:
-		lines = f.read().splitlines()
-		for domain in lines:
-			print(domain)
-
-
 
 def start_domain(domain: str):
 	''' Starts selected domain '''
@@ -543,7 +528,7 @@ def start_domain(domain: str):
 	if domain_state == libvirt.VIR_DOMAIN_SHUTOFF:
 		try:
 			dom.create()
-			print('Domain ' + domain + ' has booted')
+			print('Domain', domain, 'has booted')
 		except libvirt.libvirtError:
 			print('Could not start domain')
 			sys.exit(1)
@@ -566,7 +551,7 @@ def shutdown_domain(domain: str):
 	if domain_state == libvirt.VIR_DOMAIN_RUNNING:
 		try:
 			dom.destroy()
-			print('Domain ' + domain + ' has been shutdown')
+			print('Domain', domain, 'has been shutdown')
 		except libvirt.libvirtError:
 			print('Could not shutdown domain')
 			sys.exit(1)
@@ -589,7 +574,7 @@ def remove_domain(domain: str):
 	if domain_state == libvirt.VIR_DOMAIN_RUNNING:
 		try:
 			dom.destroy()
-			print('Domain ' + domain + ' has been shutdown')
+			print('Domain', domain, 'has been shutdown')
 		except libvirt.libvirtError:
 			print('Could not shutdown domain')
 			sys.exit(1)
@@ -600,7 +585,7 @@ def remove_domain(domain: str):
 		os.remove(xml_dest)
 		img_dest = os.path.join(abs_path, 'images/' + domain + '.qcow2')
 		os.remove(img_dest)
-		print('Domain ' + domain + ' has been removed')
+		print('Domain', domain, 'has been removed')
 	except libvirt.libvirtError:
 		print('Could not remove domain')
 
@@ -612,7 +597,7 @@ def remove_domain(domain: str):
 		abs_path = os.path.dirname(__file__)
 		xml_dest = os.path.join(abs_path, 'net_xml/nat' + domain.lower() + '.xml')
 		os.remove(xml_dest)
-		print('Network nat' + domain.lower() + ' has been undefined')
+		print('Network nat' + domain.lower(), 'has been undefined')
 	except libvirt.libvirtError:
 		print('Could not remove network')
 
@@ -648,6 +633,6 @@ def dhcp_leases():
 				mac = lease['mac']
 				addr_prefix = str(lease['ipaddr']) + '/' + str(lease['prefix'])
 				hostname = lease['hostname']
-				dhcp_entry = expiry + ' ' + mac + ' ' + addr_prefix + ' ' + hostname
+				dhcp_entry = expiry, mac, addr_prefix, hostname
 				active_net_leases.append(dhcp_entry)
 	return(active_net_leases)

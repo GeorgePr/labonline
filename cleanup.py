@@ -13,16 +13,16 @@ def cleanup():
 
 	if lines != []:
 		for dom_name in lines:
-			print('Removing ' + str(dom_name) + '...')
+			print('Removing ', str(dom_name) + '...')
 			try:
 				dom = init_conn().lookupByName(str(dom_name))
 				try:
 					dom.destroy()
 				except libvirt.libvirtError:
-					print('Domain ' + str(dom_name) + ' is not running')
+					print('Domain', str(dom_name), 'is not running')
 				dom.undefine()
 			except libvirt.libvirtError:
-				print('Domain ' + str(dom_name) + ' does not exist')
+				print('Domain', str(dom_name), 'does not exist')
 
 			# Remove management network
 			try:

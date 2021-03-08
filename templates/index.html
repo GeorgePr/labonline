@@ -26,7 +26,7 @@
 	<div id="routers_new"></div>
 	<div id="pcs_new"></div>
 	<button type="button" id="load_interface" hidden="hidden">Load interface selection</button><br />
-	<p1><input type="submit" disabled="disabled" id="submit" value="Submit"></p1>
+	<input type="submit" hidden="hidden" id="submit" value="Submit">
 </form><br />
 
 
@@ -68,7 +68,7 @@
 	});
 	$(document).on("click", "#load_interface", function(){
 		$("#load_interface").remove();
-		$("#submit").removeAttr("disabled");
+		$("#submit").removeAttr("hidden");
 		var net_arr_r = new Array();
 		var interface_select = "</p1><select selected=\"NAT\"name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>";
 		for (i=0; i<num_r; i++) {
