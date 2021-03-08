@@ -16,13 +16,13 @@
 <body>
    <h2><a href={{ url_for('index') }}>LabOnLine</a></h2>
 
-   <table id="active_table_r">
+   <div id="routers">
       {% for p in range(session['active_r']|length): %}
-      <tr>
-         <td><h4>{{ (session['active_r'][p])|string }}</h4></td>
-      </tr>
-      <tr>
-         <td>
+      <div id="router">
+         <div id="router_name">
+            <h4>{{ (session['active_r'][p])|string }}</h4>
+         </div>
+         <div id="router_specs">
             {% set dom = session['active_r'][p]|string %}
             <script>
                $(document).ready(function(){
@@ -39,32 +39,33 @@
                });
             </script>
             <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
-               <input type="submit" id="console_{{ dom }}" value="Console"></input>
+               <input type="submit" id="console_{{ dom }}" value="Console">
+               </input>
             </form>
+            <form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
+               <input type="submit" value="Remove"></input>
+            </form><br />
             <form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
                <input type="submit" id="start_{{ dom }}" value="Start"></input>
             </form>
             <form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
                <input type="submit" id="shutdown_{{ dom }}" value="Shutdown"></input>
-            </form>
-            <form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
-               <input type="submit" value="Remove"></input>
             </form><br />
-            <p1>Number of interfaces: {{ active_net_r[p] }}</p1>
+            <p1>Interfaces: {{ active_net_r[p] }}</p1>
             {% for i in range((active_net_r[p])|int): %}
                <br /><p1>{{ session['active_netconf_r'][p][i] }}</p1>
             {% endfor %}
-         </td>
-      </tr>
+         </div>
+      </div><br />
       {% endfor %}
-   </table>
-   <table id="active_table_pc">
+   </div>
+   <div id="pcs">
       {% for p in range(session['active_pc']|length): %}
-      <tr>
-         <td><h4>{{ (session['active_pc'][p])|string }}</h4></td>
-      </tr>
-      <tr>
-         <td>
+      <div id="pc">
+         <div id="pc_name">
+            <h4>{{ (session['active_pc'][p])|string }}</h4>
+         </div>
+         <div id="pc_specs">
             {% set dom = session['active_pc'][p]|string %}
             <script>
                $(document).ready(function(){
@@ -83,25 +84,29 @@
             <form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
                <input type="submit" id="console_{{ dom }}" value="Console"></input>
             </form>
+            <form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
+               <input type="submit" value="Remove"></input>
+            </form><br />
             <form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
                <input type="submit" id="start_{{ dom }}" value="Start"></input>
             </form>
             <form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
                <input type="submit" id="shutdown_{{ dom }}" value="Shutdown"></input>
-            </form>
-            <form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
-               <input type="submit" value="Remove"></input>
             </form><br />
-            <p1>Number of interfaces: {{ active_net_pc[p] }}</p1>
+            <p1>Interfaces: {{ active_net_pc[p] }}</p1>
             {% for i in range((active_net_pc[p])|int): %}
                <br /><p1>{{ session['active_netconf_pc'][p][i] }}</p1>
             {% endfor %}
-         </td>
-      </tr>
+         </div>
+      </div><br />
       {% endfor %}
-   </table>
+   </div>
 
    {% block body %}{% endblock %}
+   
+   {% if session['active_r'] != [] or session['active_pc'] != [] %}
+      <p1><a href={{ url_for('leases') }}>DHCP Leases</a></p1>
+   {% endif %}
    
 </body>
 </html>

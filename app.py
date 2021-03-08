@@ -28,6 +28,7 @@ app.permanent_session_lifetime = timedelta(days = 1)
 @app.route('/favicon.ico')
 def favicon():
 	''' Returns favicon '''
+	
 	return send_from_directory(os.path.join(app.root_path, 'static'), 'favicon.ico')
 
 
@@ -65,7 +66,6 @@ def index():
 		net_r = []
 		net_pc = []
 
-		print(request.form)
 		for j in range(1, int(num_r)+1):
 			k = request.form['net_r' + str(j)]
 			net_r.append(k)
@@ -77,7 +77,6 @@ def index():
 		session['active_net_pc'].extend(net_pc)
 
 		net_conf_data = request.form.to_dict(flat = False)
-		print(net_conf_data)
 		
 		j = 0
 		netconf_r = [[] for i in net_r]
@@ -116,8 +115,7 @@ def index():
 		
 		with open('domains_xml/domains.txt', 'r') as file:
 			for line in file.readlines():
-				line = line.split('\n')
-				line = line[0]
+				line = line.split('\n')[0]
 				if 'R' in line and line not in session['active_r']:
 					session['active_r'].append(line)
 				if 'PC' in line and line not in session['active_pc']:
@@ -125,7 +123,7 @@ def index():
 		
 		return redirect(url_for('created'))
 	else:
-		return render_template('index.html',
+		return render_template('index.html', \
 			active_r = session['active_r'], active_pc = session['active_pc'], \
 			active_net_r = active_net_r, active_net_pc = active_net_pc, \
 			active_netconf_r = active_netconf_r, active_netconf_pc = active_netconf_pc, \

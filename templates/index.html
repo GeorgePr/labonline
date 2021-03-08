@@ -7,90 +7,89 @@
 
 {% block body %}
 <form method="POST">
-   <p>Select number of VMs to create
-   {% if session['active_r'] != [] or session['active_pc'] != [] %}
-      or <a href="{{ url_for('domains_cleanup') }}">remove</a> all domains</p>
-   {% endif %}
+	<p1>Select number of VMs to create</p1>
+	{% if session['active_r'] != [] or session['active_pc'] != [] %}
+		<p1>or <a href="{{ url_for('domains_cleanup') }}">remove</a> all domains</p1>
+	{% endif %}
 
-   <p>Press Load to configure network interfaces:</p>
-   Routers: <input name="num_r" id="num_r" type=number value=1 min=0 max=24>
-   <p1 id="number_r" hidden="hidden"></p1>
-   PCs: <input name="num_pc" id="num_pc" type=number value=1 min=0 max=24>
-   <p1 id="number_pc" hidden="hidden"></p1>
-   <button type="button" id="load">Load</button>
-   <table id="net_conf_r">
-   </table>
-   <table id="net_conf_pc">
-   </table>
-   <p><input type="submit" disabled="disabled" id="submit" value="Submit"></p>
+	<br />
+	<p1>Press Load to configure network interfaces:</p1>
+	<div id="new_vm_numbers">
+		<p1>Routers:</p1>
+		<input name="num_r" id="num_r" type=number value=1 min=0 max=24>
+		<p1 id="number_r" hidden="hidden"></p1>
+		<p1>PCs:</p1>
+		<input name="num_pc" id="num_pc" type=number value=1 min=0 max=24>
+		<p1 id="number_pc" hidden="hidden"></p1>
+		<button type="button" id="load">Load</button>
+		</div>
+	<div id="routers_new"></div>
+	<div id="pcs_new"></div>
+	<button type="button" id="load_interface" hidden="hidden">Load interface selection</button><br />
+	<p1><input type="submit" disabled="disabled" id="submit" value="Submit"></p1>
 </form><br />
-<a href={{ url_for('leases') }}>DHCP Leases</a>
 
 
 <script>
-   $("#load").click(function(){
-      $("#load").remove();
+	$("#load").click(function(){
+		$("#load").remove();
+		$("#load_interface").removeAttr("hidden");
+		$("#num_r").attr("hidden", "hidden");
+		num_r = $("#num_r").val();
+		$("#number_r").removeAttr("hidden");
+		$("#number_r").append(num_r);
+		var last_number_r = 0;
+		var last_domain_r = "{{ session['active_r']|last }}";
+		if (last_domain_r != "") {
+			last_number_r = parseInt(last_domain_r.match(/\d+/));
+		}
+		for (var i=0; i<num_r; i++) {
+			$("#routers_new").append("<div id=\"router\"><div id=\"router_name\"><h4>R" + (last_number_r + (i+1)) + "</h4></div>"
+			+ "<div id=\"r" + (i+1) + "_specs\"><p1>Number of interfaces: </p1><p1 id=\"number_int_r" + (i+1)
+			+ "\" hidden=\"hidden\"></p1><input name=" + "\"net_r" + (i+1) + "\" id=" + "\"net_r" + (i+1)
+			+ "\" type=number value=1 min=1 max=4 /></div></div><br />");
+		}
 
-      $("#num_r").attr("hidden", "hidden");
-      num_r = $("#num_r").val();
-      $("#number_r").removeAttr("hidden");
-      $("#number_r").append(num_r);
-      var last_number_r = 0;
-      var last_domain_r = "{{ session['active_r']|last }}";
-      if (last_domain_r != '') {
-         last_number_r = parseInt(last_domain_r.match(/\d+/));
-      }
-      for (var i=0; i<num_r; i++) {
-         $("#net_conf_r").append("<tr><td><h4>R" + (last_number_r + (i+1)) + "</h4></td></tr>");
-         $("#net_conf_r").append("<tr><td class=\"net_r" + (i+1) + "\"><p1>Number of interfaces:</p1> <p1 id=\"number_int_r" 
-            + (i+1) + "\" hidden=\"hidden\"></p1><input name=" + "\"net_r" + (i+1) + "\" id=" + "\"net_r" + (i+1) 
-            + "\" type=number value=1 min=1 max=4 /></td></tr><br />");
-      }
-
-      $("#num_pc").attr("hidden", "hidden");
-      num_pc = $("#num_pc").val();
-      $("#number_pc").removeAttr("hidden");
-      $("#number_pc").append(num_pc);
-      var last_number_pc = 0;
-      var last_domain_pc = "{{ session['active_pc']|last }}";
-      if (last_domain_pc != '') {
-         last_number_pc = parseInt(last_domain_pc.match(/\d+/));
-      }
-      for (var i=0; i<num_pc; i++) {
-         $("#net_conf_pc").append("<tr><td><h4>PC" + (last_number_pc + (i+1)) + "</h4></td></tr>");
-         $("#net_conf_pc").append("<tr><td class=\"net_pc" + (i+1) + "\"><p1>Number of interfaces:</p1> <p1 id=\"number_int_pc" 
-            + (i+1) + "\" hidden=\"hidden\"></p1><input name=" + "\"net_pc" + (i+1) + "\" id=" + "\"net_pc" + (i+1) 
-            + "\" type=number value=1 min=1 max=4 /></td></tr><br />");
-      }
-      $("#net_conf_pc").append("<br /><button type=\"button\" id=\"load_interface\">Load interface selection</button>");
-   });
-   $(document).on("click", "#load_interface", function(){
-      $("#load_interface").remove();
-      $("#submit").removeAttr("disabled");
-      var net_arr_r = new Array();
-      var interface_select = '</p1><select selected=\"NAT\"name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>';
-      for (i=0; i<num_r; i++) {
-         net_arr_r[i] = parseInt($("#net_r" + (i+1)).val());
-         $("#net_r" + (i+1)).attr("hidden", "hidden");
-         $("#number_int_r" + (i+1)).append(net_arr_r[i]);
-         $("#number_int_r" + (i+1)).removeAttr("hidden");
-         
-         for (j=0; j<net_arr_r[i]; j++) {
-            $("#net_conf_r tr:odd .net_r" + (i+1)).append("<br><p1>Interface " + (j+1)
-               + ":" + interface_select);
-         }
-      }
-      var net_arr_pc = new Array();
-      for (i=0; i<num_pc; i++) {
-         net_arr_pc[i] = parseInt($("#net_pc" + (i+1)).val());
-         $("#net_pc" + (i+1)).attr("hidden", "hidden");
-         $("#number_int_pc" + (i+1)).append(net_arr_pc[i]);
-         $("#number_int_pc" + (i+1)).removeAttr("hidden");
-         for (j=0; j<net_arr_pc[i]; j++) {
-            $("#net_conf_pc tr:odd .net_pc" + (i+1)).append("<br><p1>Interface " + (j+1)
-               + ":" + interface_select);
-         }
-      }
-   });
+		$("#num_pc").attr("hidden", "hidden");
+		num_pc = $("#num_pc").val();
+		$("#number_pc").removeAttr("hidden");
+		$("#number_pc").append(num_pc);
+		var last_number_pc = 0;
+		var last_domain_pc = "{{ session['active_pc']|last }}";
+		if (last_domain_pc != "") {
+			last_number_pc = parseInt(last_domain_pc.match(/\d+/));
+		}
+		for (var i=0; i<num_pc; i++) {
+			$("#pcs_new").append("<div id=\"pc\"><div id=\"pc_name\"><h4>PC" + (last_number_pc + (i+1)) + "</h4></div>"
+			+ "<div id=\"pc" + (i+1) + "_specs\"><p1>Number of interfaces: </p1><p1 id=\"number_int_pc" + (i+1)
+			+ "\" hidden=\"hidden\"></p1><input name=" + "\"net_pc" + (i+1) + "\" id=" + "\"net_pc" + (i+1)
+			+ "\" type=number value=1 min=1 max=4 /></div></div><br />");
+		}
+	});
+	$(document).on("click", "#load_interface", function(){
+		$("#load_interface").remove();
+		$("#submit").removeAttr("disabled");
+		var net_arr_r = new Array();
+		var interface_select = "</p1><select selected=\"NAT\"name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>";
+		for (i=0; i<num_r; i++) {
+			net_arr_r[i] = parseInt($("#net_r" + (i+1)).val());
+			$("#net_r" + (i+1)).attr("hidden", "hidden");
+			$("#number_int_r" + (i+1)).append(net_arr_r[i]);
+			$("#number_int_r" + (i+1)).removeAttr("hidden");
+			for (j=0; j<net_arr_r[i]; j++) {
+				$("#r" + (i+1) + "_specs").append("<br><p1>Interface " + (j+1) + ": " + interface_select);
+			}
+		}
+		var net_arr_pc = new Array();
+		for (i=0; i<num_pc; i++) {
+			net_arr_pc[i] = parseInt($("#net_pc" + (i+1)).val());
+			$("#net_pc" + (i+1)).attr("hidden", "hidden");
+			$("#number_int_pc" + (i+1)).append(net_arr_pc[i]);
+			$("#number_int_pc" + (i+1)).removeAttr("hidden");
+			for (j=0; j<net_arr_pc[i]; j++) {
+				$("#pc" + (i+1) + "_specs").append("<br><p1>Interface " + (j+1) + ": " + interface_select);
+			}
+		}
+	});
 </script>
 {% endblock %}

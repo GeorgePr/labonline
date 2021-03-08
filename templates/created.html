@@ -7,30 +7,30 @@
 
 
 {% block body %}
+<br />
 {% set total = number_r|int + number_pc|int %}
 {% if total == 0 %}
-   <p1></p1>
+	<p1></p1>
 {% elif total == 1 %}
-   <p1>{{ total }} domain has been created</p1>
+	<p1>{{ total }} domain has been created</p1>
 {% else %}
-   <p1>{{ total }} domains have been created</p1>
+	<p1>{{ total }} domains have been created</p1>
 {% endif %}
 
-<br /><a href="{{ url_for('domains_cleanup') }}">Remove</a> all domains
+<br />
+<p1><a href="{{ url_for('domains_cleanup') }}">Remove</a> all domains</p1>
 <br /><br />
 {% for p in range(session['active_r']|length): %}
-   <div class="draggable">{{ (session['active_r'][p])|string }}</div><br />
+	<div class="draggable">{{ (session['active_r'][p])|string }}</div><br />
 {% endfor %}
 {% for p in range(session['active_pc']|length): %}
-   <div class="draggable">{{ (session['active_pc'][p])|string }}</div><br />
+	<div class="draggable">{{ (session['active_pc'][p])|string }}</div><br />
 {% endfor %}
-<a href={{ url_for('leases') }}>DHCP Leases</a>
-
 
 <script>
-   $(function() {
-      $(".draggable").draggable();
-   });
+	$(function() {
+		$(".draggable").draggable();
+	});
 </script>
 
 {% endblock %}

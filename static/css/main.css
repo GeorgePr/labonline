@@ -1,44 +1,67 @@
 body {
-  margin-top: 0px;
-  margin-left: 15px;
-  font-family: "IBM Plex Sans", sans-serif;
+	margin-top: 0pt;
+	margin-left: 10pt;
+	font-family: "IBM Plex Sans", sans-serif;
 }
 
 p1 {
-  margin-top: 4px;
-  margin-bottom: 4px;
+	font-size: 11.5pt;
+	margin-top: 3pt;
+	margin-bottom: 3pt;
 }
 
 form {
-  display: inline-block;
+	display: inline-block;
 }
 
 h2 {
-  margin-top: 5px;
-  margin-bottom: 0px;
+	margin-top: 5pt;
+	margin-bottom: 3pt;
 }
 h2 a {
-  color: #080808;
-  text-decoration: none;
-  font-weight: 550;
+	color: #080808;
+	text-decoration: none;
+	font-weight: 550;
 }
 h2 a:hover {
-  color: #585858;
+	color: #585858;
 }
 
 h4 {
-  font-size: 18px;
-  font-weight: 600;
-  margin-bottom: 10px;
-  margin-top: 20px;
+	font-size: 13pt;
+	font-weight: 600;
+	margin-top: 2pt;
+	margin-bottom: 2pt;
 }
 
-table tr:nth-child(even) {
-  border-bottom: 1px solid black;
-  margin-bottom: 10px;
-  padding-bottom: 10px;
+#new_vm_numbers {
+	padding-top: 7pt;
+	padding-bottom: 4pt;
 }
 
-#active_table_r, #active_table_pc, #net_conf {
-  border-collapse: collapse;
+#num_r, #num_pc {
+	width: 26pt;
+}
+
+#routers, #routers_new, #pcs, #pcs_new {
+	padding-bottom: 5pt;
+}
+
+#router, #pc {
+	display: inline-block;
+	background-color: #e4e4e4;
+	border-style: solid;
+	border-width: 1pt;
+	border-radius: 2.5pt;
+	border-color: rgb(87, 87, 87);
+	padding-top: 1pt;
+	padding-bottom: 3pt;
+	padding-left: 6pt;
+	padding-right: 6pt;
+	margin-bottom: 4pt;
+	box-shadow: 0 0 0.5pt 0.5pt rgb(192, 192, 192);
+}
+
+#router:hover, #pc:hover {
+	box-shadow: 0 0 5pt 1pt rgb(192, 192, 192);
 }
