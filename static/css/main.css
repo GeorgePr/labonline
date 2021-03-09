@@ -54,6 +54,14 @@ div[id^='circle'] {
 	box-shadow: 0 0 1pt 0.5pt #9b9b9b;
 }
 
+#load, #load_interface {
+	background-color: #e09696;
+	color: #000000;
+	padding: 3px 20px;
+	border-width: 0px;
+	border-radius: 4px;
+}
+
 .control {
 	background-color: #ffffff;
 	border-width: 0pt;
@@ -107,25 +115,44 @@ input[id^='shutdown'] {
 	width: 26pt;
 }
 
-#routers, #routers_new, #pcs, #pcs_new {
-	padding-bottom: 5pt;
+#routers_new, #pcs_new {
+	padding-bottom: 5px;
 }
 
-.draggable {
+#router_new, #pc_new {
 	background-color: #e6e6e6;
-	padding-top: 1pt;
-	padding-bottom: 2pt;
-	padding-left: 25pt;
-	padding-right: 7pt;
-	margin-top: 4pt;
-	margin-bottom: 4pt;
+	padding-top: 1px;
+	padding-bottom: 5px;
+	padding-left: 5px;
+	padding-right: 5px;
+	margin-top: 4px;
+	margin-bottom: 4px;
 	color: #000000;
-	cursor: url(cursors/openhand.cur), all-scroll;
-	cursor: grab;
 	transition: transform 0.2s, box-shadow 0.2s;
 	border-radius: 2.5pt;
 	box-shadow: #000000 0 0 3px;
 	display: inline-block;
+}
+
+.draggable {
+	background-color: #e6e6e6;
+	padding-top: 3px;
+	padding-bottom: 5px;
+	padding-left: 35px;
+	padding-right: 10px;
+	margin-top: 4px;
+	margin-bottom: 4px;
+	color: #000000;
+	cursor: url(cursors/openhand.cur), all-scroll;
+	cursor: grab;
+	transition: transform 0.3s, box-shadow 0.3s;
+	border-radius: 4px;
+	box-shadow: #000000 0 0 3px;
+	display: inline-block;
+}
+
+#routers, #pcs {
+	margin-bottom: 10px;
 }
 
 .draggable:hover {
@@ -148,8 +175,4 @@ input[id^='shutdown'] {
 	top: 30%;
 	color: #4e4e4e;
 	text-shadow: 0 5px #4e4e4e, 0 10px #4e4e4e, 5px 0 #4e4e4e, 5px 5px #4e4e4e, 5px 10px #4e4e4e, 10px 0 #4e4e4e, 10px 5px #4e4e4e, 10px 10px #4e4e4e;
-}
-
-.shot {
-	position: absolute;
 }

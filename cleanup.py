@@ -12,37 +12,37 @@ def cleanup():
 		lines = f.read().splitlines()
 
 	if lines != []:
-		for dom_name in lines:
-			print('Removing ', str(dom_name) + '...')
+		for domain in lines:
+			print('Removing', str(domain) + '...')
 			try:
-				dom = init_conn().lookupByName(str(dom_name))
+				dom = init_conn().lookupByName(str(domain))
 				try:
 					dom.destroy()
 				except libvirt.libvirtError:
-					print('Domain', str(dom_name), 'is not running')
+					print('Domain', str(domain), 'is not running')
 				dom.undefine()
 			except libvirt.libvirtError:
-				print('Domain', str(dom_name), 'does not exist')
+				print('Domain', str(domain), 'does not exist')
 
 			# Remove management network
 			try:
-				network = init_conn().networkLookupByName('nat' + str(dom_name.lower()))
+				network = init_conn().networkLookupByName('nat' + str(domain.lower()))
 				network.destroy()
 				network.undefine()
-				print('Removing network nat' + str(dom_name.lower()) + '...')
+				print('Removing network nat' + str(domain.lower()) + '...')
 
 			except libvirt.libvirtError:
 				print('Could not remove network')
 
 			# Remove network XML
 			abs_path = os.path.dirname(__file__)
-			xml_dest = os.path.join(abs_path, 'net_xml/nat' + str(dom_name.lower()) + '.xml')
+			xml_dest = os.path.join(abs_path, 'net_xml/nat' + str(domain.lower()) + '.xml')
 			os.remove(xml_dest)
 
 			# Remove domain XML and image
-			xml_dest = os.path.join(abs_path, 'domains_xml/' + str(dom_name) + '.xml')
+			xml_dest = os.path.join(abs_path, 'domains_xml/' + str(domain) + '.xml')
 			os.remove(xml_dest)
-			img_dest = os.path.join(abs_path, 'images/' + str(dom_name) + '.qcow2')
+			img_dest = os.path.join(abs_path, 'images/' + str(domain) + '.qcow2')
 			os.remove(img_dest)
 	else:
 		print('No defined domains')

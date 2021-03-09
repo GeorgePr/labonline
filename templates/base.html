@@ -7,8 +7,10 @@
 	<link rel="preconnect" href="https://fonts.gstatic.com">
 	<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap">
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-	<script src="//code.jquery.com/jquery-1.10.2.js"></script>
-	<script src="//code.jquery.com/ui/1.11.2/jquery-ui.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.js" integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+	<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js" integrity="sha256-T0Vest3yCU7pafRw9r+settMBX6JkKN06dqBnpQ8d30=" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-cookie/1.4.1/jquery.cookie.min.js"></script>
+
 
 	{% block head %}{% endblock %}
 </head>
@@ -19,92 +21,92 @@
 		{% for p in range(session['active_r']|length): %}
 		<div id="router" class="draggable">
 			<div id="router_name">
-			<h4>{{ (session['active_r'][p])|string }}</h4>
-			<div id="circle_{{ session['active_r'][p]|string }}"></div>
+				<h4>{{ (session['active_r'][p])|string }}</h4>
+				<div id="circle_{{ session['active_r'][p]|string }}"></div>
 			</div>
 			<div id="router_specs">
-			{% set dom = session['active_r'][p]|string %}
-			<script>
-				$(document).ready(function(){
-					var domain = "{{ dom }}";
-					var p = "{{ p }}";
-					var status_r = {{ status_r|safe }};
-					if (status_r[p] == '5') {
-						$("#shutdown_" + domain).attr("disabled", "disabled");
-						$("#console_" + domain).attr("disabled", "disabled");
-						$("#circle_" + domain).attr("style", "background-color: #d7292f")
-					}
-					if (status_r[p] == '1') {
-						$("#start_" + domain).attr("disabled", "disabled");
-						$("#circle_" + domain).attr("style", "background-color: #009e26")
+				{% set dom = session['active_r'][p]|string %}
+				<script>
+					$(document).ready(function(){
+						var domain = "{{ dom }}";
+						var p = "{{ p }}";
+						var status_r = {{ status_r|safe }};
+						if (status_r[p] == '5') {
+							$("#shutdown_" + domain).attr("disabled", "disabled");
+							$("#console_" + domain).attr("disabled", "disabled");
+							$("#circle_" + domain).attr("style", "background-color: #d7292f")
+						}
+						if (status_r[p] == '1') {
+							$("#start_" + domain).attr("disabled", "disabled");
+							$("#circle_" + domain).attr("style", "background-color: #009e26")
 
-					}
-				});
-			</script>
-			<form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
-				<input type="submit" class="control" id="console_{{ dom }}" value="Console">
-				</input>
-			</form>
-			<form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
-				<input type="submit" class="control" value="Remove"></input>
-			</form><br />
-			<form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
-				<input type="submit" class="control" id="start_{{ dom }}" value="Start"></input>
-			</form>
-			<form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
-				<input type="submit" class="control" id="shutdown_{{ dom }}" value="Shutdown"></input>
-			</form><br />
-			<p1>Interfaces: {{ active_net_r[p] }}</p1>
-			{% for i in range((active_net_r[p])|int): %}
-				<br /><p1>{{ session['active_netconf_r'][p][i] }}</p1>
-			{% endfor %}
-		</div>
-	</div><br />
-	{% endfor %}
+						}
+					});
+				</script>
+				<form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
+					<input type="submit" class="control" id="console_{{ dom }}" value="Console">
+					</input>
+				</form>
+				<form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
+					<input type="submit" class="control" value="Remove"></input>
+				</form><br />
+				<form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
+					<input type="submit" class="control" id="start_{{ dom }}" value="Start"></input>
+				</form>
+				<form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
+					<input type="submit" class="control" id="shutdown_{{ dom }}" value="Shutdown"></input>
+				</form><br />
+				<p1>Interfaces: {{ active_net_r[p] }}</p1>
+				{% for i in range((active_net_r[p])|int): %}
+					<br /><p1>{{ session['active_netconf_r'][p][i] }}</p1>
+				{% endfor %}
+			</div>
+		</div><br />
+		{% endfor %}
 	</div>
 	<div id="pcs">
 		{% for p in range(session['active_pc']|length): %}
 		<div id="pc" class="draggable">
 			<div id="pc_name">
-			<h4>{{ (session['active_pc'][p])|string }}</h4>
-			<div id="circle_{{ session['active_pc'][p]|string }}"></div>
+				<h4>{{ (session['active_pc'][p])|string }}</h4>
+				<div id="circle_{{ session['active_pc'][p]|string }}"></div>
 			</div>
 			<div id="pc_specs">
-			{% set dom = session['active_pc'][p]|string %}
-			<script>
-				$(document).ready(function(){
-					var domain = "{{ dom }}";
-					var p = "{{ p }}";
-					var status_pc = {{ status_pc|safe }};
-					if (status_pc[p] == '5') {
-						$("#shutdown_" + domain).attr("disabled", "disabled");
-						$("#console_" + domain).attr("disabled", "disabled");
-						$("#circle_" + domain).attr("style", "background-color: #d7292f")
+				{% set dom = session['active_pc'][p]|string %}
+				<script>
+					$(document).ready(function(){
+						var domain = "{{ dom }}";
+						var p = "{{ p }}";
+						var status_pc = {{ status_pc|safe }};
+						if (status_pc[p] == '5') {
+							$("#shutdown_" + domain).attr("disabled", "disabled");
+							$("#console_" + domain).attr("disabled", "disabled");
+							$("#circle_" + domain).attr("style", "background-color: #d7292f")
 
-					}
-					if (status_pc[p] == '1') {
-						$("#start_" + domain).attr("disabled", "disabled");
-						$("#circle_" + domain).attr("style", "background-color: #009e26")
+						}
+						if (status_pc[p] == '1') {
+							$("#start_" + domain).attr("disabled", "disabled");
+							$("#circle_" + domain).attr("style", "background-color: #009e26")
 
-					}
-				});
-			</script>
-			<form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
-				<input type="submit" class="control" id="console_{{ dom }}" value="Console"></input>
-			</form>
-			<form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
-				<input type="submit" class="control" value="Remove"></input>
-			</form><br />
-			<form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
-				<input type="submit" class="control" id="start_{{ dom }}" value="Start"></input>
-			</form>
-			<form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
-				<input type="submit" class="control" id="shutdown_{{ dom }}" value="Shutdown"></input>
-			</form><br />
-			<p1>Interfaces: {{ active_net_pc[p] }}</p1>
-			{% for i in range((active_net_pc[p])|int): %}
-				<br /><p1>{{ session['active_netconf_pc'][p][i] }}</p1>
-			{% endfor %}
+						}
+					});
+				</script>
+				<form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
+					<input type="submit" class="control" id="console_{{ dom }}" value="Console"></input>
+				</form>
+				<form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
+					<input type="submit" class="control" value="Remove"></input>
+				</form><br />
+				<form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
+					<input type="submit" class="control" id="start_{{ dom }}" value="Start"></input>
+				</form>
+				<form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
+					<input type="submit" class="control" id="shutdown_{{ dom }}" value="Shutdown"></input>
+				</form><br />
+				<p1>Interfaces: {{ active_net_pc[p] }}</p1>
+				{% for i in range((active_net_pc[p])|int): %}
+					<br /><p1>{{ session['active_netconf_pc'][p][i] }}</p1>
+				{% endfor %}
 			</div>
 		</div><br />
 		{% endfor %}
@@ -116,9 +118,16 @@
 		<br /><p1><a href={{ url_for('leases') }}>DHCP Leases</a></p1>
 	{% endif %}
 	<script>
-		$(function() {
-			$(".draggable").draggable();
+		var dragposition = '';
+		$(".draggable").draggable({
+			stop: function (event, ui){
+				$.cookie("elementIDCookie", ui.position);
+			}
 		});
+		$(".draggable").css({
+			"left" : $.cookie("elementIDCookie").left, "top" :$.cookie("elementIDCookie").top
+		});
+		
 	</script>
 </body>
 </html>
