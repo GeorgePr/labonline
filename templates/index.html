@@ -16,10 +16,10 @@
 	<p1>Press Load to configure network interfaces:</p1>
 	<div id="new_vm_numbers">
 		<p1>Routers:</p1>
-		<input name="num_r" id="num_r" type=number value=1 min=0 max=24>
+		<input name="num_r" id="num_r" class="input_number" type=number value=1 min=0 max=24>
 		<p1 id="number_r" hidden="hidden"></p1>
 		<p1>PCs:</p1>
-		<input name="num_pc" id="num_pc" type=number value=1 min=0 max=24>
+		<input name="num_pc" id="num_pc" class="input_number" type=number value=1 min=0 max=24>
 		<p1 id="number_pc" hidden="hidden"></p1>
 		<button type="button" id="load">Load</button>
 		</div>
@@ -48,7 +48,7 @@
 			$("#routers_new").append("<div id=\"router_new\"><div id=\"router_name\"><h4>R" + (last_number_r + (i+1)) + "</h4></div>"
 			+ "<div id=\"r" + (i+1) + "_specs\"><p1>Number of interfaces: </p1><p1 id=\"number_int_r" + (i+1)
 			+ "\" hidden=\"hidden\"></p1><input name=" + "\"net_r" + (i+1) + "\" id=" + "\"net_r" + (i+1)
-			+ "\" type=number value=1 min=1 max=4 /></div></div><br />");
+			+ "\" class=\"input_number\" type=number value=1 min=1 max=4 /></div></div><br />");
 		}
 
 		$("#num_pc").attr("hidden", "hidden");
@@ -64,7 +64,7 @@
 			$("#pcs_new").append("<div id=\"pc_new\"><div id=\"pc_name\"><h4>PC" + (last_number_pc + (i+1)) + "</h4></div>"
 			+ "<div id=\"pc" + (i+1) + "_specs\"><p1>Number of interfaces: </p1><p1 id=\"number_int_pc" + (i+1)
 			+ "\" hidden=\"hidden\"></p1><input name=" + "\"net_pc" + (i+1) + "\" id=" + "\"net_pc" + (i+1)
-			+ "\" type=number value=1 min=1 max=4 /></div></div><br />");
+			+ "\" class=\"input_number\" type=number value=1 min=1 max=4 /></div></div><br />");
 		}
 	});
 	$(document).on("click", "#load_interface", function(){

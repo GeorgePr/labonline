@@ -59,19 +59,17 @@ def index():
 	print(session['active_net_r'], session['active_net_pc'])
 	print(session['status_r'], session['status_pc'])
 	if request.method == 'POST':
-		num_r = request.form['num_r']
-		num_pc = request.form['num_pc']
+		num_r = int(request.form['num_r'])
+		num_pc = int(request.form['num_pc'])
 		session['num_r'] = num_r
 		session['num_pc'] = num_pc
 		net_r = []
 		net_pc = []
 
-		for j in range(1, int(num_r)+1):
-			k = request.form['net_r' + str(j)]
-			net_r.append(k)
-		for j in range(1, int(num_pc)+1):
-			k = request.form['net_pc' + str(j)]
-			net_pc.append(k)
+		for j in range(num_r):
+			net_r.append(request.form['net_r' + str(j+1)])
+		for j in range(num_pc):
+			net_pc.append(request.form['net_pc' + str(j+1)])
 
 		session['active_net_r'].extend(net_r)
 		session['active_net_pc'].extend(net_pc)

@@ -60,7 +60,15 @@ div[id^='circle'] {
 	padding: 3px 20px;
 	border-width: 0px;
 	border-radius: 4px;
+	outline: none;
 }
+
+#load:hover, #load_interface:hover {
+	box-shadow: #000000 0 0 2px;
+	transition: box-shadow 0.1s;
+}
+
+
 
 .control {
 	background-color: inherit;
@@ -88,19 +96,14 @@ div[id^='circle'] {
 }
 
 .connections img {
-	top: 2.4px;
+	top: 2px;
 	left: 2px;
 	height: 15px;
 	width: 15px;
 	position: relative;
 }
 
-input[id^='num'] {
-	border-width: 2px;
-	border-radius: 4px;
-}
-
-input[id^='net'] {
+.input_number {
 	border-width: 2px;
 	border-radius: 4px;
 }
@@ -118,7 +121,6 @@ input[id^='net'] {
 
 #submit:hover {
 	box-shadow: #000000 0 0 3px;
-
 }
 
 #new_vm_numbers {
@@ -187,7 +189,7 @@ input[id^='net'] {
 	position: absolute;
 	left: 6pt;
 	font-size: 16pt;
-	top: 30%;
+	top: 20%;
 	color: #4e4e4e;
 	text-shadow: 0 5px #4e4e4e, 0 10px #4e4e4e, 5px 0 #4e4e4e, 5px 5px #4e4e4e, 5px 10px #4e4e4e, 10px 0 #4e4e4e, 10px 5px #4e4e4e, 10px 10px #4e4e4e;
 }
