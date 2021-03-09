@@ -34,6 +34,7 @@
 	$("#load").click(function(){
 		$("#load").remove();
 		$("#load_interface").removeAttr("hidden");
+
 		$("#num_r").attr("hidden", "hidden");
 		num_r = $("#num_r").val();
 		$("#number_r").removeAttr("hidden");
@@ -69,8 +70,16 @@
 	$(document).on("click", "#load_interface", function(){
 		$("#load_interface").remove();
 		$("#submit").removeAttr("hidden");
+		var interface_select = "</p1><select selected=\"NAT\"name=\"interface_type\" id=\"interface_type\">"
+			+ "<option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option>"
+			+ "<option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option>"
+			+ "<option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option>"
+			+ "<option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option>"
+			+ "<option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option>"
+			+ "<option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option>"
+			+ "<option value=\"WAN5\">WAN5</option></select>";
+
 		var net_arr_r = new Array();
-		var interface_select = "</p1><select selected=\"NAT\"name=\"interface_type\" id=\"interface_type\"><option value=\"NAT\">NAT</option><option value=\"hostonly\">Host-Only</option><option value=\"bridge\">Bridge</option><option value=\"LAN1\">LAN1</option><option value=\"LAN2\">LAN2</option><option value=\"LAN3\">LAN3</option><option value=\"LAN4\">LAN4</option><option value=\"LAN5\">LAN5</option><option value=\"WAN1\">WAN1</option><option value=\"WAN2\">WAN2</option><option value=\"WAN3\">WAN3</option><option value=\"WAN4\">WAN4</option><option value=\"WAN5\">WAN5</option></select>";
 		for (i=0; i<num_r; i++) {
 			net_arr_r[i] = parseInt($("#net_r" + (i+1)).val());
 			$("#net_r" + (i+1)).attr("hidden", "hidden");
