@@ -85,7 +85,6 @@ def index():
 				netconf_r[i].append(net_conf_data['interface_type'][j])
 				j = j + 1
 
-		j = 0
 		netconf_pc = [[] for i in net_pc]
 		for i in range(len(net_pc)):
 			for elem in range(int(net_pc[i])):
