@@ -1,13 +1,11 @@
 body {
-	margin-top: 0px;
 	margin-left: 14px;
 	font-family: "IBM Plex Sans", sans-serif;
 }
 
 p1 {
 	font-size: 16px;
-	margin-top: 4px;
-	margin-bottom: 4px;
+	margin: 4px 0px 4px;
 }
 
 form {
@@ -15,8 +13,7 @@ form {
 }
 
 h2 {
-	margin-top: 8px;
-	margin-bottom: 6px;
+	margin: 8px 0px 6px;
 }
 h2 a {
 	color: #080808;
@@ -28,17 +25,15 @@ h2 a:hover {
 }
 
 h4 {
-	font-size: 13pt;
+	font-size: 17px;
 	font-weight: 600;
-	margin-top: 2pt;
-	margin-bottom: 2pt;
+	margin: 3px 0px 3px;
 	display: inline-block;
 }
 
 input {
-	font-size: 10pt;
-	margin-top: 3pt;
-	margin-bottom: 3pt;
+	font-size: 13px;
+	margin: 4px 0px 4px;
 }
 
 select {
@@ -67,8 +62,6 @@ div[id^='circle'] {
 	box-shadow: #000000 0 0 2px;
 	transition: box-shadow 0.1s;
 }
-
-
 
 .control {
 	background-color: inherit;
@@ -124,8 +117,7 @@ div[id^='circle'] {
 }
 
 #new_vm_numbers {
-	padding-top: 7pt;
-	padding-bottom: 4pt;
+	padding: 9px 0px 5px;
 }
 
 #num_r, #num_pc {
@@ -138,12 +130,8 @@ div[id^='circle'] {
 
 #router_new, #pc_new {
 	background-color: #e6e6e6;
-	padding-top: 1px;
-	padding-bottom: 5px;
-	padding-left: 5px;
-	padding-right: 5px;
-	margin-top: 4px;
-	margin-bottom: 4px;
+	padding: 1px 5px 5px 5px;
+	margin: 4px 0px 4px;
 	color: #000000;
 	transition: transform 0.2s, box-shadow 0.2s;
 	border-radius: 2.5pt;
@@ -153,12 +141,8 @@ div[id^='circle'] {
 
 .draggable {
 	background-color: #e6e6e6;
-	padding-top: 3px;
-	padding-bottom: 5px;
-	padding-left: 35px;
-	padding-right: 10px;
-	margin-top: 4px;
-	margin-bottom: 4px;
+	padding: 3px 10px 5px 35px;
+	margin: 4px 5px 4px 0px;
 	color: #000000;
 	cursor: url(cursors/openhand.cur), all-scroll;
 	cursor: grab;
