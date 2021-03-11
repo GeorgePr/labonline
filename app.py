@@ -22,6 +22,8 @@ status_pc = []
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'eiaj38dx09'
+app.config['SESSION_COOKIE_HTTPONLY'] = True
+app.config['SESSION_COOKIE_SAMESITE'] = 'Lax'
 app.permanent_session_lifetime = timedelta(days = 2)
 
 
@@ -121,7 +123,7 @@ def index():
 		return redirect(url_for('created'))
 	else:
 		return render_template('index.html', \
-			active_r = session['active_r'], active_pc = session['active_pc'], \
+			active_r = json.dumps(session['active_r']), active_pc = json.dumps(session['active_pc']), \
 			active_net_r = active_net_r, active_net_pc = active_net_pc, \
 			active_netconf_r = active_netconf_r, active_netconf_pc = active_netconf_pc, \
 			status_r = json.dumps(session['status_r']), status_pc = json.dumps(session['status_pc']))
