@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 for i in $(seq 1 4); do
     virsh net-destroy network${i}

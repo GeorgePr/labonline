@@ -97,6 +97,7 @@ div[id^='circle'] {
 }
 
 .input_number {
+	width: 35px;
 	border-width: 2px;
 	border-radius: 4px;
 }

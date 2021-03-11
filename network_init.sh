@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 virsh net-destroy default
 virsh net-undefine default

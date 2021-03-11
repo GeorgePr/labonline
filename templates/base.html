@@ -3,6 +3,13 @@
 {% block devices %}
 <h2><a href={{ url_for('index') }}>LabOnLine</a></h2>
 
+<script>
+	$(document).ready(function() {
+		var cookie_default = $.cookie("position") || "{top: 0, left: 0}";
+		console.log(cookie_default);
+	});
+</script>
+
 <div id="routers">
 	{% for p in range(session['active_r']|length): %}
 	<div id="router" class="draggable">
@@ -127,5 +134,17 @@
 {% endif %}
 
 <script>
-	$(".draggable").draggable();
+	$(".draggable").draggable({
+		stop:function(event, ui) {
+			console.log(cookie_default);
+			console.log(ui.position);
+			$.cookie("position", ui.position);
+			console.log($.cookie("position").top);
+		}
+	});
+	$(document).ready(function(){
+		console.log($.cookie("position").top);
+		console.log($.cookie("position").left);
+		$(".draggable").css({ "top": $.cookie("position").top, "left": $.cookie("position").left  });
+	});
 </script>

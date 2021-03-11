@@ -7,3 +7,4 @@ net_xml/nat[pc|r]*.xml
 *.code-workspace
 .pylintrc
 images/*
+*.egg-info/

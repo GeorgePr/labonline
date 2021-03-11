@@ -22,7 +22,7 @@ status_pc = []
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'eiaj38dx09'
-app.permanent_session_lifetime = timedelta(days = 1)
+app.permanent_session_lifetime = timedelta(days = 2)
 
 
 @app.route('/favicon.ico')

@@ -1,10 +1,8 @@
 # LabOnLine
 
+## Build and Install
 
-## Ubuntu
-
-
-**Dependencies**
+**Ubuntu**
 
 `sudo apt install python3-pip python3-virtualenv libvirt-daemon-system libvirt-clients libvirt-dev virt-viewer virt-manager ebtables bridge-utils qemu-kvm`
 
@@ -12,13 +10,12 @@
 
 [Reboot]
 
-`sudo -H pip3 install -r requirements_dev.txt`
+[Optional] Create a virtual environment:
+`python3 -m venv .env`
+`source .env/bin/activate`
 
-
-## Build and Install
-
-`./network_init.sh` initializes the networks which are used by the app.
-
+Install the app with `pip3 install -e .`
+Run the network initialization script `./network_init.sh`
 
 ## Usage
 
