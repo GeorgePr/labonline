@@ -129,6 +129,9 @@
 
 <script>
 	$(".draggable").draggable({
+		drag: function(event, ui) {
+			areConnected();
+		},
 		stop: function(event, ui) {
 			var deviceID = this.id;
 			document.cookie = deviceID + '=' + JSON.stringify(ui.position);
@@ -147,8 +150,6 @@
 	$(document).ready(function() {
 		var active_r_json = {{ session['active_r']|safe }};
 		var active_pc_json = {{ session['active_pc']|safe }};
-		var active_netconf_r_json = {{ active_netconf_r_json|safe }};
-		var active_netconf_pc_json = {{ active_netconf_pc_json|safe }};
 		const initial_position = {"top":0,"left":0};
 
 		for (var i = 0; i < active_r_json.length; i++) {
@@ -167,14 +168,22 @@
 				$("#" + active_pc_json[i]).css({ top: JSON.parse(getCookie(active_pc_json[i])).top, left: JSON.parse(getCookie(active_pc_json[i])).left });
 			}
 		}
+		areConnected();
+	});
+	
+	function areConnected() {
+		var active_r_json = {{ session['active_r']|safe }};
+		var active_pc_json = {{ session['active_pc']|safe }};
+		var active_netconf_r_json = {{ active_netconf_r_json|safe }};
+		var active_netconf_pc_json = {{ active_netconf_pc_json|safe }};
 
-loop1:
+		loop1:
 		for (var i = 0; i < active_r_json.length; i++) {
-loop2:
+		loop2:
 			for (var j = 0; j < active_pc_json.length; j++) {
-loop3:
+		loop3:
 				for (var k = 0; k < active_netconf_r_json.length; k++) {
-loop4:
+		loop4:
 					for (var l = 0; l < active_netconf_pc_json.length; l++) {
 						if (active_netconf_r_json[i][k] != undefined && active_netconf_pc_json[j][l] != undefined && active_netconf_r_json[i][k] == active_netconf_pc_json[j][l] && active_netconf_r_json[i][k] != 'NAT' && active_netconf_pc_json[j][l] != 'NAT') {
 							var div1 = document.getElementById(active_r_json[i]);
@@ -187,13 +196,13 @@ loop4:
 			}
 		}
 
-loop1:
+		loop1:
 		for (var i = 0; i < active_r_json.length; i++) {
-loop2:
+		loop2:
 			for (var j = 0; j < active_r_json.length; j++) {
-loop3:
+		loop3:
 				for (var k = 0; k < active_netconf_r_json.length; k++) {
-loop4:
+		loop4:
 					for (var l = 0; l < active_netconf_r_json.length; l++) {
 						if (i != j && active_netconf_r_json[i][k] != undefined && active_netconf_r_json[j][l] != undefined && active_netconf_r_json[i][k] == active_netconf_r_json[j][l] && active_netconf_r_json[i][k] != 'NAT' && active_netconf_r_json[j][l] != 'NAT') {
 							var div1 = document.getElementById(active_r_json[i]);
@@ -206,13 +215,13 @@ loop4:
 			}
 		}
 
-loop1:
+		loop1:
 		for (var i = 0; i < active_pc_json.length; i++) {
-loop2:
+		loop2:
 			for (var j = 0; j < active_pc_json.length; j++) {
-loop3:
+		loop3:
 				for (var k = 0; k < active_netconf_pc_json.length; k++) {
-loop4:
+		loop4:
 					for (var l = 0; l < active_netconf_pc_json.length; l++) {
 						if (i != j && active_netconf_pc_json[i][k] != undefined && active_netconf_pc_json[j][l] != undefined && active_netconf_pc_json[i][k] == active_netconf_pc_json[j][l] && active_netconf_pc_json[i][k] != 'NAT' && active_netconf_pc_json[j][l] != 'NAT') {
 							var div1 = document.getElementById(active_pc_json[i]);
@@ -224,13 +233,6 @@ loop4:
 				}
 			}
 		}
-
-	});
-	
-
-	function areConnected(arr1, arr2) {
-		console.log(arr1, arr2);
-		
 	}
 
 	function getOffset(el) {
@@ -258,11 +260,33 @@ loop4:
 		var cy = ((y1 + y2)/2) - (4/2);
 		var angle = Math.atan2((y1-y2),(x1-x2))*(180/Math.PI);
 
-		var line = "<div style='padding:0px; margin:0px; height: 2px; background-color: blue;"
+		var line = "<div id='line_" + div1.id + "_" + div2.id + "' style='padding:0px; margin:0px; height: 2px; background-color: blue;"
 			+ "line-height:1px; position:absolute; left:" + cx + "px; top:" + cy + "px; width:"
 			+ length + "px; transform:rotate(" + angle + "deg); z-index: -1' />";
-		$(div1).after(line);
+		var siblings = getSiblings(div1);
+		console.log(siblings, siblings.length);
+		var candid1 = "line_" + div1.id + "_" + div2.id;
+		var candid2 = "line_" + div2.id + "_" + div1.id;
+		for (var i = 0; i < siblings.length; i++) {
+			if (siblings[i].id != div1.id && siblings[i].id != div2.id && siblings[i].id != candid1 && siblings[i].id != candid2) {
+				console.log('created');
+				$(div1).after(line);
+			}
+		}	
 	}
+
+	function getSiblings(e) {
+		let siblings = []; 
+		let sibling  = e.parentNode.firstChild;
+		while (sibling) {
+			if (sibling.nodeType === 1 && sibling !== e) {
+				siblings.push(sibling);
+			}
+			sibling = sibling.nextSibling;
+		}
+		return siblings;
+	}
+
 
 	function resetPosition() {
 		var routers = {{ session['active_r']|safe }};
