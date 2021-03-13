@@ -5,116 +5,117 @@
 
 <div id="routers">
 	{% for p in range(session['active_r']|length): %}
-	<div id="router" class="draggable">
-		<div id="router_name">
-			<h4>{{ (session['active_r'][p])|string }}</h4>
-			<div id="circle_{{ session['active_r'][p]|string }}"></div>
+		{% set dom = session['active_r'][p]|string %}
+		<div id="{{ dom }}" class="draggable">
+			<div id="router_name">
+				<h4>{{ (session['active_r'][p])|string }}</h4>
+				<div id="circle_{{ session['active_r'][p]|string }}"></div>
+			</div>
+			<div id="router_specs">
+				
+				<script>
+					$(document).ready(function(){
+						var domain = "{{ dom }}";
+						var p = "{{ p }}";
+						var status_r = {{ status_r|safe }};
+						if (status_r[p] == '5') {
+							$("#shutdown_" + domain).attr("disabled", "disabled");
+							$("#console_" + domain).attr("disabled", "disabled");
+							$("#circle_" + domain).attr("style", "background-color: #d7292f")
+						}
+						if (status_r[p] == '1') {
+							$("#start_" + domain).attr("disabled", "disabled");
+							$("#circle_" + domain).attr("style", "background-color: #009e26");
+						}
+					});
+				</script>
+				
+				<form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
+					<button type="submit" class="control" id="console_{{ dom }}" value="Console">
+						<img src="{{ url_for('static', filename = 'icons/icons8-console-48.png') }}" />
+					</button>
+				</form>
+				<form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
+					<button type="submit" class="control">
+						<img src="{{ url_for('static', filename = 'icons/icons8-delete-48.png') }}" />
+					</button>
+				</form>
+				<form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
+					<button type="submit" class="control" id="start_{{ dom }}">
+						<img src="{{ url_for('static', filename = 'icons/icons8-start-48.png') }}" />
+					</button>
+				</form>
+				<form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
+					<button type="submit" class="control" id="shutdown_{{ dom }}">
+						<img src="{{ url_for('static', filename = 'icons/icons8-pause-squared-48.png') }}" />
+					</button>
+				</form>
+				{% for i in range((active_net_r[p])|int): %}
+					<br />
+					<div class="connections">
+						<img src="{{ url_for('static', filename = 'icons/icons8-wired-network-48.png') }}" />
+						<p1>{{ session['active_netconf_r'][p][i] }}</p1>
+					</div>
+				{% endfor %}
+			</div>
 		</div>
-		<div id="router_specs">
-			{% set dom = session['active_r'][p]|string %}
-			<script>
-				$(document).ready(function(){
-					var domain = "{{ dom }}";
-					var p = "{{ p }}";
-					var status_r = {{ status_r|safe }};
-					if (status_r[p] == '5') {
-						$("#shutdown_" + domain).attr("disabled", "disabled");
-						$("#console_" + domain).attr("disabled", "disabled");
-						$("#circle_" + domain).attr("style", "background-color: #d7292f")
-					}
-					if (status_r[p] == '1') {
-						$("#start_" + domain).attr("disabled", "disabled");
-						$("#circle_" + domain).attr("style", "background-color: #009e26");
-					}
-				});
-			</script>
-			
-			<form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
-				<button type="submit" class="control" id="console_{{ dom }}" value="Console">
-					<img src="{{ url_for('static', filename = 'icons/icons8-console-48.png') }}" />
-				</button>
-			</form>
-			<form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
-				<button type="submit" class="control">
-					<img src="{{ url_for('static', filename = 'icons/icons8-delete-48.png') }}" />
-				</button>
-			</form>
-			<form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
-				<button type="submit" class="control" id="start_{{ dom }}">
-					<img src="{{ url_for('static', filename = 'icons/icons8-start-48.png') }}" />
-				</button>
-			</form>
-			<form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
-				<button type="submit" class="control" id="shutdown_{{ dom }}">
-					<img src="{{ url_for('static', filename = 'icons/icons8-pause-squared-48.png') }}" />
-				</button>
-			</form>
-			{% for i in range((active_net_r[p])|int): %}
-				<br />
-				<div class="connections">
-					<img src="{{ url_for('static', filename = 'icons/icons8-wired-network-48.png') }}" />
-					<p1>{{ session['active_netconf_r'][p][i] }}</p1>
-				</div>
-			{% endfor %}
-		</div>
-	</div>
-	{% endfor %}
+		{% endfor %}
 </div>
 <div id="pcs">
 	{% for p in range(session['active_pc']|length): %}
-	<div id="pc" class="draggable">
-		<div id="pc_name">
-			<h4>{{ (session['active_pc'][p])|string }}</h4>
-			<div id="circle_{{ session['active_pc'][p]|string }}"></div>
-		</div>
-		<div id="pc_specs">
-			{% set dom = session['active_pc'][p]|string %}
-			<script>
-				$(document).ready(function(){
-					var domain = "{{ dom }}";
-					var p = "{{ p }}";
-					var status_pc = {{ status_pc|safe }};
-					if (status_pc[p] == '5') {
-						$("#shutdown_" + domain).attr("disabled", "disabled");
-						$("#console_" + domain).attr("disabled", "disabled");
-						$("#circle_" + domain).attr("style", "background-color: #d7292f")
+		{% set dom = session['active_pc'][p]|string %}
+		<div id="{{ dom }}" class="draggable">
+			<div id="pc_name">
+				<h4>{{ (session['active_pc'][p])|string }}</h4>
+				<div id="circle_{{ session['active_pc'][p]|string }}"></div>
+			</div>
+			<div id="pc_specs">
+				<script>
+					$(document).ready(function(){
+						var domain = "{{ dom }}";
+						var p = "{{ p }}";
+						var status_pc = {{ status_pc|safe }};
+						if (status_pc[p] == '5') {
+							$("#shutdown_" + domain).attr("disabled", "disabled");
+							$("#console_" + domain).attr("disabled", "disabled");
+							$("#circle_" + domain).attr("style", "background-color: #d7292f")
 
-					}
-					if (status_pc[p] == '1') {
-						$("#start_" + domain).attr("disabled", "disabled");
-						$("#circle_" + domain).attr("style", "background-color: #009e26");
-					}
-				});
-			</script>
-			<form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
-				<button type="submit" class="control" id="console_{{ dom }}" value="Console">
-					<img src="{{ url_for('static', filename = 'icons/icons8-console-48.png') }}" />
-				</button>
-			</form>
-			<form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
-				<button type="submit" class="control">
-					<img src="{{ url_for('static', filename = 'icons/icons8-delete-48.png') }}" />
-				</button>
-			</form>
-			<form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
-				<button type="submit" class="control" id="start_{{ dom }}">
-					<img src="{{ url_for('static', filename = 'icons/icons8-start-48.png') }}" />
-				</button>
-			</form>
-			<form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
-				<button type="submit" class="control" id="shutdown_{{ dom }}">
-					<img src="{{ url_for('static', filename = 'icons/icons8-pause-squared-48.png') }}" />
-				</button>
-			</form>
-			{% for i in range((active_net_pc[p])|int): %}
-				<br />
-				<div class="connections">
-					<img src="{{ url_for('static', filename = 'icons/icons8-wired-network-48.png') }}" />
-					<p1>{{ session['active_netconf_pc'][p][i] }}</p1>
-				</div>
-			{% endfor %}
+						}
+						if (status_pc[p] == '1') {
+							$("#start_" + domain).attr("disabled", "disabled");
+							$("#circle_" + domain).attr("style", "background-color: #009e26");
+						}
+					});
+				</script>
+				<form target="_blank" action="{{ url_for('xterm', domain = dom) }}" method="POST">
+					<button type="submit" class="control" id="console_{{ dom }}" value="Console">
+						<img src="{{ url_for('static', filename = 'icons/icons8-console-48.png') }}" />
+					</button>
+				</form>
+				<form action="{{ url_for('domain_remove', domain = dom) }}" method="POST">
+					<button type="submit" class="control">
+						<img src="{{ url_for('static', filename = 'icons/icons8-delete-48.png') }}" />
+					</button>
+				</form>
+				<form action="{{ url_for('domain_start', domain = dom) }}" method="POST">
+					<button type="submit" class="control" id="start_{{ dom }}">
+						<img src="{{ url_for('static', filename = 'icons/icons8-start-48.png') }}" />
+					</button>
+				</form>
+				<form action="{{ url_for('domain_shutdown', domain = dom) }}" method="POST">
+					<button type="submit" class="control" id="shutdown_{{ dom }}">
+						<img src="{{ url_for('static', filename = 'icons/icons8-pause-squared-48.png') }}" />
+					</button>
+				</form>
+				{% for i in range((active_net_pc[p])|int): %}
+					<br />
+					<div class="connections">
+						<img src="{{ url_for('static', filename = 'icons/icons8-wired-network-48.png') }}" />
+						<p1>{{ session['active_netconf_pc'][p][i] }}</p1>
+					</div>
+				{% endfor %}
+			</div>
 		</div>
-	</div>
 	{% endfor %}
 </div>
 
@@ -129,14 +130,8 @@
 <script>
 	$(".draggable").draggable({
 		stop: function(event, ui) {
-			var deviceID = this.firstChild.nextSibling.firstChild.nextSibling.textContent;
-			console.log(deviceID);
-			console.log(ui.position);
+			var deviceID = this.id;
 			document.cookie = deviceID + '=' + JSON.stringify(ui.position);
-			console.log(document.cookie);
-			positioncookie = document.cookie.split(deviceID);
-			var json = JSON.parse(getCookie(deviceID));
-			console.log(json['top'], json['left']);
 		}
 	});
 
@@ -147,24 +142,29 @@
 			var c = ca[i].trim();
 			if (c.indexOf(name)==0) return c.substring(name.length,c.length);
 		}
-	}
+	}	
 
 	$(document).ready(function() {
 		var routers = {{ session['active_r']|safe }};
 		var pcs = {{ session['active_pc']|safe }};
-		console.log(routers, pcs);
 		const initial_position = {"top":0,"left":0};
+
 		for (var i = 0; i < routers.length; i++) {
-			console.log(routers[i]);
-			document.cookie = routers[i] + '=';
-			console.log(document.cookie);
-			console.log(JSON.parse(getCookie(routers[i])));
+			var exists = getCookie(routers[i])
+			if (!exists) {
+				document.cookie = routers[i] + '=' + JSON.stringify(initial_position);
+			} else {
+				$("#" + routers[i]).css({ top: JSON.parse(getCookie(routers[i])).top, left: JSON.parse(getCookie(routers[i])).left });
+			}
 		}
-		for (var j = 0; j < pcs.length; j++) {
-			console.log(pcs[j]);
-			document.cookie = pcs[j] + '=';
-			console.log(document.cookie);
-			console.log(JSON.parse(getCookie(pcs[i])));
+		for (var i = 0; i < pcs.length; i++) {
+			var exists = getCookie(pcs[i])
+			if (!exists) {
+				document.cookie = pcs[i] + '=' + JSON.stringify(initial_position);
+			} else {
+				$("#" + pcs[i]).css({ top: JSON.parse(getCookie(pcs[i])).top, left: JSON.parse(getCookie(pcs[i])).left });
+			}
 		}
 	});
+
 </script>

@@ -6,8 +6,7 @@ import json
 import re
 from flask import Flask, send_from_directory, render_template, url_for, request, redirect, session
 import libvirt
-from libvirt_domain import create_router, create_pc, start_domain, shutdown_domain, remove_domain, domain_status, dhcp_leases
-from cleanup import cleanup
+from libvirt_domain import create_router, create_pc, start_domain, shutdown_domain, remove_domain, domain_status, dhcp_leases, cleanup
 
 
 active_r = []
