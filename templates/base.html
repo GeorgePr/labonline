@@ -167,4 +167,25 @@
 		}
 	});
 
+	function resetPosition() {
+		var routers = {{ session['active_r']|safe }};
+		var pcs = {{ session['active_pc']|safe }};
+		const initial_position = {"top":0,"left":0};
+
+		for (var i = 0; i < routers.length; i++) {
+			document.cookie = routers[i] + '=' + JSON.stringify(initial_position);
+		}
+		for (var i = 0; i < pcs.length; i++) {
+			document.cookie = pcs[i] + '=' + JSON.stringify(initial_position);
+		}
+		window.location.reload();
+	}
+
+	function deleteCookies() {
+		var allCookies = document.cookie.split(';');
+		for (var i = 0; i < allCookies.length; i++) {
+			document.cookie = allCookies[i] + "=;expires=" + new Date(0).toUTCString();
+		}
+	}
+
 </script>
