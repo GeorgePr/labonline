@@ -15,8 +15,11 @@
 {% else %}
 	<p1>{{ total }} domains have been created</p1>
 {% endif %}
+<br />
 
-<br /><p1><a href=# onclick="resetPosition()">Reset position</a></p1>
-<br /><p1><a onclick="deleteCookies()" href="{{ url_for('domains_cleanup') }}">Remove</a> all domains</p1>
+<button type="submit" id="resetPosition" onclick="resetPosition()">Reset position</button>
+<form action="{{ url_for('domains_cleanup') }}">
+	<button type="submit" id="removeAll" onclick="deleteCookies()">Remove all</button>
+</form>
 
 {% endblock %}

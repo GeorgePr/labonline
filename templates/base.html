@@ -51,7 +51,6 @@
 					</button>
 				</form>
 				{% for i in range((active_net_r[p])|int): %}
-					<br />
 					<div class="connections">
 						<img src="{{ url_for('static', filename = 'icons/icons8-wired-network-48.png') }}" />
 						<p1>{{ session['active_netconf_r'][p][i] }}</p1>
@@ -108,7 +107,6 @@
 					</button>
 				</form>
 				{% for i in range((active_net_pc[p])|int): %}
-					<br />
 					<div class="connections">
 						<img src="{{ url_for('static', filename = 'icons/icons8-wired-network-48.png') }}" />
 						<p1>{{ session['active_netconf_pc'][p][i] }}</p1>
@@ -124,7 +122,9 @@
 {% block body %}{% endblock %}
 
 {% if session['active_r'] != [] or session['active_pc'] != [] %}
-	<br /><p1><a href={{ url_for('leases') }}>DHCP Leases</a></p1>
+	<form action="{{ url_for('leases') }}">
+		<button type="submit" id="dhcp">DHCP Leases</button>
+	</form>
 {% endif %}
 
 <script>
@@ -145,27 +145,124 @@
 	}	
 
 	$(document).ready(function() {
-		var routers = {{ session['active_r']|safe }};
-		var pcs = {{ session['active_pc']|safe }};
+		var active_r_json = {{ session['active_r']|safe }};
+		var active_pc_json = {{ session['active_pc']|safe }};
+		var active_netconf_r_json = {{ active_netconf_r_json|safe }};
+		var active_netconf_pc_json = {{ active_netconf_pc_json|safe }};
 		const initial_position = {"top":0,"left":0};
 
-		for (var i = 0; i < routers.length; i++) {
-			var exists = getCookie(routers[i])
+		for (var i = 0; i < active_r_json.length; i++) {
+			var exists = getCookie(active_r_json[i])
 			if (!exists) {
-				document.cookie = routers[i] + '=' + JSON.stringify(initial_position);
+				document.cookie = active_r_json[i] + '=' + JSON.stringify(initial_position);
 			} else {
-				$("#" + routers[i]).css({ top: JSON.parse(getCookie(routers[i])).top, left: JSON.parse(getCookie(routers[i])).left });
+				$("#" + active_r_json[i]).css({ top: JSON.parse(getCookie(active_r_json[i])).top, left: JSON.parse(getCookie(active_r_json[i])).left });
 			}
 		}
-		for (var i = 0; i < pcs.length; i++) {
-			var exists = getCookie(pcs[i])
+		for (var i = 0; i < active_pc_json.length; i++) {
+			var exists = getCookie(active_pc_json[i])
 			if (!exists) {
-				document.cookie = pcs[i] + '=' + JSON.stringify(initial_position);
+				document.cookie = active_pc_json[i] + '=' + JSON.stringify(initial_position);
 			} else {
-				$("#" + pcs[i]).css({ top: JSON.parse(getCookie(pcs[i])).top, left: JSON.parse(getCookie(pcs[i])).left });
+				$("#" + active_pc_json[i]).css({ top: JSON.parse(getCookie(active_pc_json[i])).top, left: JSON.parse(getCookie(active_pc_json[i])).left });
 			}
 		}
+
+loop1:
+		for (var i = 0; i < active_r_json.length; i++) {
+loop2:
+			for (var j = 0; j < active_pc_json.length; j++) {
+loop3:
+				for (var k = 0; k < active_netconf_r_json.length; k++) {
+loop4:
+					for (var l = 0; l < active_netconf_pc_json.length; l++) {
+						if (active_netconf_r_json[i][k] != undefined && active_netconf_pc_json[j][l] != undefined && active_netconf_r_json[i][k] == active_netconf_pc_json[j][l] && active_netconf_r_json[i][k] != 'NAT' && active_netconf_pc_json[j][l] != 'NAT') {
+							var div1 = document.getElementById(active_r_json[i]);
+							var div2 = document.getElementById(active_pc_json[j]);
+							connect(div1, div2);
+							break loop2;
+						}
+					}
+				}
+			}
+		}
+
+loop1:
+		for (var i = 0; i < active_r_json.length; i++) {
+loop2:
+			for (var j = 0; j < active_r_json.length; j++) {
+loop3:
+				for (var k = 0; k < active_netconf_r_json.length; k++) {
+loop4:
+					for (var l = 0; l < active_netconf_r_json.length; l++) {
+						if (i != j && active_netconf_r_json[i][k] != undefined && active_netconf_r_json[j][l] != undefined && active_netconf_r_json[i][k] == active_netconf_r_json[j][l] && active_netconf_r_json[i][k] != 'NAT' && active_netconf_r_json[j][l] != 'NAT') {
+							var div1 = document.getElementById(active_r_json[i]);
+							var div2 = document.getElementById(active_r_json[j]);
+							connect(div1, div2);
+							break loop2;
+						}
+					}
+				}
+			}
+		}
+
+loop1:
+		for (var i = 0; i < active_pc_json.length; i++) {
+loop2:
+			for (var j = 0; j < active_pc_json.length; j++) {
+loop3:
+				for (var k = 0; k < active_netconf_pc_json.length; k++) {
+loop4:
+					for (var l = 0; l < active_netconf_pc_json.length; l++) {
+						if (i != j && active_netconf_pc_json[i][k] != undefined && active_netconf_pc_json[j][l] != undefined && active_netconf_pc_json[i][k] == active_netconf_pc_json[j][l] && active_netconf_pc_json[i][k] != 'NAT' && active_netconf_pc_json[j][l] != 'NAT') {
+							var div1 = document.getElementById(active_pc_json[i]);
+							var div2 = document.getElementById(active_pc_json[j]);
+							connect(div1, div2);
+							break loop2;
+						}
+					}
+				}
+			}
+		}
+
 	});
+	
+
+	function areConnected(arr1, arr2) {
+		console.log(arr1, arr2);
+		
+	}
+
+	function getOffset(el) {
+		var rect = el.getBoundingClientRect();
+		return {
+			left: rect.left + window.pageXOffset,
+			top: rect.top + window.pageYOffset,
+			width: rect.width || el.offsetWidth,
+			height: rect.height || el.offsetHeight
+		};
+	}
+
+	function connect(div1, div2) {
+		var off1 = getOffset(div1);
+		var off2 = getOffset(div2);
+		// bottom right
+		var x1 = off1.left + off1.width/2;
+		var y1 = off1.top + off1.height/2;
+		// top right
+		var x2 = off2.left + off2.width/2;
+		var y2 = off2.top + off2.height/2;
+		var length = Math.sqrt(((x2-x1) * (x2-x1)) + ((y2-y1) * (y2-y1)));
+		// center
+		var cx = ((x1 + x2)/2) - (length/2);
+		var cy = ((y1 + y2)/2) - (4/2);
+		var angle = Math.atan2((y1-y2),(x1-x2))*(180/Math.PI);
+
+		var line = "<div style='padding:0px; margin:0px; height: 2px; background-color: blue;"
+			+ "line-height:1px; position:absolute; left:" + cx + "px; top:" + cy + "px; width:"
+			+ length + "px; transform:rotate(" + angle + "deg); z-index: -1' />";
+		$(div1).after(line);
+	}
 
 	function resetPosition() {
 		var routers = {{ session['active_r']|safe }};
@@ -187,5 +284,6 @@
 			document.cookie = allCookies[i] + "=;expires=" + new Date(0).toUTCString();
 		}
 	}
+
 
 </script>

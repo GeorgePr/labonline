@@ -123,8 +123,10 @@ def index():
 	else:
 		return render_template('index.html', \
 			active_r = json.dumps(session['active_r']), active_pc = json.dumps(session['active_pc']), \
-			active_net_r = active_net_r, active_net_pc = active_net_pc, \
-			active_netconf_r = active_netconf_r, active_netconf_pc = active_netconf_pc, \
+			active_net_r = session['active_net_r'], active_net_pc = session['active_net_pc'], \
+			active_net_r_json = json.dumps(session['active_net_r']), active_net_pc_json = json.dumps(session['active_net_pc']), \
+			active_netconf_r = session['active_netconf_r'], active_netconf_pc = session['active_netconf_pc'], \
+			active_netconf_r_json = json.dumps(session['active_netconf_r']), active_netconf_pc_json = json.dumps(session['active_netconf_pc']), \
 			status_r = json.dumps(session['status_r']), status_pc = json.dumps(session['status_pc']))
 
 
@@ -157,7 +159,9 @@ def created():
 		number_r = number_r, number_pc = number_pc, \
 		active_r = json.dumps(session['active_r']), active_pc = json.dumps(session['active_pc']), \
 		active_net_r = session['active_net_r'], active_net_pc = session['active_net_pc'], \
+		active_net_r_json = json.dumps(session['active_net_r']), active_net_pc_json = json.dumps(session['active_net_pc']), \
 		active_netconf_r = session['active_netconf_r'], active_netconf_pc = session['active_netconf_pc'], \
+		active_netconf_r_json = json.dumps(session['active_netconf_r']), active_netconf_pc_json = json.dumps(session['active_netconf_pc']), \
 		status_r = session['status_r'], status_pc = session['status_pc'])
 
 
@@ -224,7 +228,6 @@ def domain_remove():
 def domains_cleanup():
 	''' Removes all domains '''
 
-	print('CLEANUP')
 	cleanup()
 	session.clear()
 

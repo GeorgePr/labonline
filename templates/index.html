@@ -7,7 +7,7 @@
 
 {% block body %}
 <form method="POST">
-	<p1>Select number of VMs to create</p1>
+	<p1>Select the number of VMs to create</p1>
 	{% if session['active_r'] != [] or session['active_pc'] != [] %}
 		<p1>or <a href="{{ url_for('domains_cleanup') }}">remove</a> all domains</p1>
 	{% endif %}

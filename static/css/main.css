@@ -38,27 +38,27 @@ input {
 
 select {
 	background-color: #f5f5f5;
-	border-radius: 2pt;
+	border-radius: 3px;
 }
 
 div[id^='circle'] {
-	width: 9.5pt;
-	height: 9.5pt;
-	border-radius: 9.5pt;
+	width: 13px;
+	height: 13px;
+	border-radius: 13px;
 	display: inline-block;
-	box-shadow: 0 0 1pt 0.5pt #9b9b9b;
+	box-shadow: 0 0 1px 0.5px #9b9b9b;
 }
 
-#load, #load_interface {
+#load, #load_interface, #resetPosition, #removeAll, #dhcp {
 	background-color: #e09696;
 	color: #000000;
 	padding: 3px 20px;
 	border-width: 0px;
-	border-radius: 4px;
+	border-radius: 7px;
 	outline: none;
 }
 
-#load:hover, #load_interface:hover {
+#load:hover, #load_interface:hover, #resetPosition:hover, #removeAll:hover, #dhcp:hover {
 	box-shadow: #000000 0 0 2px;
 	transition: box-shadow 0.1s;
 }
@@ -84,16 +84,16 @@ div[id^='circle'] {
 }
 
 .connections {
-	display: inline-block;
+	display: block;
 	left: 4px;
 }
 
 .connections img {
+	position: relative;
 	top: 2px;
 	left: 2px;
 	height: 15px;
 	width: 15px;
-	position: relative;
 }
 
 .input_number {
@@ -105,10 +105,10 @@ div[id^='circle'] {
 #submit {
 	background-color: #008afc;
 	color: #ffffff;
-	font-size: 12pt;
+	font-size: 16px;
 	font-weight: 620;
-	padding: 8pt 20pt;
-	border-width: 0pt;
+	padding: 11px 26px;
+	border-width: 0px;
 	border-radius: 12px;
 	outline: none;
 }
@@ -122,7 +122,7 @@ div[id^='circle'] {
 }
 
 #num_r, #num_pc {
-	width: 26pt;
+	width: 35px;
 }
 
 #routers_new, #pcs_new {
@@ -135,9 +135,13 @@ div[id^='circle'] {
 	margin: 4px 0px 4px;
 	color: #000000;
 	transition: transform 0.2s, box-shadow 0.2s;
-	border-radius: 2.5pt;
+	border-radius: 4px;
 	box-shadow: #000000 0 0 3px;
 	display: inline-block;
+}
+
+#router_name, #pc_name {
+	padding-left: 2px;
 }
 
 .draggable {
@@ -170,11 +174,12 @@ div[id^='circle'] {
 }
 
 .draggable:before {
-	content: '.';
 	position: absolute;
-	left: 6pt;
-	font-size: 16pt;
-	top: 20%;
+	top: 0;
+	left: 10px;
+	margin-top: 10%;
+	content: '.';
+	font-size: 21px;
 	color: #4e4e4e;
 	text-shadow: 0 5px #4e4e4e, 0 10px #4e4e4e, 5px 0 #4e4e4e, 5px 5px #4e4e4e, 5px 10px #4e4e4e, 10px 0 #4e4e4e, 10px 5px #4e4e4e, 10px 10px #4e4e4e;
 }
