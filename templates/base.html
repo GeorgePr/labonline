@@ -129,7 +129,8 @@
 
 <script>
 	$(".draggable").draggable({
-		drag: function(event, ui) {
+		drag: function() {
+			document.querySelectorAll("div[id^=line_]").forEach(e => e.remove());
 			areConnected();
 		},
 		stop: function(event, ui) {
@@ -176,61 +177,24 @@
 		var active_pc_json = {{ session['active_pc']|safe }};
 		var active_netconf_r_json = {{ active_netconf_r_json|safe }};
 		var active_netconf_pc_json = {{ active_netconf_pc_json|safe }};
+		var allDevices = active_r_json.concat(active_pc_json);
+		var allInterfaces = active_netconf_r_json.concat(active_netconf_pc_json);
 
-		loop1:
-		for (var i = 0; i < active_r_json.length; i++) {
-		loop2:
-			for (var j = 0; j < active_pc_json.length; j++) {
-		loop3:
-				for (var k = 0; k < active_netconf_r_json.length; k++) {
-		loop4:
-					for (var l = 0; l < active_netconf_pc_json.length; l++) {
-						if (active_netconf_r_json[i][k] != undefined && active_netconf_pc_json[j][l] != undefined && active_netconf_r_json[i][k] == active_netconf_pc_json[j][l] && active_netconf_r_json[i][k] != 'NAT' && active_netconf_pc_json[j][l] != 'NAT') {
-							var div1 = document.getElementById(active_r_json[i]);
-							var div2 = document.getElementById(active_pc_json[j]);
-							connect(div1, div2);
-							break loop2;
-						}
-					}
-				}
+		var devices = new Array;
+		var interfaces = new Array;
+		for (i = 0; i < allDevices.length; i++) {
+			for (j = i + 1; j < allDevices.length; j++) {
+				devices.push([allDevices[i], allDevices[j]]);
+				interfaces.push(allInterfaces[i].concat(allInterfaces[j]));
 			}
 		}
 
-		loop1:
-		for (var i = 0; i < active_r_json.length; i++) {
-		loop2:
-			for (var j = 0; j < active_r_json.length; j++) {
-		loop3:
-				for (var k = 0; k < active_netconf_r_json.length; k++) {
-		loop4:
-					for (var l = 0; l < active_netconf_r_json.length; l++) {
-						if (i != j && active_netconf_r_json[i][k] != undefined && active_netconf_r_json[j][l] != undefined && active_netconf_r_json[i][k] == active_netconf_r_json[j][l] && active_netconf_r_json[i][k] != 'NAT' && active_netconf_r_json[j][l] != 'NAT') {
-							var div1 = document.getElementById(active_r_json[i]);
-							var div2 = document.getElementById(active_r_json[j]);
-							connect(div1, div2);
-							break loop2;
-						}
-					}
-				}
-			}
-		}
-
-		loop1:
-		for (var i = 0; i < active_pc_json.length; i++) {
-		loop2:
-			for (var j = 0; j < active_pc_json.length; j++) {
-		loop3:
-				for (var k = 0; k < active_netconf_pc_json.length; k++) {
-		loop4:
-					for (var l = 0; l < active_netconf_pc_json.length; l++) {
-						if (i != j && active_netconf_pc_json[i][k] != undefined && active_netconf_pc_json[j][l] != undefined && active_netconf_pc_json[i][k] == active_netconf_pc_json[j][l] && active_netconf_pc_json[i][k] != 'NAT' && active_netconf_pc_json[j][l] != 'NAT') {
-							var div1 = document.getElementById(active_pc_json[i]);
-							var div2 = document.getElementById(active_pc_json[j]);
-							connect(div1, div2);
-							break loop2;
-						}
-					}
-				}
+		for (const[i, interface] of interfaces.entries()) {
+			var setOf = new Set(interface);
+			if (setOf.size !== interface.length) {
+				var div1 = document.getElementById(devices[i][0]);
+				var div2 = document.getElementById(devices[i][1]);
+				connect(div1, div2);
 			}
 		}
 	}
@@ -263,30 +227,8 @@
 		var line = "<div id='line_" + div1.id + "_" + div2.id + "' style='padding:0px; margin:0px; height: 2px; background-color: blue;"
 			+ "line-height:1px; position:absolute; left:" + cx + "px; top:" + cy + "px; width:"
 			+ length + "px; transform:rotate(" + angle + "deg); z-index: -1' />";
-		var siblings = getSiblings(div1);
-		console.log(siblings, siblings.length);
-		var candid1 = "line_" + div1.id + "_" + div2.id;
-		var candid2 = "line_" + div2.id + "_" + div1.id;
-		for (var i = 0; i < siblings.length; i++) {
-			if (siblings[i].id != div1.id && siblings[i].id != div2.id && siblings[i].id != candid1 && siblings[i].id != candid2) {
-				console.log('created');
-				$(div1).after(line);
-			}
-		}	
+		$(div1).after(line);
 	}
-
-	function getSiblings(e) {
-		let siblings = []; 
-		let sibling  = e.parentNode.firstChild;
-		while (sibling) {
-			if (sibling.nodeType === 1 && sibling !== e) {
-				siblings.push(sibling);
-			}
-			sibling = sibling.nextSibling;
-		}
-		return siblings;
-	}
-
 
 	function resetPosition() {
 		var routers = {{ session['active_r']|safe }};
@@ -308,6 +250,5 @@
 			document.cookie = allCookies[i] + "=;expires=" + new Date(0).toUTCString();
 		}
 	}
-
 
 </script>
