@@ -1,4 +1,5 @@
 body {
+	background-color: #f1f6f7;
 	margin-left: 14px;
 	font-family: "IBM Plex Sans", sans-serif;
 }
@@ -47,6 +48,10 @@ div[id^='circle'] {
 	border-radius: 13px;
 	display: inline-block;
 	box-shadow: 0 0 1px 0.5px #9b9b9b;
+}
+
+#createnew {
+	padding-top: 20px;
 }
 
 #load, #load_interface, #resetPosition, #removeAll, #dhcp {
@@ -182,4 +187,14 @@ div[id^='circle'] {
 	font-size: 21px;
 	color: #4e4e4e;
 	text-shadow: 0 5px #4e4e4e, 0 10px #4e4e4e, 5px 0 #4e4e4e, 5px 5px #4e4e4e, 5px 10px #4e4e4e, 10px 0 #4e4e4e, 10px 5px #4e4e4e, 10px 10px #4e4e4e;
+}
+
+div[id^='line_'] {
+	position: absolute;
+	background-color: teal;
+	line-height: 1px;
+	padding: 0px;
+	margin: 0px;
+	height: 4px;
+	z-index: -1;
 }

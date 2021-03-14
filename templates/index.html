@@ -5,29 +5,27 @@
 {% endblock %}
 
 
-{% block body %}
-<form method="POST">
-	<p1>Select the number of VMs to create</p1>
-	{% if session['active_r'] != [] or session['active_pc'] != [] %}
-		<p1>or <a href="{{ url_for('domains_cleanup') }}">remove</a> all domains</p1>
-	{% endif %}
-
-	<br />
-	<p1>Press Load to configure network interfaces:</p1>
-	<div id="new_vm_numbers">
-		<p1>Routers:</p1>
-		<input name="num_r" id="num_r" class="input_number" type=number value=1 min=0 max=24>
-		<p1 id="number_r" hidden="hidden"></p1>
-		<p1>PCs:</p1>
-		<input name="num_pc" id="num_pc" class="input_number" type=number value=1 min=0 max=24>
-		<p1 id="number_pc" hidden="hidden"></p1>
-		<button type="button" id="load">Load</button>
-		</div>
-	<div id="routers_new"></div>
-	<div id="pcs_new"></div>
-	<button type="button" id="load_interface" hidden="hidden">Load interface selection</button><br />
-	<input type="submit" hidden="hidden" id="submit" value="Submit">
-</form><br />
+{% block createnew %}
+<div id="createnew">
+	<form method="POST">
+		<p1>Select the number of VMs to create</p1>
+		<br />
+		<p1>Press Load to configure network interfaces:</p1>
+		<div id="new_vm_numbers">
+			<p1>Routers:</p1>
+			<input name="num_r" id="num_r" class="input_number" type=number value=1 min=0 max=24>
+			<p1 id="number_r" hidden="hidden"></p1>
+			<p1>PCs:</p1>
+			<input name="num_pc" id="num_pc" class="input_number" type=number value=1 min=0 max=24>
+			<p1 id="number_pc" hidden="hidden"></p1>
+			<button type="button" id="load">Load</button>
+			</div>
+		<div id="routers_new"></div>
+		<div id="pcs_new"></div>
+		<button type="button" id="load_interface" hidden="hidden">Load interface selection</button><br />
+		<input type="submit" hidden="hidden" id="submit" value="Submit">
+	</form><br />
+</div>
 
 
 <script>
