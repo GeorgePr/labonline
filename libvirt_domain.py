@@ -58,7 +58,7 @@ def create_router(netconf_r: list):
 
 	# Set name in new network XML file
 	attr_name = root.find('name')
-	attr_name.text = 'nat' + dom_name.lower()
+	attr_name.text = 'mgmt' + dom_name.lower()
 
 	# Set UUID in new network XML file
 	b_hex = int('b0', 16)
@@ -93,7 +93,7 @@ def create_router(netconf_r: list):
 	host.set('ip', '172.22.' + str(j) + '.1')
 
 	# Create XML for new network
-	xml_dest = 'net_xml/nat' + dom_name.lower() + '.xml'
+	xml_dest = 'net_xml/mgmt' + dom_name.lower() + '.xml'
 	tree.write(xml_dest)
 	xml_open = open(xml_dest)
 	xmlconfig = xml_open.read()
@@ -104,7 +104,7 @@ def create_router(netconf_r: list):
 	# Set as autostart and start network
 	nat_network.setAutostart(True)
 	nat_network.create()
-	print('Network nat' + dom_name.lower(), 'has been created')
+	print('Network mgmt' + dom_name.lower(), 'has been created')
 
 	# Create domain
 	# Use sample domain XML
@@ -130,12 +130,71 @@ def create_router(netconf_r: list):
 	for i, val in enumerate(netconf_r):
 		devices = root.find('.devices')
 		current_interface = val
+		regex_match = re.match('NAT Network', current_interface)
 
-		if current_interface == 'NAT':
+		if regex_match: # NAT Network
+			net_number = current_interface.split(regex_match[0], )
+			net_number = int(net_number[1])
 			interface = etree.Element('interface')
 			interface.set('type', 'network')
 			mac = etree.SubElement(interface, 'mac')
-			mac.set('address', '52:54:00:c' + str(i+1) + ':4d:' + k)
+			mac.set('address', '52:54:00:c' + str(net_number) + ':4d:' + k)
+			source = etree.SubElement(interface, 'source')
+			source.set('network', 'network' + str(net_number))
+			source.set('bridge', 'virbr' + str(net_number-1))
+			target = etree.SubElement(interface, 'target')
+			target.set('dev', 'vnet' + str(i))
+			model = etree.SubElement(interface, 'model')
+			model.set('type', 'e1000')
+			alias = etree.SubElement(interface, 'alias')
+			alias.set('name', 'net' + str(i))
+			address = etree.SubElement(interface, 'address')
+			address.set('type', 'pci')
+			address.set('domain', '0x0000')
+			address.set('bus', '0x00')
+			address.set('slot', '0x0' + str(i+2))
+			address.set('function', '0x0')
+			devices.append(interface)
+
+		elif current_interface == 'NAT':
+
+			# Create network for NAT interface
+			xml_file = 'net_xml/sample_nat.xml'
+			tree = etree.parse(xml_file)
+			root = tree.getroot()
+			attr_name = root.find('name')
+			attr_name.text = 'nat' + dom_name.lower()
+			b_hex = int('a0', 16)
+			uuid_last_nat = j + b_hex
+			uuid_last_nat = '{:02x}'.format(uuid_last_nat)
+			uuid = root.find('./uuid')
+			uuid.text = '6ac5acf9-940b-41fc-87a7-1ae02adddd' + uuid_last_nat
+			bridge_name = root.find('./bridge')
+			bridge_name.set('name', 'virbr' + str(j+18))
+			mac_add = root.find('./mac')
+			mac_add.set('mac', '52:54:00:' + uuid_last_nat + ':dd:00')
+			host_ip = root.find('./dns/host')
+			host_ip.set('ip', '192.168.' + str(j) + '.1')
+			hostname = root.find('./dns/host/hostname')
+			hostname.text = dom_name
+			ip = root.find('./ip')
+			ip.set('address', '192.168.' + str(j) + '.200')
+			host = root.find('./ip/dhcp/host')
+			host.set('mac', '52:54:00:' + uuid_last_nat + ':dd:01')
+			host.set('ip', '192.168.' + str(j) + '.1')
+			xml_dest = 'net_xml/mgmt' + dom_name.lower() + '.xml'
+			tree.write(xml_dest)
+			xml_open = open(xml_dest)
+			xmlconfig = xml_open.read()
+			nat_network = init_conn().networkDefineXML(xmlconfig)
+			nat_network.setAutostart(True)
+			nat_network.create()
+
+			# Create NAT interface
+			interface = etree.Element('interface')
+			interface.set('type', 'network')
+			mac = etree.SubElement(interface, 'mac')
+			mac.set('address', '52:54:00:' + uuid_last_nat + ':dd:' + k)
 			source = etree.SubElement(interface, 'source')
 			source.set('network', 'network' + str(i+1))
 			source.set('bridge', 'virbr' + str(i))
@@ -235,7 +294,7 @@ def create_router(netconf_r: list):
 	mac = etree.SubElement(interface, 'mac')
 	mac.set('address', '52:54:00:' + uuid_last_mgmt + ':cc:01')
 	source = etree.SubElement(interface, 'source')
-	source.set('network', 'nat' + dom_name.lower())
+	source.set('network', 'mgmt' + dom_name.lower())
 	source.set('bridge', 'virbr' + str(j+18))
 	target = etree.SubElement(interface, 'target')
 	target.set('dev', 'vnet' + str(i))
@@ -303,7 +362,7 @@ def create_pc(netconf_pc: list):
 
 	# Set name in new network XML file
 	attr_name = root.find('name')
-	attr_name.text = 'nat' + dom_name.lower()
+	attr_name.text = 'mgmt' + dom_name.lower()
 
 	# Set UUID in new network XML file
 	b_hex = int('c0', 16)
@@ -338,7 +397,7 @@ def create_pc(netconf_pc: list):
 	host.set('ip', '172.21.' + str(j) + '.1')
 
 	# Create XML for new network
-	xml_dest = 'net_xml/nat' + dom_name.lower() + '.xml'
+	xml_dest = 'net_xml/mgmt' + dom_name.lower() + '.xml'
 	tree.write(xml_dest)
 	xml_open = open(xml_dest)
 	xmlconfig = xml_open.read()
@@ -349,7 +408,7 @@ def create_pc(netconf_pc: list):
 	# Set as autostart and start network
 	nat_network.setAutostart(True)
 	nat_network.create()
-	print('Network nat' + dom_name.lower(), 'has been created')
+	print('Network mgmt' + dom_name.lower(), 'has been created')
 
 	# Create domain
 	# Use sample domain XML
@@ -375,15 +434,18 @@ def create_pc(netconf_pc: list):
 	for i, val in enumerate(netconf_pc):
 		devices = root.find('.devices')
 		current_interface = val
+		regex_match = re.match('NAT Network', current_interface)
 
-		if current_interface == 'NAT':
+		if regex_match: # NAT Network
+			net_number = current_interface.split(regex_match[0], )
+			net_number = int(net_number[1])
 			interface = etree.Element('interface')
 			interface.set('type', 'network')
 			mac = etree.SubElement(interface, 'mac')
-			mac.set('address', '52:54:00:c' + str(i+1) + ':5d:' + k)
+			mac.set('address', '52:54:00:c' + str(net_number) + ':5d:' + k)
 			source = etree.SubElement(interface, 'source')
-			source.set('network', 'network' + str(i+1))
-			source.set('bridge', 'virbr' + str(i))
+			source.set('network', 'network' + str(net_number))
+			source.set('bridge', 'virbr' + str(net_number-1))
 			target = etree.SubElement(interface, 'target')
 			target.set('dev', 'vnet' + str(i))
 			model = etree.SubElement(interface, 'model')
@@ -398,13 +460,14 @@ def create_pc(netconf_pc: list):
 			address.set('function', '0x0')
 			devices.append(interface)
 
-		elif current_interface == 'hostonly':
+		elif current_interface == 'NAT':
 			interface = etree.Element('interface')
-			interface.set('type', 'bridge')
+			interface.set('type', 'network')
 			mac = etree.SubElement(interface, 'mac')
-			mac.set('address', '52:54:00:d' + str(i+1) + ':5d:' + k)
+			mac.set('address', '52:54:00:c' + str(i+1) + ':5d:' + k)
 			source = etree.SubElement(interface, 'source')
-			source.set('bridge', 'virbr' + str(i+4))
+			source.set('network', 'network' + str(i+1))
+			source.set('bridge', 'virbr' + str(i))
 			target = etree.SubElement(interface, 'target')
 			target.set('dev', 'vnet' + str(i))
 			model = etree.SubElement(interface, 'model')
@@ -480,7 +543,7 @@ def create_pc(netconf_pc: list):
 	mac = etree.SubElement(interface, 'mac')
 	mac.set('address', '52:54:00:' + uuid_last_mgmt + ':cc:01')
 	source = etree.SubElement(interface, 'source')
-	source.set('network', 'nat' + dom_name.lower())
+	source.set('network', 'mgmt' + dom_name.lower())
 	source.set('bridge', 'virbr' + str(j+18))
 	target = etree.SubElement(interface, 'target')
 	target.set('dev', 'vnet' + str(i))
@@ -591,13 +654,13 @@ def remove_domain(domain: str):
 
 	# Remove management network
 	try:
-		network = init_conn().networkLookupByName('nat' + domain.lower())
+		network = init_conn().networkLookupByName('mgmt' + domain.lower())
 		network.destroy()
 		network.undefine()
 		abs_path = os.path.dirname(__file__)
-		xml_dest = os.path.join(abs_path, 'net_xml/nat' + domain.lower() + '.xml')
+		xml_dest = os.path.join(abs_path, 'net_xml/mgmt' + domain.lower() + '.xml')
 		os.remove(xml_dest)
-		print('Network nat' + domain.lower(), 'has been undefined')
+		print('Network mgmt' + domain.lower(), 'has been undefined')
 	except libvirt.libvirtError:
 		print('Could not remove network')
 
@@ -661,17 +724,17 @@ def cleanup():
 
 			# Remove management network
 			try:
-				network = init_conn().networkLookupByName('nat' + str(domain.lower()))
+				network = init_conn().networkLookupByName('mgmt' + str(domain.lower()))
 				network.destroy()
 				network.undefine()
-				print('Removing network nat' + str(domain.lower()) + '...')
+				print('Removing network mgmt' + str(domain.lower()) + '...')
 
 			except libvirt.libvirtError:
 				print('Could not remove network')
 
 			# Remove network XML
 			abs_path = os.path.dirname(__file__)
-			xml_dest = os.path.join(abs_path, 'net_xml/nat' + str(domain.lower()) + '.xml')
+			xml_dest = os.path.join(abs_path, 'net_xml/mgmt' + str(domain.lower()) + '.xml')
 			os.remove(xml_dest)
 
 			# Remove domain XML and image
