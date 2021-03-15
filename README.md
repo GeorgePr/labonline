@@ -27,9 +27,10 @@ After pressing the "Load" button, the user can enter the number of
 interfaces per VM, as well as the type of connection for each interface.
 The app supports the following network modes:
 
-- NAT
+- NAT [pending]
 - NAT network
 - Bridged
+- Host-Only
 - Internal Network
 
 After selecting the desired network modes, VMs are initialized by pressing
@@ -65,7 +66,7 @@ Created XML files:
 
 Template images:
 - `BSDRP_linked.qcow2` (linked clone of `BSDRP.qcow2`)
-- `FreeBSD_linked.qcow2` (linked clone of `FreeBSD.qcow2`)
+- `BSDRP_PC_linked.qcow2` (linked clone of `BSDRP.qcow2`)
 
 Created images: 
 - `[PC|R]#.qcow2`
@@ -75,12 +76,12 @@ Created images:
 
 **Directory:** `net_xml/`
 
-Template NAT XML (management network):
+Template NAT XML (Management & NAT):
 - `sample_nat.xml`
 
 Defined networks:
+- `network[1-4].xml` (NAT networks)
 - `bridge.xml`
-- `hostonly[1-4].xml`
+- `hostonly.xml`
 - `LAN[1-5].xml`
-- `network[1-4].xml`
 - `WAN[1-5].xml`
