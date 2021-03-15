@@ -1,5 +1,5 @@
 <network>
-  <name>hostonly1</name>
+  <name>hostonly</name>
   <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8cce1</uuid>
   <bridge name='virbr4' stp='on' delay='0'/>
   <mac address='52:54:00:d1:4d:00'/>
