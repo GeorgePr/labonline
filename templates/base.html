@@ -1,8 +1,22 @@
 {% include 'head.html' %}
 
-{% block devices %}
-<h2><a href={{ url_for('index') }}>LabOnLine</a></h2>
+{% block head %}{% endblock %}
 
+<h2><a href="{{ url_for('index') }}">LabOnLine</a></h2>
+
+{% if session['active_r'] != [] or session['active_pc'] != [] %}
+	<button type="submit" id="resetPosition" onclick="resetPosition()">Reset position</button>
+	<form action="{{ url_for('domains_cleanup') }}">
+		<button type="submit" id="removeAll" onclick="deleteCookies()">Remove all</button>
+	</form>
+	<form action="{{ url_for('leases') }}">
+		<button type="submit" id="dhcp_button">DHCP Leases</button>
+	</form><br /><br />
+{% endif %}
+
+{% block body %}{% endblock %}
+
+{% block devices %}
 <div id="routers">
 	{% for p in range(session['active_r']|length): %}
 		{% set dom = session['active_r'][p]|string %}
@@ -119,21 +133,6 @@
 
 {% endblock %}
 
-{% block body %}{% endblock %}
-
-{% if session['active_r'] != [] or session['active_pc'] != [] %}
-<button type="submit" id="resetPosition" onclick="resetPosition()">Reset position</button>
-<form action="{{ url_for('domains_cleanup') }}">
-	<button type="submit" id="removeAll" onclick="deleteCookies()">Remove all</button>
-</form>
-{% endif %}
-
-{% if session['active_r'] != [] or session['active_pc'] != [] %}
-	<form action="{{ url_for('leases') }}">
-		<button type="submit" id="dhcp_button">DHCP Leases</button>
-	</form>
-{% endif %}
-
 {% block createnew %}{% endblock %}
 
 <script>
@@ -202,7 +201,6 @@
 		for (const[i, interface] of interfaces.entries()) {
 			var setOf = new Set(interface);
 			if (setOf.size !== interface.length && !interface.includes('NAT') && ((active_r_json.length !== 0 && (devices[i][0][0] !== 'P' || devices[i][1][0] !== 'P')) || (active_r_json.length === 0 && (devices[i][0][0] == 'P' || devices[i][1][0] == 'P')))) {
-				console.log(devices[i][0][0]);
 				var div1 = document.getElementById(devices[i][0]);
 				var div2 = document.getElementById(devices[i][1]);
 				connect(div1, div2);

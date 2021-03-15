@@ -1,6 +1,6 @@
 <network>
   <name>bridge</name>
-  <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8ccc1</uuid>
+  <uuid>6ac5acf9-940b-41fc-87a7-1ae02abbbbe1</uuid>
   <bridge name='virbr8' stp='on' delay='0'/>
   <mac address='52:54:00:e1:4d:00'/>
   <dns>

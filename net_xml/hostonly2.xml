@@ -76,6 +76,78 @@
     <host ip='172.16.2.24'>
       <hostname>R24</hostname>
     </host>
+    <host ip='172.16.2.25'>
+      <hostname>PC1</hostname>
+    </host>
+    <host ip='172.16.2.26'>
+      <hostname>PC2</hostname>
+    </host>
+    <host ip='172.16.2.27'>
+      <hostname>PC3</hostname>
+    </host>
+    <host ip='172.16.2.28'>
+      <hostname>PC4</hostname>
+    </host>
+    <host ip='172.16.2.29'>
+      <hostname>PC5</hostname>
+    </host>
+    <host ip='172.16.2.30'>
+      <hostname>PC6</hostname>
+    </host>
+    <host ip='172.16.2.31'>
+      <hostname>PC7</hostname>
+    </host>
+    <host ip='172.16.2.32'>
+      <hostname>PC8</hostname>
+    </host>
+    <host ip='172.16.2.33'>
+      <hostname>PC9</hostname>
+    </host>
+    <host ip='172.16.2.34'>
+      <hostname>PC10</hostname>
+    </host>
+    <host ip='172.16.2.35'>
+      <hostname>PC11</hostname>
+    </host>
+    <host ip='172.16.2.36'>
+      <hostname>PC12</hostname>
+    </host>
+    <host ip='172.16.2.37'>
+      <hostname>PC13</hostname>
+    </host>
+    <host ip='172.16.2.38'>
+      <hostname>PC14</hostname>
+    </host>
+    <host ip='172.16.2.39'>
+      <hostname>PC15</hostname>
+    </host>
+    <host ip='172.16.2.40'>
+      <hostname>PC16</hostname>
+    </host>
+    <host ip='172.16.2.41'>
+      <hostname>PC17</hostname>
+    </host>
+    <host ip='172.16.2.42'>
+      <hostname>PC18</hostname>
+    </host>
+    <host ip='172.16.2.43'>
+      <hostname>PC19</hostname>
+    </host>
+    <host ip='172.16.2.44'>
+      <hostname>PC20</hostname>
+    </host>
+    <host ip='172.16.2.45'>
+      <hostname>PC21</hostname>
+    </host>
+    <host ip='172.16.2.46'>
+      <hostname>PC22</hostname>
+    </host>
+    <host ip='172.16.2.47'>
+      <hostname>PC23</hostname>
+    </host>
+    <host ip='172.16.2.48'>
+      <hostname>PC24</hostname>
+    </host>
   </dns>
   <ip address='172.16.2.200' netmask='255.255.255.0'>
     <dhcp>
@@ -104,6 +176,30 @@
       <host mac='52:54:00:d2:4d:16' ip='172.16.2.22'/>
       <host mac='52:54:00:d2:4d:17' ip='172.16.2.23'/>
       <host mac='52:54:00:d2:4d:18' ip='172.16.2.24'/>
+      <host mac='52:54:00:d2:5d:01' ip='172.16.2.25'/>
+      <host mac='52:54:00:d2:5d:02' ip='172.16.2.26'/>
+      <host mac='52:54:00:d2:5d:03' ip='172.16.2.27'/>
+      <host mac='52:54:00:d2:5d:04' ip='172.16.2.28'/>
+      <host mac='52:54:00:d2:5d:05' ip='172.16.2.29'/>
+      <host mac='52:54:00:d2:5d:06' ip='172.16.2.30'/>
+      <host mac='52:54:00:d2:5d:07' ip='172.16.2.31'/>
+      <host mac='52:54:00:d2:5d:08' ip='172.16.2.32'/>
+      <host mac='52:54:00:d2:5d:09' ip='172.16.2.33'/>
+      <host mac='52:54:00:d2:5d:0a' ip='172.16.2.34'/>
+      <host mac='52:54:00:d2:5d:0b' ip='172.16.2.35'/>
+      <host mac='52:54:00:d2:5d:0c' ip='172.16.2.36'/>
+      <host mac='52:54:00:d2:5d:0d' ip='172.16.2.37'/>
+      <host mac='52:54:00:d2:5d:0e' ip='172.16.2.38'/>
+      <host mac='52:54:00:d2:5d:0f' ip='172.16.2.39'/>
+      <host mac='52:54:00:d2:5d:10' ip='172.16.2.40'/>
+      <host mac='52:54:00:d2:5d:11' ip='172.16.2.41'/>
+      <host mac='52:54:00:d2:5d:12' ip='172.16.2.42'/>
+      <host mac='52:54:00:d2:5d:13' ip='172.16.2.43'/>
+      <host mac='52:54:00:d2:5d:14' ip='172.16.2.44'/>
+      <host mac='52:54:00:d2:5d:15' ip='172.16.2.45'/>
+      <host mac='52:54:00:d2:5d:16' ip='172.16.2.46'/>
+      <host mac='52:54:00:d2:5d:17' ip='172.16.2.47'/>
+      <host mac='52:54:00:d2:5d:18' ip='172.16.2.48'/>
     </dhcp>
   </ip>
 </network>

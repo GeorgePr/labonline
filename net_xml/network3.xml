@@ -1,6 +1,6 @@
 <network>
   <name>network3</name>
-  <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8ccfd</uuid>
+  <uuid>6ac5acf9-940b-41fc-87a7-1ae02af8ccc3</uuid>
   <forward mode='nat'/>
   <bridge name='virbr2' stp='on' delay='0'/>
   <mac address='52:54:00:c3:4d:00'/>
@@ -77,6 +77,78 @@
     <host ip='10.0.3.24'>
       <hostname>R24</hostname>
     </host>
+    <host ip='10.0.3.25'>
+      <hostname>PC1</hostname>
+    </host>
+    <host ip='10.0.3.26'>
+      <hostname>PC2</hostname>
+    </host>
+    <host ip='10.0.3.27'>
+      <hostname>PC3</hostname>
+    </host>
+    <host ip='10.0.3.28'>
+      <hostname>PC4</hostname>
+    </host>
+    <host ip='10.0.3.29'>
+      <hostname>PC5</hostname>
+    </host>
+    <host ip='10.0.3.30'>
+      <hostname>PC6</hostname>
+    </host>
+    <host ip='10.0.3.31'>
+      <hostname>PC7</hostname>
+    </host>
+    <host ip='10.0.3.32'>
+      <hostname>PC8</hostname>
+    </host>
+    <host ip='10.0.3.33'>
+      <hostname>PC9</hostname>
+    </host>
+    <host ip='10.0.3.34'>
+      <hostname>PC10</hostname>
+    </host>
+    <host ip='10.0.3.35'>
+      <hostname>PC11</hostname>
+    </host>
+    <host ip='10.0.3.36'>
+      <hostname>PC12</hostname>
+    </host>
+    <host ip='10.0.3.37'>
+      <hostname>PC13</hostname>
+    </host>
+    <host ip='10.0.3.38'>
+      <hostname>PC14</hostname>
+    </host>
+    <host ip='10.0.3.39'>
+      <hostname>PC15</hostname>
+    </host>
+    <host ip='10.0.3.40'>
+      <hostname>PC16</hostname>
+    </host>
+    <host ip='10.0.3.41'>
+      <hostname>PC17</hostname>
+    </host>
+    <host ip='10.0.3.42'>
+      <hostname>PC18</hostname>
+    </host>
+    <host ip='10.0.3.43'>
+      <hostname>PC19</hostname>
+    </host>
+    <host ip='10.0.3.44'>
+      <hostname>PC20</hostname>
+    </host>
+    <host ip='10.0.3.45'>
+      <hostname>PC21</hostname>
+    </host>
+    <host ip='10.0.3.46'>
+      <hostname>PC22</hostname>
+    </host>
+    <host ip='10.0.3.47'>
+      <hostname>PC23</hostname>
+    </host>
+    <host ip='10.0.3.48'>
+      <hostname>PC24</hostname>
+    </host>
   </dns>
   <ip address='10.0.3.200' netmask='255.255.255.0'>
     <dhcp>
@@ -105,6 +177,30 @@
       <host mac='52:54:00:c3:4d:16' ip='10.0.3.22'/>
       <host mac='52:54:00:c3:4d:17' ip='10.0.3.23'/>
       <host mac='52:54:00:c3:4d:18' ip='10.0.3.24'/>
+      <host mac='52:54:00:c3:5d:01' ip='10.0.3.25'/>
+      <host mac='52:54:00:c3:5d:02' ip='10.0.3.26'/>
+      <host mac='52:54:00:c3:5d:03' ip='10.0.3.27'/>
+      <host mac='52:54:00:c3:5d:04' ip='10.0.3.28'/>
+      <host mac='52:54:00:c3:5d:05' ip='10.0.3.29'/>
+      <host mac='52:54:00:c3:5d:06' ip='10.0.3.30'/>
+      <host mac='52:54:00:c3:5d:07' ip='10.0.3.31'/>
+      <host mac='52:54:00:c3:5d:08' ip='10.0.3.32'/>
+      <host mac='52:54:00:c3:5d:09' ip='10.0.3.33'/>
+      <host mac='52:54:00:c3:5d:0a' ip='10.0.3.34'/>
+      <host mac='52:54:00:c3:5d:0b' ip='10.0.3.35'/>
+      <host mac='52:54:00:c3:5d:0c' ip='10.0.3.36'/>
+      <host mac='52:54:00:c3:5d:0d' ip='10.0.3.37'/>
+      <host mac='52:54:00:c3:5d:0e' ip='10.0.3.38'/>
+      <host mac='52:54:00:c3:5d:0f' ip='10.0.3.39'/>
+      <host mac='52:54:00:c3:5d:10' ip='10.0.3.40'/>
+      <host mac='52:54:00:c3:5d:11' ip='10.0.3.41'/>
+      <host mac='52:54:00:c3:5d:12' ip='10.0.3.42'/>
+      <host mac='52:54:00:c3:5d:13' ip='10.0.3.43'/>
+      <host mac='52:54:00:c3:5d:14' ip='10.0.3.44'/>
+      <host mac='52:54:00:c3:5d:15' ip='10.0.3.45'/>
+      <host mac='52:54:00:c3:5d:16' ip='10.0.3.46'/>
+      <host mac='52:54:00:c3:5d:17' ip='10.0.3.47'/>
+      <host mac='52:54:00:c3:5d:18' ip='10.0.3.48'/>
     </dhcp>
   </ip>
 </network>

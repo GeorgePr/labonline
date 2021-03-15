@@ -2,7 +2,7 @@
 
 {% block body %}
 
-<h2><a href={{ url_for('index') }}>LabOnLine</a></h2><br />
+<h2><a href="{{ url_for('index') }}">LabOnLine</a></h2><br />
 <h4>DHCP Leases:</h4>
 <div id="dhcp_leases">
 	<table style="border: none;">
@@ -11,7 +11,7 @@
 			{% for lease in leases: %}
 				<tr>
 				{% for i in lease: %}
-					<td>{{ i }} &nbsp; </td>
+					<td>{{ i }} &nbsp;</td>
 				{% endfor %}
 				</tr>	
 			{% endfor %}
@@ -23,7 +23,6 @@
 	setInterval('windowReload()', 3000);
 	function windowReload() {
 		$('#dhcp_leases').load(location.href + ' #dhcp_leases');
-		console.log('loaded');
 	}
 </script>
 
