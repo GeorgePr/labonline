@@ -622,19 +622,20 @@ def dhcp_leases():
 	
 	networks = init_conn().listNetworks()
 	networks.sort()
-	active_net_leases = []
+	active_net_leases = {}
 	for network in networks:
 		net = init_conn().networkLookupByName(network)
 		leases = net.DHCPLeases()
+		net_leases = []
 		if leases != []:
-			active_net_leases.append(network)
 			for lease in leases:
 				expiry = time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(lease['expirytime']))
 				mac = lease['mac']
 				addr_prefix = str(lease['ipaddr']) + '/' + str(lease['prefix'])
 				hostname = lease['hostname']
 				dhcp_entry = expiry, mac, addr_prefix, hostname
-				active_net_leases.append(dhcp_entry)
+				net_leases.append(dhcp_entry)
+			active_net_leases.update({network: net_leases})
 	return(active_net_leases)
 
 

@@ -54,7 +54,7 @@ div[id^='circle'] {
 	padding-top: 20px;
 }
 
-#load, #load_interface, #resetPosition, #removeAll, #dhcp {
+#load, #load_interface, #resetPosition, #removeAll, #dhcp_button {
 	background-color: #e09696;
 	color: #000000;
 	padding: 3px 20px;
@@ -63,7 +63,7 @@ div[id^='circle'] {
 	outline: none;
 }
 
-#load:hover, #load_interface:hover, #resetPosition:hover, #removeAll:hover, #dhcp:hover {
+#load:hover, #load_interface:hover, #resetPosition:hover, #removeAll:hover, #dhcp_button:hover {
 	box-shadow: #000000 0 0 2px;
 	transition: box-shadow 0.1s;
 }

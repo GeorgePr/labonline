@@ -130,7 +130,7 @@
 
 {% if session['active_r'] != [] or session['active_pc'] != [] %}
 	<form action="{{ url_for('leases') }}">
-		<button type="submit" id="dhcp">DHCP Leases</button>
+		<button type="submit" id="dhcp_button">DHCP Leases</button>
 	</form>
 {% endif %}
 
@@ -198,10 +198,6 @@
 				interfaces.push(allInterfaces[i].concat(allInterfaces[j]));
 			}
 		}
-		console.log(active_r_json.length);
-		if (active_r_json === []) {
-			console.log('no routers');
-		}
 
 		for (const[i, interface] of interfaces.entries()) {
 			var setOf = new Set(interface);
@@ -240,7 +236,7 @@
 		var angle = Math.atan2((y1-y2),(x1-x2))*(180/Math.PI);
 
 		var line = "<div id='line_" + div1.id + "_" + div2.id + "' style='"
-			+ "left: " + cx + "px; top: " + cy + "px; width:"
+			+ "left: " + cx + "px; top: " + cy + "px; width: "
 			+ length + "px; transform: rotate(" + angle + "deg);' />";
 		$(div1).after(line);
 	}
