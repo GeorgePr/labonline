@@ -20,10 +20,10 @@ def init_conn():
 		return conn
 	except libvirt.libvirtError:
 		print('Failed to connect to the hypervisor')
-		sys.exit(1)
+		return
 
 
-def create_router(netconf_r: list):
+def create_router(name_r, netconf_r: list):
 	''' Creates a router '''
 
 	# Find existing routers
@@ -31,13 +31,20 @@ def create_router(netconf_r: list):
 		max_r = 0
 		lines = f.read().splitlines()
 		for domain in lines:
-			dom_number = int(re.sub('[PCR]', '', domain))
+			dom_number = re.sub('[PCR]', '', domain)
 			if 'R' in domain:
-				max_r = dom_number
+				max_r = int(dom_number)
+			if name_r == domain:
+				print('Domain already exists')
+				return
 	
-	j = max_r + 1
+	dom_number = re.sub('[PCR]', '', name_r)
 
-	dom_name = 'R' + str(j)
+	j = max_r + 1
+	if 'R' in name_r:
+		j = int(dom_number)
+
+	dom_name = name_r
 	print('\nDomain', dom_name, 'will be created')
 
 	# Print domain disk location
@@ -69,7 +76,7 @@ def create_router(netconf_r: list):
 
 	# Set bridge name in new network XML file
 	bridge_name = root.find('./bridge')
-	bridge_name.set('name', 'virbr' + str(j+18))
+	bridge_name.set('name', 'virbr' + str(j+100))
 
 	# Set network MAC address in new network XML file
 	mac_add = root.find('./mac')
@@ -295,7 +302,7 @@ def create_router(netconf_r: list):
 	mac.set('address', '52:54:00:' + uuid_last_mgmt + ':cc:01')
 	source = etree.SubElement(interface, 'source')
 	source.set('network', 'mgmt' + dom_name.lower())
-	source.set('bridge', 'virbr' + str(j+18))
+	source.set('bridge', 'virbr' + str(j+100))
 	target = etree.SubElement(interface, 'target')
 	target.set('dev', 'vnet' + str(i))
 	model = etree.SubElement(interface, 'model')
@@ -327,21 +334,28 @@ def create_router(netconf_r: list):
 		f.write(dom_name + '\n')
 
 
-def create_pc(netconf_pc: list):
+def create_pc(name_pc, netconf_pc: list):
 	''' Creates a PC '''
 
-	# Find existing PCs
+	# Find existing routers
 	with open('domains_xml/domains.txt', 'r') as f:
 		max_pc = 0
 		lines = f.read().splitlines()
 		for domain in lines:
-			dom_number = int(re.sub('[PCR]', '', domain))
+			dom_number = re.sub('[PCR]', '', domain)
 			if 'PC' in domain:
-				max_pc = dom_number
+				max_pc = int(dom_number)
+			if name_pc == domain:
+				print('Domain already exists')
+				return
 	
-	j = max_pc + 1
+	dom_number = re.sub('[PCR]', '', name_pc)
 
-	dom_name = 'PC' + str(j)
+	j = max_pc + 1
+	if 'PC' in name_pc:
+		j = int(dom_number)
+
+	dom_name = name_pc
 	print('\nDomain', dom_name, 'will be created')
 
 	# Print domain disk location
@@ -373,7 +387,7 @@ def create_pc(netconf_pc: list):
 
 	# Set bridge name in new network XML file
 	bridge_name = root.find('./bridge')
-	bridge_name.set('name', 'virbr' + str(j+18+24))
+	bridge_name.set('name', 'virbr' + str(j+100+24))
 
 	# Set network MAC address in new network XML file
 	mac_add = root.find('./mac')
@@ -599,7 +613,7 @@ def create_pc(netconf_pc: list):
 	mac.set('address', '52:54:00:' + uuid_last_mgmt + ':cc:01')
 	source = etree.SubElement(interface, 'source')
 	source.set('network', 'mgmt' + dom_name.lower())
-	source.set('bridge', 'virbr' + str(j+18))
+	source.set('bridge', 'virbr' + str(j+100+24))
 	target = etree.SubElement(interface, 'target')
 	target.set('dev', 'vnet' + str(i))
 	model = etree.SubElement(interface, 'model')
@@ -639,7 +653,7 @@ def start_domain(domain: str):
 		dom = init_conn().lookupByName(domain)
 	except libvirt.libvirtError:
 		print('Domain not found')
-		sys.exit(1)
+		return
 
 	# Check if domain is shutdown
 	domain_state = dom.info()[0]
@@ -649,7 +663,7 @@ def start_domain(domain: str):
 			print('Domain', domain, 'has booted')
 		except libvirt.libvirtError:
 			print('Could not start domain')
-			sys.exit(1)
+			return
 	elif domain_state == libvirt.VIR_DOMAIN_RUNNING:
 		print('Domain is running')
 
@@ -662,7 +676,7 @@ def shutdown_domain(domain: str):
 		dom = init_conn().lookupByName(domain)
 	except libvirt.libvirtError:
 		print('Domain not found')
-		sys.exit(1)
+		return
 
 	# Check if domain is running
 	domain_state = dom.info()[0]
@@ -672,7 +686,7 @@ def shutdown_domain(domain: str):
 			print('Domain', domain, 'has been shutdown')
 		except libvirt.libvirtError:
 			print('Could not shutdown domain')
-			sys.exit(1)
+			return
 	elif domain_state == libvirt.VIR_DOMAIN_SHUTOFF:
 		print('Domain is not running')
 
@@ -685,7 +699,7 @@ def remove_domain(domain: str):
 		dom = init_conn().lookupByName(domain)
 	except libvirt.libvirtError:
 		print('Domain not found')
-		sys.exit(1)
+		return
 
 	# Check if domain is running
 	domain_state = dom.info()[0]
@@ -695,7 +709,7 @@ def remove_domain(domain: str):
 			print('Domain', domain, 'has been shutdown')
 		except libvirt.libvirtError:
 			print('Could not shutdown domain')
-			sys.exit(1)
+			return
 	try:
 		dom.undefine()
 		abs_path = os.path.dirname(__file__)
@@ -728,7 +742,7 @@ def domain_status(domain: str):
 		dom = init_conn().lookupByName(domain)
 	except libvirt.libvirtError:
 		print('Domain not found')
-		sys.exit(1)
+		return
 
 	# Return domain status
 	domain_state = dom.info()[0]

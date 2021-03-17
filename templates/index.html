@@ -43,10 +43,14 @@
 			last_number_r = parseInt(last_domain_r.match(/\d+/));
 		}
 		for (var i=0; i<num_r; i++) {
-			$("#routers_new").append("<div id=\"router_new\"><div id=\"router_name\"><h4>R" + (last_number_r + (i+1)) + "</h4></div>"
-			+ "<div id=\"r" + (i+1) + "_specs\"><p1>Number of interfaces: </p1><p1 id=\"number_int_r" + (i+1)
-			+ "\" hidden=\"hidden\"></p1><input name=" + "\"net_r" + (i+1) + "\" id=" + "\"net_r" + (i+1)
-			+ "\" class=\"input_number\" type=number value=1 min=1 max=4 /></div></div><br />");
+			$("#routers_new").append('<div id="router_new"><div id="router_name">'
+				+ '<h4 id="name_r' + (i+1) + '" hidden="hidden"></h4>'
+				+ '<input name="name_r" id="input_name_r' + (i+1)
+				+ '" class="input_name" type="text" value="R' + (last_number_r + (i+1))
+				+ '"></input></div><div id="r' + (i+1) + '_specs"><p1>Number of interfaces: </p1>'
+				+ '<p1 id="number_int_r' + (i+1) +'" hidden="hidden"></p1><input name='
+				+ '"net_r" id="net_r' + (i+1) + '" class="input_number" type=number'
+				+ ' value=1 min=1 max=4 /></div></div><br />');
 		}
 
 		$("#num_pc").attr("hidden", "hidden");
@@ -59,37 +63,46 @@
 			last_number_pc = parseInt(last_domain_pc.match(/\d+/));
 		}
 		for (var i=0; i<num_pc; i++) {
-			$("#pcs_new").append("<div id=\"pc_new\"><div id=\"pc_name\"><h4>PC" + (last_number_pc + (i+1)) + "</h4></div>"
-			+ "<div id=\"pc" + (i+1) + "_specs\"><p1>Number of interfaces: </p1><p1 id=\"number_int_pc" + (i+1)
-			+ "\" hidden=\"hidden\"></p1><input name=" + "\"net_pc" + (i+1) + "\" id=" + "\"net_pc" + (i+1)
-			+ "\" class=\"input_number\" type=number value=1 min=1 max=4 /></div></div><br />");
+			$("#pcs_new").append('<div id="pc_new"><div id="pc_name">'
+				+ '<h4 id="name_pc' + (i+1) + '" hidden="hidden"></h4>'
+				+ '<input name="name_pc" id="input_name_pc' + (i+1)
+				+ '" class="input_name" type="text" value="PC' + (last_number_pc + (i+1))
+				+ '"></input></div><div id="pc' + (i+1) + '_specs"><p1>Number of interfaces: </p1>'
+				+ '<p1 id="number_int_pc' + (i+1) +'" hidden="hidden"></p1><input name='
+				+ '"net_pc" id="net_pc' + (i+1) + '" class="input_number" type=number'
+				+ ' value=1 min=1 max=4 /></div></div><br />');
 		}
 	});
 	$(document).on("click", "#load_interface", function(){
 		$("#load_interface").remove();
 		$("#submit").removeAttr("hidden");
-		var interface_select = "</p1><select selected=\"NAT\"name=\"interface_type\" id=\"interface_type\">"
-			+ "<option value=\"NAT\">NAT</option>"
-			+ "<option value=\"NAT Network 1\">NAT Network 1</option>"
-			+ "<option value=\"NAT Network 2\">NAT Network 2</option>"
-			+ "<option value=\"NAT Network 3\">NAT Network 3</option>"
-			+ "<option value=\"NAT Network 4\">NAT Network 4</option>"
-			+ "<option value=\"hostonly\">Host-Only</option>"
-			+ "<option value=\"bridge\">Bridge</option>"
-			+ "<option value=\"LAN1\">LAN1</option>"
-			+ "<option value=\"LAN2\">LAN2</option>"
-			+ "<option value=\"LAN3\">LAN3</option>"
-			+ "<option value=\"LAN4\">LAN4</option>"
-			+ "<option value=\"LAN5\">LAN5</option>"
-			+ "<option value=\"WAN1\">WAN1</option>"
-			+ "<option value=\"WAN2\">WAN2</option>"
-			+ "<option value=\"WAN3\">WAN3</option>"
-			+ "<option value=\"WAN4\">WAN4</option>"
-			+ "<option value=\"WAN5\">WAN5</option></select>";
+		var interface_select = '</p1><select name="interface_type" id="interface_type">'
+			+ '<option value="NAT">NAT</option>'
+			+ '<option value="NAT Network 1">NAT Network 1</option>'
+			+ '<option value="NAT Network 2">NAT Network 2</option>'
+			+ '<option value="NAT Network 3">NAT Network 3</option>'
+			+ '<option value="NAT Network 4">NAT Network 4</option>'
+			+ '<option value="hostonly">Host-Only</option>'
+			+ '<option value="bridge">Bridge</option>'
+			+ '<option value="LAN1" selected="selected">LAN1</option>'
+			+ '<option value="LAN2">LAN2</option>'
+			+ '<option value="LAN3">LAN3</option>'
+			+ '<option value="LAN4">LAN4</option>'
+			+ '<option value="LAN5">LAN5</option>'
+			+ '<option value="WAN1">WAN1</option>'
+			+ '<option value="WAN2">WAN2</option>'
+			+ '<option value="WAN3">WAN3</option>'
+			+ '<option value="WAN4">WAN4</option>'
+			+ '<option value="WAN5">WAN5</option></select>';
 
+		var name_r = new Array();
 		var net_arr_r = new Array();
 		for (i=0; i<num_r; i++) {
+			name_r[i] = $("#input_name_r" + (i+1)).val();
 			net_arr_r[i] = parseInt($("#net_r" + (i+1)).val());
+			$("#input_name_r" + (i+1)).attr("hidden", "hidden");
+			$("#name_r" + (i+1)).append(name_r[i]);
+			$("#name_r" + (i+1)).removeAttr("hidden");
 			$("#net_r" + (i+1)).attr("hidden", "hidden");
 			$("#number_int_r" + (i+1)).append(net_arr_r[i]);
 			$("#number_int_r" + (i+1)).removeAttr("hidden");
@@ -97,9 +110,14 @@
 				$("#r" + (i+1) + "_specs").append("<br><p1>Interface " + (j+1) + ": " + interface_select);
 			}
 		}
+		var name_pc = new Array();
 		var net_arr_pc = new Array();
 		for (i=0; i<num_pc; i++) {
+			name_pc[i] = $("#input_name_pc" + (i+1)).val();
 			net_arr_pc[i] = parseInt($("#net_pc" + (i+1)).val());
+			$("#input_name_pc" + (i+1)).attr("hidden", "hidden");
+			$("#name_pc" + (i+1)).append(name_pc[i]);
+			$("#name_pc" + (i+1)).removeAttr("hidden");
 			$("#net_pc" + (i+1)).attr("hidden", "hidden");
 			$("#number_int_pc" + (i+1)).append(net_arr_pc[i]);
 			$("#number_int_pc" + (i+1)).removeAttr("hidden");
