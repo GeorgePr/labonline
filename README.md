@@ -29,7 +29,7 @@ The app supports the following network modes:
 
 - NAT [pending]
 - NAT network
-- Bridged
+- Bridged [pending]
 - Host-Only
 - Internal Network
 
@@ -83,5 +83,23 @@ Defined networks:
 - `network[1-4].xml` (NAT networks)
 - `bridge.xml`
 - `hostonly.xml`
-- `LAN[1-5].xml`
-- `WAN[1-5].xml`
+- `LAN[1-10].xml`
+- `WAN[1-10].xml`
+
+| Network IP & MAC addresses:                       |                                                   |
+| ------------------------------------------------- | ------------------------------------------------- |
+| LAN[1-10]                                         |                                                   |
+| 52 : 54 : 00 : 0[[1-10].hex] : [4-5]d : [xy.hex]  | 10 . 10 . [1-10] . [xy]                           |
+| WAN[1-10]                                         |                                                   |
+| 52 : 54 : 00 : 1[[1-10].hex] : [4-5]d : [xy.hex]  | 10 . 11 . [1-10] . [xy]                           |
+| Management (NAT)                                  |                                                   |
+| 52 : 54 : 00 : [[20-40].hex+xy.hex] : cc : 01     | 172 . [21-22] . [xy] . 1                          |
+| NAT Network [1-4]                                 |                                                   |
+| 52 : 54 : 00 : c[1-4] : [4-5]d : [xy.hex]         | 10 . 0 . [1-4] . [xy]                             |
+| Host-Only                                         |                                                   |
+| 52 : 54 : 00 : d1 : 4d : [xy]                     | 172 . 16 . 1 . [xy]                               |
+
+
+[xy] device number [1-24] for R, [25-48] for PC
+[20|40] 20 for R, 40 for PC
+[21|22] 21 for PC, 22 for R
