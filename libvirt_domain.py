@@ -6,10 +6,25 @@ and a function for printing DHCP leases. '''
 from shutil import copyfile
 from lxml import etree
 import re
-import sys
+import hashlib
 import os
 import libvirt
 import time
+
+
+def simpleHash(s):
+	''' Returns the hash of a string '''
+
+	result = int(hashlib.md5(s.encode('utf-8')).hexdigest(), 16)
+	result = int(str(result)[:2])
+
+	while (result > 99 or result < 49):
+		if result > 99:
+			result = result//2 + result//3
+		if result < 49:
+			result = result + result//2
+	print(result)
+	return result
 
 
 def init_conn():
@@ -32,7 +47,7 @@ def create_router(name_r, netconf_r: list):
 		lines = f.read().splitlines()
 		for domain in lines:
 			dom_number = re.sub('[PCR]', '', domain)
-			if 'R' in domain:
+			if domain.startswith('R'):
 				max_r = int(dom_number)
 			if name_r == domain:
 				print('Domain already exists')
@@ -41,8 +56,10 @@ def create_router(name_r, netconf_r: list):
 	dom_number = re.sub('[PCR]', '', name_r)
 
 	j = max_r + 1
-	if 'R' in name_r:
+	if name_r.startswith('R'):
 		j = int(dom_number)
+	else:
+		j = simpleHash(name_r)
 
 	dom_name = name_r
 	print('\nDomain', dom_name, 'will be created')
@@ -68,7 +85,7 @@ def create_router(name_r, netconf_r: list):
 	attr_name.text = 'mgmt' + dom_name.lower()
 
 	# Set UUID in new network XML file
-	b_hex = int('b0', 16)
+	b_hex = int('20', 16)
 	uuid_last_mgmt = j + b_hex
 	uuid_last_mgmt = '{:02x}'.format(uuid_last_mgmt)
 	uuid = root.find('./uuid')
@@ -267,16 +284,15 @@ def create_router(name_r, netconf_r: list):
 				# if LAN 0, if WAN 5
 				int_type = 0
 				if regex_match[0] == 'WAN':
-					int_type = 5
+					int_type = 10
 				net_number = current_interface.split(regex_match[0], )
 				net_number = int(net_number[1])
 				interface = etree.Element('interface')
 				interface.set('type', 'bridge')
-				f_hex = int('f0', 16)
-				uuid_last = int_type + net_number + f_hex
-				uuid_last = '{:02x}'.format(uuid_last)
+				net_number_hex = int(hex(net_number), 16)
+				net_number_hex = '{:01x}'.format(net_number_hex)
 				mac = etree.SubElement(interface, 'mac')
-				mac.set('address', '52:54:00:' + uuid_last + ':4d:' + k)
+				mac.set('address', '52:54:00:' + str(int_type)[0] + net_number_hex + ':4d:' + k)
 				source = etree.SubElement(interface, 'source')
 				source.set('bridge', 'virbr' + str(int_type + net_number + 8))
 				target = etree.SubElement(interface, 'target')
@@ -337,13 +353,13 @@ def create_router(name_r, netconf_r: list):
 def create_pc(name_pc, netconf_pc: list):
 	''' Creates a PC '''
 
-	# Find existing routers
+	# Find existing PCs
 	with open('domains_xml/domains.txt', 'r') as f:
 		max_pc = 0
 		lines = f.read().splitlines()
 		for domain in lines:
 			dom_number = re.sub('[PCR]', '', domain)
-			if 'PC' in domain:
+			if domain.startswith('PC'):
 				max_pc = int(dom_number)
 			if name_pc == domain:
 				print('Domain already exists')
@@ -352,8 +368,10 @@ def create_pc(name_pc, netconf_pc: list):
 	dom_number = re.sub('[PCR]', '', name_pc)
 
 	j = max_pc + 1
-	if 'PC' in name_pc:
+	if name_pc.startswith('PC'):
 		j = int(dom_number)
+	else:
+		j = simpleHash(name_pc)
 
 	dom_name = name_pc
 	print('\nDomain', dom_name, 'will be created')
@@ -379,7 +397,7 @@ def create_pc(name_pc, netconf_pc: list):
 	attr_name.text = 'mgmt' + dom_name.lower()
 
 	# Set UUID in new network XML file
-	b_hex = int('c0', 16)
+	b_hex = int('40', 16)
 	uuid_last_mgmt = j + b_hex
 	uuid_last_mgmt = '{:02x}'.format(uuid_last_mgmt)
 	uuid = root.find('./uuid')
@@ -578,16 +596,15 @@ def create_pc(name_pc, netconf_pc: list):
 				# if LAN 0, if WAN 5
 				int_type = 0
 				if regex_match[0] == 'WAN':
-					int_type = 5
+					int_type = 10
 				net_number = current_interface.split(regex_match[0], )
 				net_number = int(net_number[1])
 				interface = etree.Element('interface')
 				interface.set('type', 'bridge')
-				f_hex = int('f0', 16)
-				uuid_last = int_type + net_number + f_hex
-				uuid_last = '{:02x}'.format(uuid_last)
+				net_number_hex = int(hex(net_number), 16)
+				net_number_hex = '{:01x}'.format(net_number_hex)
 				mac = etree.SubElement(interface, 'mac')
-				mac.set('address', '52:54:00:' + uuid_last + ':5d:' + k)
+				mac.set('address', '52:54:00:' + str(int_type)[0] + net_number_hex + ':5d:' + k)
 				source = etree.SubElement(interface, 'source')
 				source.set('bridge', 'virbr' + str(int_type + net_number + 8))
 				target = etree.SubElement(interface, 'target')

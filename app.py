@@ -6,7 +6,7 @@ import json
 import re
 from flask import Flask, send_from_directory, render_template, url_for, request, redirect, session
 import libvirt
-from libvirt_domain import create_router, create_pc, start_domain, shutdown_domain, remove_domain, domain_status, dhcp_leases, cleanup
+from libvirt_domain import create_router, create_pc, simpleHash, start_domain, shutdown_domain, remove_domain, domain_status, dhcp_leases, cleanup
 
 
 active_r = []
@@ -81,6 +81,10 @@ def index():
 				for elem in range(int(net_r[i])):
 					netconf_r[i].append(net_conf_data['interface_type'][j])
 					j = j + 1
+			session['active_r'].extend(name_r)
+			session['active_net_r'].extend(net_r)
+			session['netconf_r'] = netconf_r
+			session['active_netconf_r'].extend(netconf_r)
 		if num_pc != 0:
 			name_pc = request.form.getlist('name_pc')
 			net_pc = request.form.getlist('net_pc')
@@ -89,34 +93,31 @@ def index():
 				for elem in range(int(net_pc[i])):
 					netconf_pc[i].append(net_conf_data['interface_type'][j])
 					j = j + 1
-
-		session['active_r'].extend(name_r)
-		session['active_pc'].extend(name_pc)
-		session['active_net_r'].extend(net_r)
-		session['active_net_pc'].extend(net_pc)
+			session['active_pc'].extend(name_pc)
+			session['active_net_pc'].extend(net_pc)
+			session['netconf_pc'] = netconf_pc
+			session['active_netconf_pc'].extend(netconf_pc)
 		
-		session['netconf_r'] = netconf_r
-		session['netconf_pc'] = netconf_pc
-		session['active_netconf_r'].extend(netconf_r)
-		session['active_netconf_pc'].extend(netconf_pc)
 		print(session['active_netconf_r'], session['active_netconf_pc'])
 
 		j = 0
-		for key, val in enumerate(netconf_r):
-			try:
-				create_router(name_r[j], netconf_r[key])
-				j = j + 1
-			except libvirt.libvirtError:
-				print('Domain has not been created')
-				return redirect(url_for('index'))
+		if num_r != 0:
+			for key, val in enumerate(netconf_r):
+				try:
+					create_router(name_r[j], netconf_r[key])
+					j = j + 1
+				except libvirt.libvirtError:
+					print('Domain has not been created')
+					return redirect(url_for('index'))
 		k = j
-		for key, val in enumerate(netconf_pc):
-			try:
-				create_pc(name_pc[j - k], netconf_pc[key])
-				j = j + 1
-			except libvirt.libvirtError:
-				print('Domain has not been created')
-				return redirect(url_for('index'))
+		if num_pc != 0:
+			for key, val in enumerate(netconf_pc):
+				try:
+					create_pc(name_pc[j - k], netconf_pc[key])
+					j = j + 1
+				except libvirt.libvirtError:
+					print('Domain has not been created')
+					return redirect(url_for('index'))
 
 		return redirect(url_for('created'))
 	else:
@@ -244,11 +245,14 @@ def xterm(domain):
 	second_octet = '21'
 	if domain in session['active_r']:
 		second_octet = '22'
-	domain_number = re.sub('[PCR]', '', domain)
+	if domain.startswith('R') or domain.startswith('PC'):
+		domain_number = re.sub('[PCR]', '', domain)
+	else:
+		domain_number = simpleHash(domain)
 	with open('domains_xml/domains.txt') as file:
 		if domain in file.read():
 			print('Exists')
-			xterm_url = 'http://172.' + second_octet + '.' + domain_number + '.1'
+			xterm_url = 'http://172.' + second_octet + '.' + str(domain_number) + '.1'
 			return redirect(xterm_url)
 		else:
 			return render_template('404.html')
