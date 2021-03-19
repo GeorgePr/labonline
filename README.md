@@ -100,6 +100,6 @@ Defined networks:
 | 52 : 54 : 00 : d1 : 4d : [xy]                     | 172 . 16 . 1 . [xy]                               |
 
 
-[xy] device number [1-24] for R, [25-48] for PC
-[20|40] 20 for R, 40 for PC
-[21|22] 21 for PC, 22 for R
+- [xy] device number [1-24] for R, [25-48] for PC
+- [20|40] 20 for R, 40 for PC
+- [21|22] 21 for PC, 22 for R
