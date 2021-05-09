@@ -10,6 +10,7 @@ import hashlib
 import os
 import libvirt
 import time
+import subprocess
 
 
 def simpleHash(s):
@@ -64,7 +65,7 @@ def create_router(name_r, netconf_r: list):
 	dom_name = name_r
 	print('\nDomain', dom_name, 'will be created')
 
-	# Print domain disk location
+	# Assign domain disk location
 	abs_path = os.path.dirname(__file__)
 	img_dest = os.path.join(abs_path, 'images/' + dom_name + '.qcow2')
 
@@ -166,8 +167,6 @@ def create_router(name_r, netconf_r: list):
 			source = etree.SubElement(interface, 'source')
 			source.set('network', 'network' + str(net_number))
 			source.set('bridge', 'virbr' + str(net_number-1))
-			target = etree.SubElement(interface, 'target')
-			target.set('dev', 'vnet' + str(i))
 			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
 			alias = etree.SubElement(interface, 'alias')
@@ -222,8 +221,7 @@ def create_router(name_r, netconf_r: list):
 			source = etree.SubElement(interface, 'source')
 			source.set('network', 'network' + str(i+1))
 			source.set('bridge', 'virbr' + str(i))
-			target = etree.SubElement(interface, 'target')
-			target.set('dev', 'vnet' + str(i))
+
 			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
 			alias = etree.SubElement(interface, 'alias')
@@ -243,8 +241,6 @@ def create_router(name_r, netconf_r: list):
 			mac.set('address', '52:54:00:d1:4d:' + k)
 			source = etree.SubElement(interface, 'source')
 			source.set('bridge', 'virbr4')
-			target = etree.SubElement(interface, 'target')
-			target.set('dev', 'vnet' + str(i))
 			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
 			alias = etree.SubElement(interface, 'alias')
@@ -264,8 +260,6 @@ def create_router(name_r, netconf_r: list):
 			mac.set('address', '52:54:00:e1:4d:' + k)
 			source = etree.SubElement(interface, 'source')
 			source.set('bridge', 'virbr8')
-			target = etree.SubElement(interface, 'target')
-			target.set('dev', 'vnet' + str(i+4))
 			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
 			alias = etree.SubElement(interface, 'alias')
@@ -295,8 +289,6 @@ def create_router(name_r, netconf_r: list):
 				mac.set('address', '52:54:00:' + str(int_type)[0] + net_number_hex + ':4d:' + k)
 				source = etree.SubElement(interface, 'source')
 				source.set('bridge', 'virbr' + str(int_type + net_number + 8))
-				target = etree.SubElement(interface, 'target')
-				target.set('dev', 'vnet' + str(i))
 				model = etree.SubElement(interface, 'model')
 				model.set('type', 'e1000')
 				alias = etree.SubElement(interface, 'alias')
@@ -319,8 +311,6 @@ def create_router(name_r, netconf_r: list):
 	source = etree.SubElement(interface, 'source')
 	source.set('network', 'mgmt' + dom_name.lower())
 	source.set('bridge', 'virbr' + str(j+100))
-	target = etree.SubElement(interface, 'target')
-	target.set('dev', 'vnet' + str(i))
 	model = etree.SubElement(interface, 'model')
 	model.set('type', 'virtio')
 	alias = etree.SubElement(interface, 'alias')
@@ -376,7 +366,7 @@ def create_pc(name_pc, netconf_pc: list):
 	dom_name = name_pc
 	print('\nDomain', dom_name, 'will be created')
 
-	# Print domain disk location
+	# Assign domain disk location
 	abs_path = os.path.dirname(__file__)
 	img_dest = os.path.join(abs_path, 'images/' + dom_name + '.qcow2')
 
@@ -478,8 +468,6 @@ def create_pc(name_pc, netconf_pc: list):
 			source = etree.SubElement(interface, 'source')
 			source.set('network', 'network' + str(net_number))
 			source.set('bridge', 'virbr' + str(net_number-1))
-			target = etree.SubElement(interface, 'target')
-			target.set('dev', 'vnet' + str(i))
 			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
 			alias = etree.SubElement(interface, 'alias')
@@ -534,8 +522,6 @@ def create_pc(name_pc, netconf_pc: list):
 			source = etree.SubElement(interface, 'source')
 			source.set('network', 'network' + str(i+1))
 			source.set('bridge', 'virbr' + str(i))
-			target = etree.SubElement(interface, 'target')
-			target.set('dev', 'vnet' + str(i))
 			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
 			alias = etree.SubElement(interface, 'alias')
@@ -555,8 +541,6 @@ def create_pc(name_pc, netconf_pc: list):
 			mac.set('address', '52:54:00:d1:5d:' + k)
 			source = etree.SubElement(interface, 'source')
 			source.set('bridge', 'virbr4')
-			target = etree.SubElement(interface, 'target')
-			target.set('dev', 'vnet' + str(i))
 			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
 			alias = etree.SubElement(interface, 'alias')
@@ -576,8 +560,6 @@ def create_pc(name_pc, netconf_pc: list):
 			mac.set('address', '52:54:00:e1:4d:' + k)
 			source = etree.SubElement(interface, 'source')
 			source.set('bridge', 'virbr8')
-			target = etree.SubElement(interface, 'target')
-			target.set('dev', 'vnet' + str(i+4))
 			model = etree.SubElement(interface, 'model')
 			model.set('type', 'e1000')
 			alias = etree.SubElement(interface, 'alias')
@@ -607,8 +589,6 @@ def create_pc(name_pc, netconf_pc: list):
 				mac.set('address', '52:54:00:' + str(int_type)[0] + net_number_hex + ':5d:' + k)
 				source = etree.SubElement(interface, 'source')
 				source.set('bridge', 'virbr' + str(int_type + net_number + 8))
-				target = etree.SubElement(interface, 'target')
-				target.set('dev', 'vnet' + str(i))
 				model = etree.SubElement(interface, 'model')
 				model.set('type', 'e1000')
 				alias = etree.SubElement(interface, 'alias')
@@ -631,8 +611,6 @@ def create_pc(name_pc, netconf_pc: list):
 	source = etree.SubElement(interface, 'source')
 	source.set('network', 'mgmt' + dom_name.lower())
 	source.set('bridge', 'virbr' + str(j+100+24))
-	target = etree.SubElement(interface, 'target')
-	target.set('dev', 'vnet' + str(i))
 	model = etree.SubElement(interface, 'model')
 	model.set('type', 'virtio')
 	alias = etree.SubElement(interface, 'alias')

@@ -14,8 +14,6 @@
 	</form><br /><br />
 {% endif %}
 
-{% block body %}{% endblock %}
-
 {% block devices %}
 <div id="routers">
 	{% for p in range(session['active_r']|length): %}
@@ -132,6 +130,8 @@
 </div>
 
 {% endblock %}
+
+{% block body %}{% endblock %}
 
 {% block createnew %}{% endblock %}
 
