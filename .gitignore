@@ -6,5 +6,4 @@ domains_xml/[PC|R]*.xml
 net_xml/nat[pc|r]*.xml
 *.code-workspace
 .pylintrc
-images/*
 *.egg-info/
