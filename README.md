@@ -1,5 +1,7 @@
 # LabOnLine
 
+This is my undergraduate thesis project.
+
 ## Build and Install
 
 **Ubuntu**
