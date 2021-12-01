@@ -1,6 +1,6 @@
 # LabOnLine
 
-This is my undergraduate thesis project.
+This is my undergraduate thesis project titled "Network Automation in Lab on Demand".
 
 ## Build and Install
 
