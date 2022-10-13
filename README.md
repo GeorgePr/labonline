@@ -1,6 +1,6 @@
 # LabOnLine
 
-This is my undergraduate thesis project titled "Network Automation in Lab on Demand".
+This is my undergraduate thesis project titled "Network Automation in Lab on Demand", a web app built on Python (Flask) to automatically provision network topologies using libvirt, qemu/KVM APIs.
 
 ## Build and Install
 
